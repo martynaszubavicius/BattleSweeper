@@ -32,7 +32,7 @@ namespace BattleSweeperClient
         private async void button1_Click(object sender, EventArgs e)
         {
             Chat msg = new Chat(textBox3.Text, textBox2.Text);
-            if (await APIAccesorSingleton.Instance.PostObject<Chat>(APIAccesorSingleton.ChatsRoute, msg))
+            if (await APIAccessorSingleton.Instance.PostObject<Chat>(APIAccessorSingleton.ChatsRoute, msg))
             {
                 textBox2.Text = "";
                 textBox2.Focus();
@@ -69,7 +69,7 @@ namespace BattleSweeperClient
         private async void UpdateChat()
         {
             textBox1.Text = "";
-            var messages = await APIAccesorSingleton.Instance.GetObjects<Chat>(APIAccesorSingleton.ChatsRoute);
+            var messages = await APIAccessorSingleton.Instance.GetObjects<Chat>(APIAccessorSingleton.ChatsRoute);
             foreach (Chat msg in messages)
             {
                 textBox1.Text += string.Format("{0}{1}", msg, Environment.NewLine);

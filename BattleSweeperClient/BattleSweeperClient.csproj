@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APIAccesorSingleton.cs" />
+    <Compile Include="APIAccessorSingleton.cs" />
     <Compile Include="ChatWindow.cs">
       <SubType>Form</SubType>
     </Compile>

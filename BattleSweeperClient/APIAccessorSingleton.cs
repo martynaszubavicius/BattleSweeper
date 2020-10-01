@@ -18,30 +18,30 @@ using System.Diagnostics;
 
 namespace BattleSweeperClient
 {
-    class APIAccesorSingleton
+    class APIAccessorSingleton
     {
         private static string apiEndpoint = "https://localhost";
         private static string apiPort = "44337";
 
-        private static APIAccesorSingleton singleton;
+        private static APIAccessorSingleton singleton;
         private HttpClient httpClient;
 
 
-        public static APIAccesorSingleton Instance { get { return APIAccesorSingleton.singleton; } }
+        public static APIAccessorSingleton Instance { get { return APIAccessorSingleton.singleton; } }
 
         public static readonly string ChatsRoute = "api/Chats";
 
 
-        static APIAccesorSingleton()
+        static APIAccessorSingleton()
         {
             // Save me stack overflow from random configs I need to do to get this stuff to work
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 
-            singleton = new APIAccesorSingleton();
+            singleton = new APIAccessorSingleton();
         }
 
-        private APIAccesorSingleton()
+        private APIAccessorSingleton()
         {
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -64,7 +64,6 @@ namespace BattleSweeperClient
 
             if (response.IsSuccessStatusCode)
             {
-                string raw = response.Content.ReadAsStringAsync().Result;
                 IEnumerable<T> messages = await response.Content.ReadAsAsync<IEnumerable<T>>();
                 return messages;
             }
