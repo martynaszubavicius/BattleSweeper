@@ -25,7 +25,13 @@ namespace BattleSweeperServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Game>>> GetGameItems()
         {
-            return await _context.GameItems.ToListAsync();
+            var games = await _context.GameItems.ToListAsync();
+            foreach (Game g in games)
+            {
+                _context.Entry(g).Reference(p => p.PLayer1).Load();
+                _context.Entry(g).Reference(p => p.PLayer2).Load();
+            }
+            return games;
         }
 
         // GET: api/Games/5
