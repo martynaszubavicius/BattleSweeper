@@ -46,7 +46,8 @@ namespace BattleSweeperServer.Controllers
         public async Task<ActionResult<Player>> RegisterPlayer(int id, Player player)
         {
             var game = await _context.GameItems.FindAsync(id);
-            
+            _context.Entry(game).Reference(p => p.PLayer1).Load();
+            _context.Entry(game).Reference(p => p.PLayer2).Load();
 
 
             if (game == null)

@@ -10,8 +10,8 @@ namespace BattleSweeperServer.Models
     {
         public int Id { get; set; }
         public string Key { get { return this.Id.ToString(); } }
-        public Player PLayer1 { get; private set; }
-        public Player PLayer2 { get; private set; }
+        public virtual Player PLayer1 { get; private set; }
+        public virtual Player PLayer2 { get; private set; }
         public int BoardSize { get; set; }
 
 
