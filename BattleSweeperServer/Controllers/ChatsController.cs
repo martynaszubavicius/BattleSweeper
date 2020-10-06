@@ -13,9 +13,9 @@ namespace BattleSweeperServer.Controllers
     [ApiController]
     public class ChatsController : ControllerBase
     {
-        private readonly ChatContext _context;
+        private readonly BattleSweeperContext _context;
 
-        public ChatsController(ChatContext context)
+        public ChatsController(BattleSweeperContext context)
         {
             _context = context;
         }

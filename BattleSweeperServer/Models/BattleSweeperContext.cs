@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace BattleSweeperServer.Models
 {
-    public class ChatContext : DbContext
+    public class BattleSweeperContext : DbContext
     {
-        public ChatContext(DbContextOptions<ChatContext> options)
+        public BattleSweeperContext(DbContextOptions<BattleSweeperContext> options)
             : base(options)
         {
 
         }
 
         public DbSet<Chat> ChatItems { get; set; }
+        public DbSet<Game> GameItems { get; set; }
+        public DbSet<Player> PlayerItems { get; set; }
+
     }
 }
