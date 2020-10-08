@@ -19,7 +19,28 @@ namespace BattleSweeperClient
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            
+        }
 
+        private void panel1_MouseClick(object sender, MouseEventArgs e)
+        {
+            Graphics g = panel1.CreateGraphics();
+
+
+
+            int a = e.X / 30;
+            int b = e.Y / 30;
+
+            
+
+            g.DrawRectangle(System.Drawing.Pens.Red, new Rectangle(getGridStart(e.X, 30), getGridStart(e.Y, 30), 30, 30));
+
+            g.Dispose();
+        }
+
+        private int getGridStart(int raw, int gridSize)
+        {
+            return raw / gridSize * gridSize;
         }
     }
 }
