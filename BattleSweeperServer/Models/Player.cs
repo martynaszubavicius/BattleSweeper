@@ -9,8 +9,8 @@ namespace BattleSweeperServer.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
         public string Identifier { get; set; }
+        public virtual Board Board { get; set; }
 
         public Player()
         {
@@ -28,6 +28,12 @@ namespace BattleSweeperServer.Models
             // TODO implement better random identifier
             this.Identifier = string.Format("{0}{1}","ABCDABCDABCDABCD" , this.Id.ToString());
             return this.Identifier;
+        }
+
+        public Board CreateBoard(int size)
+        {
+            this.Board = new Board(size);
+            return this.Board;
         }
 
     }
