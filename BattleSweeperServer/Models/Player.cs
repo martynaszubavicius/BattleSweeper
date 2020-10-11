@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace BattleSweeperServer.Models
 {
@@ -36,5 +37,15 @@ namespace BattleSweeperServer.Models
             return this.Board;
         }
 
+        public Player GetEnemyView()
+        {
+            Player enemyView = new Player
+            {
+                Name = this.Name,
+                Board = this.Board.GetEnemyView()
+            };
+
+            return enemyView;
+        }
     }
 }

@@ -22,7 +22,10 @@ namespace BattleSweeperClient
         {
             Game game = new Game(Int32.Parse(boardSizeTextBox.Text));
             Game createdGame = await APIAccessorSingleton.Instance.CreateGame(game);
-            gameIdTextBox.Text = createdGame.Key;
+            if (createdGame != null)
+                gameIdTextBox.Text = createdGame.Key;
+            else
+                gameIdTextBox.Text = "No game created fuck you";
         }
 
         private async void joinGameButton_Click(object sender, EventArgs e)

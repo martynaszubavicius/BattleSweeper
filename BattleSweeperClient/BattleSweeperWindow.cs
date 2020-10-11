@@ -58,8 +58,9 @@ namespace BattleSweeperClient
 
             if (game.Player1 != null)
                 PaintBoardForPanel(playerBoard, game.Player1.Board);
+            if (game.Player2 != null)
+                PaintBoardForPanel(enemyBoard, game.Player2.Board);
             
-            //PaintBoardForPanel(enemyBoard, game.PLayer2.Board);
             // TODO: update numbers as well you trash
 
             gameUpdateTimer.Start();

@@ -41,13 +41,13 @@ namespace BattleSweeperServer.Controllers
 
             Game game = games.Find(game => game.Id == id);
 
-            
-                
-
-            // TODO: limit game information based on player requesting it, do it through headers
-
             if (game == null)
                 return NotFound();
+
+            game = game.GetPlayerView(req.Headers["PlayerIdentifier"]);
+
+            if (game == null)
+                return StatusCode(403);
             else
                 return game;
         }
@@ -83,9 +83,17 @@ namespace BattleSweeperServer.Controllers
                 board.Tiles = new List<Tile>();
                 for (int i = 0; i < board.Size * board.Size; i++)
                 {
-                    board.Tiles.Add(new Tile(rnd.Next(-1, 9)));
+                    board.Tiles.Add(new Tile());
                     if (rnd.Next(0, 9) == 0)
                         board.Tiles[i].Mine = new Mine();
+                }
+                
+                for (int x = 0; x < board.Size; x++)
+                {
+                    for (int y = 0; y < board.Size; y++)
+                    {
+                        board.RevealTile(x, y);
+                    }
                 }
                 // done yay
             }
