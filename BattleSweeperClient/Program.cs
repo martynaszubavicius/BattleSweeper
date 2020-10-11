@@ -26,8 +26,11 @@ namespace BattleSweeperClient
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ChatWindow());
-            Application.Run(new Form1());
+            
+            //new Task(() => Application.Run(new ChatWindow())).Start();
+            //new Task(() => Application.Run(new ChatWindow())).Start();
+            //new Task(() => Application.Run(new BattleSweeperWindow())).Start();
+            Application.Run(new BattleSweeperWindow());
         }
     }
 }
