@@ -2,6 +2,10 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/BattleSweeperServer",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:51000",
       "sslPort": 44337
