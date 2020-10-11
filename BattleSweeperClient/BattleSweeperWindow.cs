@@ -20,15 +20,14 @@ namespace BattleSweeperClient
 
         // TODO delete when this shit is properly done, only for testing
         Random random = new Random();
-        Board playerBoardData = new Board(15);
-        Board enemyBoardData = new Board(15);
         // testing shit over
+        private int boardSize;
         private string gameKey;
 
-        public BattleSweeperWindow(string gameKey = "")
+        public BattleSweeperWindow(int boardSize, string gameKey = "")
         {
-
             this.gameKey = gameKey;
+            this.boardSize = boardSize;
             InitializeComponent();
             LoadTextures("../../Textures");
         }
@@ -38,17 +37,7 @@ namespace BattleSweeperClient
             gameUpdateTimer.Start();
         }
 
-        private void panel1_MouseClick(object sender, MouseEventArgs e)
-        {
-            Graphics g = playerBoard.CreateGraphics();
-
-            SetNumberForPanel(playerAmmo, random.Next(0, 1000), 3);
-            g.DrawImage(textures["bomb"], new Rectangle(getGridStart(e.X, 16), getGridStart(e.Y, 16), 16, 16));
-
-            //g.DrawRectangle(System.Drawing.Pens.Red, new Rectangle(getGridStart(e.X, 16), getGridStart(e.Y, 16), 30, 30));
-
-            g.Dispose();
-        }
+        
 
         private async void gameUpdateTimer_Tick(object sender, EventArgs e)
         {
@@ -60,8 +49,10 @@ namespace BattleSweeperClient
                 PaintBoardForPanel(playerBoard, game.Player1.Board);
             if (game.Player2 != null)
                 PaintBoardForPanel(enemyBoard, game.Player2.Board);
-            
+
             // TODO: update numbers as well you trash
+            SetNumberForPanel(playerAmmo, 084, 3);
+            SetNumberForPanel(playerMinesLeft, 701, 3);
 
             gameUpdateTimer.Start();
         }
@@ -95,8 +86,8 @@ namespace BattleSweeperClient
 
         private void PaintBoardForPanel(Panel panel, Board board)
         {
-            float cellSizeX = panel.Width / board.Size;
-            float cellSizeY = panel.Height / board.Size;
+            float cellSizeX = (float)panel.Width / board.Size;
+            float cellSizeY = (float)panel.Height / board.Size;
 
             Graphics g = panel.CreateGraphics();
             for (int x = 0; x < board.Size; x++)
@@ -130,34 +121,21 @@ namespace BattleSweeperClient
             g.Dispose();
         }
 
-        // TODO: technically wont need the xXxEdgeLord69xXx_Paint event handlers as the panels will get overdrawn by timer tick anyway
-
-        private void board1_Paint(object sender, PaintEventArgs e)
+        private async void enemyBoard_MouseClick(object sender, MouseEventArgs e)
         {
-            PaintBoardForPanel(playerBoard, new Board(7));
+            // TODO: Move these somewhere global
+            float cellSizeX = (float)enemyBoard.Width / boardSize;
+            float cellSizeY = (float)enemyBoard.Height / boardSize;
+
+            // TODO: Edge cases - right now bottom right corner won't work
+            int x = (int)(e.X / cellSizeX);
+            int y = (int)(e.Y / cellSizeY);
+
+            await APIAccessorSingleton.Instance.PostObject<Shot>(string.Format("BattleSweeper/Game/{0}/TestShot", gameKey), new Shot(x, y));
+            gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }
 
-        private void playerMinesLeft_Paint(object sender, PaintEventArgs e)
-        {
-            SetNumberForPanel(playerMinesLeft, 701, 3);
-        }
-
-        private void playerAmmo_Paint(object sender, PaintEventArgs e)
-        {
-            SetNumberForPanel(playerAmmo, 084, 3);
-        }
-
-        private void enemyMinesLeft_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void enemyBoard_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void enemyAmmo_Paint(object sender, PaintEventArgs e)
+        private void playerBoard_MouseClick(object sender, MouseEventArgs e)
         {
 
         }

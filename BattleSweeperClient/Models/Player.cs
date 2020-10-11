@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace BattleSweeperServer.Models
 {
@@ -10,12 +11,15 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Identifier")]
         public string Identifier { get; set; }
 
+        [JsonProperty("AmmoCount")]
+        public int AmmoCount { get; set; }
+
         [JsonProperty("Board")]
         public Board Board { get; set; }
 
         public Player()
         {
-
+            
         }
 
         public Player(string name)
@@ -36,5 +40,15 @@ namespace BattleSweeperServer.Models
             return this.Board;
         }
 
+        public Player GetEnemyView()
+        {
+            Player enemyView = new Player
+            {
+                Name = this.Name,
+                Board = this.Board.GetEnemyView()
+            };
+
+            return enemyView;
+        }
     }
 }

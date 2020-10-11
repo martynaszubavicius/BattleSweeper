@@ -44,8 +44,7 @@
             this.playerBoard.Name = "playerBoard";
             this.playerBoard.Size = new System.Drawing.Size(240, 240);
             this.playerBoard.TabIndex = 0;
-            this.playerBoard.Paint += new System.Windows.Forms.PaintEventHandler(this.board1_Paint);
-            this.playerBoard.MouseClick += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseClick);
+            this.playerBoard.MouseClick += new System.Windows.Forms.MouseEventHandler(this.playerBoard_MouseClick);
             // 
             // playerMinesLeft
             // 
@@ -53,7 +52,6 @@
             this.playerMinesLeft.Name = "playerMinesLeft";
             this.playerMinesLeft.Size = new System.Drawing.Size(39, 23);
             this.playerMinesLeft.TabIndex = 1;
-            this.playerMinesLeft.Paint += new System.Windows.Forms.PaintEventHandler(this.playerMinesLeft_Paint);
             // 
             // playerAmmo
             // 
@@ -61,7 +59,6 @@
             this.playerAmmo.Name = "playerAmmo";
             this.playerAmmo.Size = new System.Drawing.Size(39, 23);
             this.playerAmmo.TabIndex = 2;
-            this.playerAmmo.Paint += new System.Windows.Forms.PaintEventHandler(this.playerAmmo_Paint);
             // 
             // enemyBoard
             // 
@@ -69,7 +66,7 @@
             this.enemyBoard.Name = "enemyBoard";
             this.enemyBoard.Size = new System.Drawing.Size(240, 240);
             this.enemyBoard.TabIndex = 1;
-            this.enemyBoard.Paint += new System.Windows.Forms.PaintEventHandler(this.enemyBoard_Paint);
+            this.enemyBoard.MouseClick += new System.Windows.Forms.MouseEventHandler(this.enemyBoard_MouseClick);
             // 
             // enemyMinesLeft
             // 
@@ -77,7 +74,6 @@
             this.enemyMinesLeft.Name = "enemyMinesLeft";
             this.enemyMinesLeft.Size = new System.Drawing.Size(39, 23);
             this.enemyMinesLeft.TabIndex = 2;
-            this.enemyMinesLeft.Paint += new System.Windows.Forms.PaintEventHandler(this.enemyMinesLeft_Paint);
             // 
             // enemyAmmo
             // 
@@ -85,7 +81,6 @@
             this.enemyAmmo.Name = "enemyAmmo";
             this.enemyAmmo.Size = new System.Drawing.Size(39, 23);
             this.enemyAmmo.TabIndex = 3;
-            this.enemyAmmo.Paint += new System.Windows.Forms.PaintEventHandler(this.enemyAmmo_Paint);
             // 
             // gameUpdateTimer
             // 

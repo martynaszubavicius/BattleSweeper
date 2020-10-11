@@ -34,22 +34,13 @@ namespace BattleSweeperServer.Controllers
         [HttpGet("Game/{id}/State")]
         public ActionResult<Game> GetGameState(int id)
         {
-            var req = Request;
-
-            if (!req.Headers.ContainsKey("PlayerIdentifier"))
-                return StatusCode(403);
-
             Game game = games.Find(game => game.Id == id);
 
-            if (game == null)
-                return NotFound();
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
 
-            game = game.GetPlayerView(req.Headers["PlayerIdentifier"]);
-
-            if (game == null)
-                return StatusCode(403);
-            else
-                return game;
+            return game.GetPlayerView(Request.Headers["PlayerIdentifier"]);
         }
 
         [HttpPost("CreateGame")]
@@ -74,8 +65,11 @@ namespace BattleSweeperServer.Controllers
                 return NotFound();
             }
 
+
+
             if (game.RegisterPlayer(player))
             {
+                player.AmmoCount = 3;
                 Board board = player.CreateBoard(game.BoardSize);
                 
                 // temporary for testing
@@ -87,14 +81,13 @@ namespace BattleSweeperServer.Controllers
                     if (rnd.Next(0, 9) == 0)
                         board.Tiles[i].Mine = new Mine();
                 }
-                
-                for (int x = 0; x < board.Size; x++)
-                {
-                    for (int y = 0; y < board.Size; y++)
-                    {
-                        board.RevealTile(x, y);
-                    }
-                }
+                //for (int x = 0; x < board.Size; x++)
+                //{
+                //    for (int y = 0; y < board.Size; y++)
+                //    {
+                //        board.RevealTile(x, y);
+                //    }
+                //}
                 // done yay
             }
             else
@@ -103,6 +96,34 @@ namespace BattleSweeperServer.Controllers
             }
 
             return player;
+        }
+
+        [HttpPost("Game/{id}/TestShot")]
+        public ActionResult<Game> TestShot(int id, Shot shot)
+        {
+            Game game = games.Find(game => game.Id == id);
+
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
+
+            lock (game)
+            {
+                game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(shot.positionX, shot.positionY);
+            }
+
+            return CreatedAtAction("CreateGame", new { id = game.Id }, game);
+        }
+
+        private ActionResult EnsureIntegrity(Game game)
+        {
+            if (game == null)
+                return NotFound();
+            if (!Request.Headers.ContainsKey("PlayerIdentifier"))
+                return StatusCode(403);
+            if (!game.HasPlayerWithIdentifier(Request.Headers["PlayerIdentifier"]))
+                return StatusCode(403);
+            return null;
         }
     }
 

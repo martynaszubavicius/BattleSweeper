@@ -35,7 +35,8 @@ namespace BattleSweeperClient
             
             if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player))
             {
-                new BattleSweeperWindow(gameKey).ShowDialog();
+                // TODO: THIS IS BAD. DONT DO THIS. PLEASE FOR THE LOVE OF ALL THAT'S HOLY FIX THE BOARD SIZE PASSING, BECAUSE THIS IS HORRIBLE
+                new BattleSweeperWindow(Int32.Parse(boardSizeTextBox.Text), gameKey).ShowDialog();
             }
         }
     }

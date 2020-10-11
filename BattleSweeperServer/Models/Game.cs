@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace BattleSweeperServer.Models
 {
@@ -56,7 +55,7 @@ namespace BattleSweeperServer.Models
         // Returns a sanitized Game object that only has information that the player with specified identifier should have
         public Game GetPlayerView(string playerIdentifier)
         {
-            if (Player1.Identifier != playerIdentifier && Player2.Identifier != playerIdentifier)
+            if (!HasPlayerWithIdentifier(playerIdentifier))
                 return null; // not your game, scrub
 
             Game playerView = new Game 
@@ -73,6 +72,25 @@ namespace BattleSweeperServer.Models
             return playerView;
         }
 
+        public bool HasPlayerWithIdentifier(string playerIdentifier)
+        {
+            return Player1.Identifier == playerIdentifier || Player2.Identifier == playerIdentifier;
+        }
 
+        public Player GetPlayerByIdentifier(string playerIdentifier)
+        {
+            if (HasPlayerWithIdentifier(playerIdentifier))
+                return Player1.Identifier == playerIdentifier ? Player1 : Player2;
+            else
+                return null;
+        }
+
+        public Player GetEnemyByIdentifier(string playerIdentifier)
+        {
+            if (HasPlayerWithIdentifier(playerIdentifier))
+                return Player1.Identifier == playerIdentifier ? Player2 : Player1;
+            else
+                return null;
+        }
     }
 }

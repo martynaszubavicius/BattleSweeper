@@ -76,6 +76,7 @@
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\Mine.cs" />
     <Compile Include="Models\Player.cs" />
+    <Compile Include="Models\Shot.cs" />
     <Compile Include="Models\Tile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -11,12 +11,15 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Identifier")]
         public string Identifier { get; set; }
 
+        [JsonProperty("AmmoCount")]
+        public int AmmoCount { get; set; }
+
         [JsonProperty("Board")]
         public Board Board { get; set; }
 
         public Player()
         {
-
+            
         }
 
         public Player(string name)
