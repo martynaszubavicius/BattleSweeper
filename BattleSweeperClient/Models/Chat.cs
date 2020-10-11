@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-
-namespace BattleSweeperClient.Models
+﻿namespace BattleSweeperServer.Models
 {
     public class Chat
     {
@@ -17,6 +10,10 @@ namespace BattleSweeperClient.Models
         {
             Author = author;
             Text = text;
+        }
+
+        public Chat()
+        {
         }
 
         public override string ToString()

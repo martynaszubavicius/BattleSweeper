@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using BattleSweeperClient.Models;
+using BattleSweeperServer.Models;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Data;

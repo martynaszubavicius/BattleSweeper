@@ -1,4 +1,4 @@
-﻿using BattleSweeperClient.Models;
+﻿using BattleSweeperServer.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

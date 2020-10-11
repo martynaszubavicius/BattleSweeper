@@ -21,11 +21,10 @@ namespace BattleSweeperServer.Models
         }
         
         public DbSet<Chat> ChatItems { get; set; }
-        public DbSet<Game> GameItems { get; set; }
-        public DbSet<Player> PlayerItems { get; set; }
-        public DbSet<Board> BoardItems { get; set; }
-        public DbSet<Tile> TileItems { get; set; }
-        public DbSet<Mine> MineItems { get; set; }
-
+        //public DbSet<Game> GameItems { get; set; }
+        //public DbSet<Player> PlayerItems { get; set; }
+        //public DbSet<Board> BoardItems { get; set; }
+        //public DbSet<Tile> TileItems { get; set; }
+        //public DbSet<Mine> MineItems { get; set; }
     }
 }
