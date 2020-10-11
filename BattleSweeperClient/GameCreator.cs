@@ -18,14 +18,23 @@ namespace BattleSweeperClient
             InitializeComponent();
         }
 
-        private void newGameButton_Click(object sender, EventArgs e)
+        private async void newGameButton_Click(object sender, EventArgs e)
         {
-
+            Game game = new Game(Int32.Parse(boardSizeTextBox.Text));
+            Game createdGame = await APIAccessorSingleton.Instance.CreateGame(game);
+            gameIdTextBox.Text = createdGame.Key;
         }
 
-        private void joinGameButton_Click(object sender, EventArgs e)
+        private async void joinGameButton_Click(object sender, EventArgs e)
         {
+            string gameKey = gameIdTextBox.Text;
             Player player = new Player(nameTextBox.Text);
+            
+            if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player))
+            {
+                new BattleSweeperWindow().ShowDialog();
+                //Application.Run(new BattleSweeperWindow());
+            }
         }
     }
 }

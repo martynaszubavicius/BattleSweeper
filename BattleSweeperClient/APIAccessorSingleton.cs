@@ -23,6 +23,8 @@ namespace BattleSweeperClient
         private static string apiEndpoint = "https://localhost";
         private static string apiPort = "44337";
 
+        private Player currentPlayer;
+
         private static APIAccessorSingleton singleton;
         private HttpClient httpClient;
 
@@ -30,6 +32,7 @@ namespace BattleSweeperClient
         public static APIAccessorSingleton Instance { get { return APIAccessorSingleton.singleton; } }
 
         public static readonly string ChatsRoute = "api/Chats";
+        
 
 
         static APIAccessorSingleton()
@@ -46,6 +49,26 @@ namespace BattleSweeperClient
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             httpClient.BaseAddress = new Uri(string.Format("{0}:{1}/", apiEndpoint, apiPort));
+        }
+
+        public async Task<Game> CreateGame(Game game)
+        {
+            return await PostObject<Game>("BattleSweeper/CreateGame", game);
+        }
+
+        public async Task<bool> RegisterPlayerToGame(string gameKey, Player player)
+        {
+            Player registeredPlayer = await PostObject<Player>(string.Format("BattleSweeper/Game/{0}/RegisterPlayer", gameKey), player);
+
+            if (registeredPlayer != null)
+            {
+                this.currentPlayer = registeredPlayer;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<IEnumerable<T>> GetObjects<T>(string route)
@@ -73,7 +96,7 @@ namespace BattleSweeperClient
             }
         }
 
-        public async Task<bool> PostObject<T>(string route, T obj)
+        public async Task<T> PostObject<T>(string route, T obj)
         {
             HttpResponseMessage response;
             var content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
@@ -85,10 +108,10 @@ namespace BattleSweeperClient
             {
                 Debug.WriteLine(string.Format("Connection to server failed: POST {0}", route));
                 Debug.WriteLine(e.Message);
-                return false;
+                return default;
             }
 
-            return response.IsSuccessStatusCode;
+            return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<T>() : default; 
         }
     }
 }

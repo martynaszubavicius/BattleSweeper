@@ -27,10 +27,10 @@ namespace BattleSweeperClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
-            new Task(() => Application.Run(new ChatWindow())).Start();
-            new Task(() => Application.Run(new ChatWindow())).Start();
+            //new Task(() => Application.Run(new ChatWindow())).Start();
+            //new Task(() => Application.Run(new ChatWindow())).Start();
             //new Task(() => Application.Run(new BattleSweeperWindow())).Start();
-            Application.Run(new BattleSweeperWindow());
+            Application.Run(new GameCreator());
         }
     }
 }

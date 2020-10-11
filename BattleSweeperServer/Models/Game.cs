@@ -14,6 +14,11 @@
 
         }
 
+        public Game(int boardSize)
+        {
+            BoardSize = boardSize;
+        }
+
         public bool RegisterPlayer(Player player)
         {
             lock (this)

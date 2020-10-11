@@ -18,7 +18,7 @@ namespace BattleSweeperServer.Models
             this.Tiles = new List<Tile>();
 
             for (int i = 0; i < this.Size * this.Size; i++)
-                Tiles[i] = new Tile(0);
+                Tiles.Add(new Tile(0));
         }
 
         public int GetIndex(int x, int y)
