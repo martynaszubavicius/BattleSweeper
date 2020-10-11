@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace BattleSweeperServer.Models
 {
     public class Board
     {
+        [JsonProperty("Size")]
         public int Size { get; set; }
+
+        [JsonProperty("Tiles")]
         public List<Tile> Tiles { get; set; }
 
         public Board()

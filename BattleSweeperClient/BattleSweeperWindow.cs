@@ -23,17 +23,19 @@ namespace BattleSweeperClient
         Board playerBoardData = new Board(15);
         Board enemyBoardData = new Board(15);
         // testing shit over
+        private string gameKey;
 
-
-        public BattleSweeperWindow()
+        public BattleSweeperWindow(string gameKey = "")
         {
+
+            this.gameKey = gameKey;
             InitializeComponent();
             LoadTextures("../../Textures");
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            gameUpdateTimer.Start();
         }
 
         private void panel1_MouseClick(object sender, MouseEventArgs e)
@@ -48,22 +50,24 @@ namespace BattleSweeperClient
             g.Dispose();
         }
 
+        private async void gameUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            gameUpdateTimer.Stop();
+
+            Game game = await APIAccessorSingleton.Instance.GetGameState(this.gameKey);
+
+            if (game.Player1 != null)
+                PaintBoardForPanel(playerBoard, game.Player1.Board);
+            
+            //PaintBoardForPanel(enemyBoard, game.PLayer2.Board);
+            // TODO: update numbers as well you trash
+
+            gameUpdateTimer.Start();
+        }
+
         private int getGridStart(int raw, int gridSize)
         {
             return raw / gridSize * gridSize;
-        }
-
-        private void board1_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = playerBoard.CreateGraphics();
-            for (int i = 0; i < 15; i++)
-            {
-                for (int j = 0; j < 15; j++)
-                {
-                    g.DrawImage(textures["tile"], new Rectangle(16 * i, 16 * j, 16, 16));
-                }
-            }
-            g.Dispose();
         }
 
         private string[] TranslateNumberToFontEntries(int number, int digitCount)
@@ -88,14 +92,30 @@ namespace BattleSweeperClient
                 textures[string.Concat(imgFile.Split(new char[] { '\\' }).Last().Reverse().Skip(4).Reverse())] = new Bitmap(imgFile);
         }
 
-        private void playerMinesLeft_Paint(object sender, PaintEventArgs e)
+        private void PaintBoardForPanel(Panel panel, Board board)
         {
-            SetNumberForPanel(playerMinesLeft, 701, 3);
-        }
+            float cellSizeX = panel.Width / board.Size;
+            float cellSizeY = panel.Height / board.Size;
 
-        private void playerAmmo_Paint(object sender, PaintEventArgs e)
-        {
-            SetNumberForPanel(playerAmmo, 084, 3);
+            Graphics g = panel.CreateGraphics();
+            for (int x = 0; x < board.Size; x++)
+            {
+                for (int y = 0; y < board.Size; y++)
+                {
+                    Tile tile = board.Tiles[board.GetIndex(x, y)];
+
+                    Image img;
+                    if (tile.Mine != null)
+                        img = textures["bomb"];
+                    else if (tile.State >= 0)
+                        img = textures[string.Format("empty{0}", tile.State)];
+                    else // -1
+                        img = textures["tile"];
+
+                    g.DrawImage(img, new RectangleF(cellSizeX * x, cellSizeY * y, cellSizeX, cellSizeY));
+                }
+            }
+            g.Dispose();
         }
 
         private void SetNumberForPanel(Panel panel, int number, int digits)
@@ -107,6 +127,23 @@ namespace BattleSweeperClient
                 g.DrawImage(textures[fontNumbers[i]], new Rectangle(13 * i, 0, 13, 23));
             }
             g.Dispose();
+        }
+
+        // TODO: technically wont need the xXxEdgeLord69xXx_Paint event handlers as the panels will get overdrawn by timer tick anyway
+
+        private void board1_Paint(object sender, PaintEventArgs e)
+        {
+            PaintBoardForPanel(playerBoard, new Board(7));
+        }
+
+        private void playerMinesLeft_Paint(object sender, PaintEventArgs e)
+        {
+            SetNumberForPanel(playerMinesLeft, 701, 3);
+        }
+
+        private void playerAmmo_Paint(object sender, PaintEventArgs e)
+        {
+            SetNumberForPanel(playerAmmo, 084, 3);
         }
 
         private void enemyMinesLeft_Paint(object sender, PaintEventArgs e)

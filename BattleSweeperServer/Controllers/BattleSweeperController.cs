@@ -41,6 +41,9 @@ namespace BattleSweeperServer.Controllers
 
             Game game = games.Find(game => game.Id == id);
 
+            
+                
+
             // TODO: limit game information based on player requesting it, do it through headers
 
             if (game == null)
@@ -74,6 +77,17 @@ namespace BattleSweeperServer.Controllers
             if (game.RegisterPlayer(player))
             {
                 Board board = player.CreateBoard(game.BoardSize);
+                
+                // temporary for testing
+                Random rnd = new Random();
+                board.Tiles = new List<Tile>();
+                for (int i = 0; i < board.Size * board.Size; i++)
+                {
+                    board.Tiles.Add(new Tile(rnd.Next(-1, 9)));
+                    if (rnd.Next(0, 9) == 0)
+                        board.Tiles[i].Mine = new Mine();
+                }
+                // done yay
             }
             else
             {

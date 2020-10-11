@@ -1,9 +1,16 @@
-﻿namespace BattleSweeperServer.Models
+﻿using Newtonsoft.Json;
+
+namespace BattleSweeperServer.Models
 {
     public class Player
     {
+        [JsonProperty("Name")]
         public string Name { get; set; }
+
+        [JsonProperty("Identifier")]
         public string Identifier { get; set; }
+
+        [JsonProperty("Board")]
         public Board Board { get; set; }
 
         public Player()

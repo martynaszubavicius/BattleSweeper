@@ -32,8 +32,7 @@ namespace BattleSweeperClient
             
             if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player))
             {
-                new BattleSweeperWindow().ShowDialog();
-                //Application.Run(new BattleSweeperWindow());
+                new BattleSweeperWindow(gameKey).ShowDialog();
             }
         }
     }

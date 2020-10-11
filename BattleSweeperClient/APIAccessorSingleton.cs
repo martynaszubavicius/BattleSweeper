@@ -23,8 +23,6 @@ namespace BattleSweeperClient
         private static string apiEndpoint = "https://localhost";
         private static string apiPort = "44337";
 
-        private Player currentPlayer;
-
         private static APIAccessorSingleton singleton;
         private HttpClient httpClient;
 
@@ -56,13 +54,19 @@ namespace BattleSweeperClient
             return await PostObject<Game>("BattleSweeper/CreateGame", game);
         }
 
+        public async Task<Game> GetGameState(string gameKey)
+        {
+            return await GetObject<Game>("BattleSweeper/Game/{0}/State", gameKey);
+        }
+
         public async Task<bool> RegisterPlayerToGame(string gameKey, Player player)
         {
             Player registeredPlayer = await PostObject<Player>(string.Format("BattleSweeper/Game/{0}/RegisterPlayer", gameKey), player);
 
             if (registeredPlayer != null)
             {
-                this.currentPlayer = registeredPlayer;
+                // TODO: remove header after game is finished
+                httpClient.DefaultRequestHeaders.Add("PlayerIdentifier", registeredPlayer.Identifier);
                 return true;
             }
             else
@@ -93,6 +97,33 @@ namespace BattleSweeperClient
             else
             {
                 return new List<T>();
+            }
+        }
+
+        public async Task<T> GetObject<T>(string route, string id)
+        {
+            HttpResponseMessage response;
+            try
+            {
+                response = await this.httpClient.GetAsync(string.Format(route, id));
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(string.Format("Connection to server failed: GET {0}", route));
+                Debug.WriteLine(e.Message);
+                return default;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                T obj = JsonConvert.DeserializeObject<T>(json);
+                //T obj = await response.Content.ReadAsAsync<T>();
+                return obj;
+            }
+            else
+            {
+                return default;
             }
         }
 

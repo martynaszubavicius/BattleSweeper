@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.playerBoard = new System.Windows.Forms.Panel();
             this.playerMinesLeft = new System.Windows.Forms.Panel();
             this.playerAmmo = new System.Windows.Forms.Panel();
             this.enemyBoard = new System.Windows.Forms.Panel();
             this.enemyMinesLeft = new System.Windows.Forms.Panel();
             this.enemyAmmo = new System.Windows.Forms.Panel();
+            this.gameUpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // playerBoard
@@ -85,6 +87,11 @@
             this.enemyAmmo.TabIndex = 3;
             this.enemyAmmo.Paint += new System.Windows.Forms.PaintEventHandler(this.enemyAmmo_Paint);
             // 
+            // gameUpdateTimer
+            // 
+            this.gameUpdateTimer.Interval = 250;
+            this.gameUpdateTimer.Tick += new System.EventHandler(this.gameUpdateTimer_Tick);
+            // 
             // BattleSweeperWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -112,6 +119,7 @@
         private System.Windows.Forms.Panel enemyBoard;
         private System.Windows.Forms.Panel enemyMinesLeft;
         private System.Windows.Forms.Panel enemyAmmo;
+        private System.Windows.Forms.Timer gameUpdateTimer;
     }
 }
 
