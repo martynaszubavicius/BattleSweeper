@@ -2,7 +2,8 @@
 
 namespace BattleSweeperServer.Models
 {
-    public class Shot
+    //TODO: Edvinas, Shoot class has to be changed to abstract(constructor shouldn't be in the abstract class)
+    public  class Shot
     {
         [JsonProperty("positionX")]
         public int positionX { get; set; }

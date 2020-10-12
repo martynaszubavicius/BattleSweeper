@@ -23,7 +23,7 @@
     },
     "BattleSweeperServer": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/chats",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
