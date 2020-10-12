@@ -135,9 +135,18 @@ namespace BattleSweeperClient
             gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }
 
-        private void playerBoard_MouseClick(object sender, MouseEventArgs e)
+        private async void playerBoard_MouseClick(object sender, MouseEventArgs e)
         {
+            // TODO: Move these somewhere global
+            float cellSizeX = (float)enemyBoard.Width / boardSize;
+            float cellSizeY = (float)enemyBoard.Height / boardSize;
 
+            // TODO: Edge cases - right now bottom right corner won't work
+            int x = (int)(e.X / cellSizeX);
+            int y = (int)(e.Y / cellSizeY);
+
+            await APIAccessorSingleton.Instance.PostObject<Shot>(string.Format("BattleSweeper/Game/{0}/TestMineCycle", gameKey), new Shot(x, y));
+            gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }
     }
 }

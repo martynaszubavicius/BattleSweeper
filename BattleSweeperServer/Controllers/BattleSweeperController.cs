@@ -99,7 +99,7 @@ namespace BattleSweeperServer.Controllers
         }
 
         [HttpPost("Game/{id}/TestShot")]
-        public ActionResult<Game> TestShot(int id, Shot shot)
+        public ActionResult TestShot(int id, Shot shot)
         {
             Game game = games.Find(game => game.Id == id);
 
@@ -112,7 +112,24 @@ namespace BattleSweeperServer.Controllers
                 game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(shot.positionX, shot.positionY);
             }
 
-            return CreatedAtAction("CreateGame", new { id = game.Id }, game);
+            return StatusCode(200); //CreatedAtAction("TestShot", new { id = game.Id }, game);
+        }
+
+        [HttpPost("Game/{id}/TestMineCycle")]
+        public ActionResult TestMineCycle(int id, Shot shot)
+        {
+            Game game = games.Find(game => game.Id == id);
+
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
+
+            lock (game)
+            {
+                game.GetPlayerByIdentifier(Request.Headers["PlayerIdentifier"]).Board.CycleMine(shot.positionX, shot.positionY);
+            }
+
+            return StatusCode(200);
         }
 
         private ActionResult EnsureIntegrity(Game game)

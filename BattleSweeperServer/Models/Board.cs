@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace BattleSweeperServer.Models
@@ -85,6 +86,15 @@ namespace BattleSweeperServer.Models
             }
 
             return neighbours;
+        }
+
+        internal void CycleMine(int positionX, int positionY)
+        {
+            Tile tile = Tiles[GetIndex(positionX, positionY)];
+            if (tile.Mine == null)
+                tile.Mine = new Mine();
+            else
+                tile.Mine = null;
         }
     }
 }
