@@ -123,12 +123,19 @@ namespace BattleSweeperServer.Controllers
                 
                 // temporary for testing
                 Random rnd = new Random();
+                int random_nr;
                 board.Tiles = new List<Tile>();
+                MineFactory mineFactory = new MineFactory();
                 for (int i = 0; i < board.Size * board.Size; i++)
                 {
                     board.Tiles.Add(new Tile());
-                    if (rnd.Next(0, 9) == 0)
-                        board.Tiles[i].Mine = new Mine();
+                    random_nr = rnd.Next(0, 9);
+                    if (random_nr == 0)
+                        board.Tiles[i].Mine = mineFactory.CreateMine(0); // Simple Mine
+                    if (random_nr == 1)
+                        board.Tiles[i].Mine = mineFactory.CreateMine(1); // Wide Mine
+                    if (random_nr == 2)
+                        board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
                 }
                 //for (int x = 0; x < board.Size; x++)
                 //{

@@ -90,9 +90,10 @@ namespace BattleSweeperServer.Models
 
         internal void CycleMine(int positionX, int positionY)
         {
+            MineFactory mineFactory = new MineFactory();
             Tile tile = Tiles[GetIndex(positionX, positionY)];
             if (tile.Mine == null)
-                tile.Mine = new Mine();
+                tile.Mine = mineFactory.CreateMine(0);
             else
                 tile.Mine = null;
         }

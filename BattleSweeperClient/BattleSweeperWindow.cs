@@ -102,7 +102,7 @@ namespace BattleSweeperClient
 
                     Image img;
                     if (tile.Mine != null)
-                        img = textures["bomb"];
+                        img = textures[tile.Mine.ImageName];
                     else if (tile.State >= 0)
                         img = textures[string.Format("empty{0}", tile.State)];
                     else // -1
