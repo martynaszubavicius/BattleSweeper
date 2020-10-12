@@ -28,8 +28,9 @@ namespace BattleSweeperServer.Controllers
         // 
         // Requests below require "PlayerIdentifier" Header
         // 
-        // GET Game/{id}/State - get current game state
-        // 
+        // GET  Game/{id}/State - get current game state
+        // POST Game/{id}/TestMineCycle - cycle a mine on players board
+        // POST Game/{id}/TestShot - reveal tile on enemys board
 
         [HttpGet("Game/{id}/State")]
         public ActionResult<Game> GetGameState(int id)
