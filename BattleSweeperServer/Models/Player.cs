@@ -22,11 +22,6 @@ namespace BattleSweeperServer.Models
             
         }
 
-        public Player(string name)
-        {
-            this.Name = name;
-        }
-
         public string CreateIdentifier(int seed)
         {
             // TODO: implement better random identifier,  for now same for everyone, which is stupid. I am stupid

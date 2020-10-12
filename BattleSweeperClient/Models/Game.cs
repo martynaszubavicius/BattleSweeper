@@ -16,17 +16,15 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Player2")]
         public Player Player2 { get; private set; }
         
+        [JsonProperty("Settings")]
+        public GameSettings Settings { get; set; }
+
         [JsonProperty("BoardSize")]
         public int BoardSize { get; set; }
 
         public Game()
         {
 
-        }
-
-        public Game(int boardSize)
-        {
-            BoardSize = boardSize;
         }
 
         public bool RegisterPlayer(Player player)
@@ -75,6 +73,22 @@ namespace BattleSweeperServer.Models
         public bool HasPlayerWithIdentifier(string playerIdentifier)
         {
             return Player1.Identifier == playerIdentifier || Player2.Identifier == playerIdentifier;
+        }
+
+        public Player GetPlayerByIdentifier(string playerIdentifier)
+        {
+            if (HasPlayerWithIdentifier(playerIdentifier))
+                return Player1.Identifier == playerIdentifier ? Player1 : Player2;
+            else
+                return null;
+        }
+
+        public Player GetEnemyByIdentifier(string playerIdentifier)
+        {
+            if (HasPlayerWithIdentifier(playerIdentifier))
+                return Player1.Identifier == playerIdentifier ? Player2 : Player1;
+            else
+                return null;
         }
     }
 }

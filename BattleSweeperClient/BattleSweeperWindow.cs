@@ -23,17 +23,21 @@ namespace BattleSweeperClient
         // testing shit over
         private int boardSize;
         private string gameKey;
+        private GameSettings gameSettings;
 
-        public BattleSweeperWindow(int boardSize, string gameKey = "")
+        public BattleSweeperWindow(string gameKey)
         {
             this.gameKey = gameKey;
-            this.boardSize = boardSize;
+            this.boardSize = 10;
+
             InitializeComponent();
             LoadTextures("../../Textures");
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
+            gameSettings = await APIAccessorSingleton.Instance.GetObject<GameSettings>("BattleSweeper/Game/{0}/Settings", gameKey);
+            boardSize = gameSettings.BoardSize;
             gameUpdateTimer.Start();
         }
 

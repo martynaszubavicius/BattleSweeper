@@ -16,17 +16,15 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Player2")]
         public Player Player2 { get; private set; }
         
+        [JsonProperty("Settings")]
+        public GameSettings Settings { get; set; }
+
         [JsonProperty("BoardSize")]
         public int BoardSize { get; set; }
 
         public Game()
         {
 
-        }
-
-        public Game(int boardSize)
-        {
-            BoardSize = boardSize;
         }
 
         public bool RegisterPlayer(Player player)

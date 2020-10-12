@@ -15,14 +15,46 @@ namespace BattleSweeperServer.Controllers
     public class BattleSweeperController : ControllerBase
     {
         private static List<Game> games = new List<Game>();
+        private static List<GameSettings> gameSettings = new List<GameSettings>();
+
 
         public BattleSweeperController()
         {
-
+            gameSettings.Add(new GameSettings()
+            {
+                Id = gameSettings.Count,
+                Title = "Fast",
+                BoardSize = 10,
+                ShotsPerTurn = 3,
+                SimpleMineCount = 15,
+                WideMineCount = 0,
+                FakeMineCount = 0
+            });
+            gameSettings.Add(new GameSettings()
+            {
+                Id = gameSettings.Count,
+                Title = "Normal",
+                BoardSize = 15,
+                ShotsPerTurn = 4,
+                SimpleMineCount = 30,
+                WideMineCount = 5,
+                FakeMineCount = 5
+            });
+            gameSettings.Add(new GameSettings()
+            {
+                Id = gameSettings.Count,
+                Title = "Slow",
+                BoardSize = 30,
+                ShotsPerTurn = 5,
+                SimpleMineCount = 80,
+                WideMineCount = 20,
+                FakeMineCount = 10
+            });
         }
 
         // https://localhost:44337/BattleSweeper
         //
+        // GET  GameTypes - all the game types available
         // POST CreateGame - new game data
         // POST Game/{id}/RegisterPlayer - register player to a game with id
         // 
@@ -32,18 +64,13 @@ namespace BattleSweeperServer.Controllers
         // POST Game/{id}/TestMineCycle - cycle a mine on players board
         // POST Game/{id}/TestShot - reveal tile on enemys board
 
-        [HttpGet("Game/{id}/State")]
-        public ActionResult<Game> GetGameState(int id)
+        [HttpGet("GameSettings")]
+        public ActionResult<IEnumerable<GameSettings>> GetGameSettings()
         {
-            Game game = games.Find(game => game.Id == id);
-
-            ActionResult error = EnsureIntegrity(game);
-            if (error != null)
-                return error;
-
-            return game.GetPlayerView(Request.Headers["PlayerIdentifier"]);
+            return gameSettings;
         }
 
+        // TODO: Deprecated, to be removed. Functionality moved to GetNewGameFromSettings
         [HttpPost("CreateGame")]
         public ActionResult<Game> CreateGame(Game game)
         {
@@ -54,6 +81,27 @@ namespace BattleSweeperServer.Controllers
             }
 
             return CreatedAtAction("CreateGame", new { id = game.Id }, game);
+        }
+
+        [HttpGet("GetNewGameFromSettings/{id}")]
+        public ActionResult<Game> CreateGameFromSettings(int Id)
+        {
+            GameSettings settings = gameSettings.Find(st => st.Id == Id);
+            if (settings == null)
+                return NotFound();
+
+            // TODO: Will use builder instead
+            Game game = new Game() {
+                Settings = settings
+            };
+
+            lock (games)
+            {
+                game.Id = games.Count;
+                games.Add(game);
+            }
+
+            return game;
         }
 
         [HttpPost("Game/{id}/RegisterPlayer")]
@@ -71,7 +119,7 @@ namespace BattleSweeperServer.Controllers
             if (game.RegisterPlayer(player))
             {
                 player.AmmoCount = 3;
-                Board board = player.CreateBoard(game.BoardSize);
+                Board board = player.CreateBoard(game.Settings.BoardSize);
                 
                 // temporary for testing
                 Random rnd = new Random();
@@ -98,6 +146,31 @@ namespace BattleSweeperServer.Controllers
 
             return player;
         }
+
+        [HttpGet("Game/{id}/Settings")]
+        public ActionResult<GameSettings> GetGameSettings(int id)
+        {
+            Game game = games.Find(game => game.Id == id);
+
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
+
+            return game.Settings;
+        }
+
+        [HttpGet("Game/{id}/State")]
+        public ActionResult<Game> GetGameState(int id)
+        {
+            Game game = games.Find(game => game.Id == id);
+
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
+
+            return game.GetPlayerView(Request.Headers["PlayerIdentifier"]);
+        }
+
 
         [HttpPost("Game/{id}/TestShot")]
         public ActionResult TestShot(int id, Shot shot)
@@ -133,6 +206,7 @@ namespace BattleSweeperServer.Controllers
             return StatusCode(200);
         }
 
+        // TODO: Will be a decorator later
         private ActionResult EnsureIntegrity(Game game)
         {
             if (game == null)

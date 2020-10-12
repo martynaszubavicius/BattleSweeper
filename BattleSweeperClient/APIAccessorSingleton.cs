@@ -30,6 +30,7 @@ namespace BattleSweeperClient
         public static APIAccessorSingleton Instance { get { return APIAccessorSingleton.singleton; } }
 
         public static readonly string ChatsRoute = "api/Chats";
+        public static readonly string GameSettingsRoute = "BattleSweeper/GameSettings";
         
 
 
@@ -52,6 +53,11 @@ namespace BattleSweeperClient
         public async Task<Game> CreateGame(Game game)
         {
             return await PostObject<Game>("BattleSweeper/CreateGame", game);
+        }
+
+        public async Task<Game> GetNewGameFromSettings(GameSettings settings)
+        {
+            return await GetObject<Game>("BattleSweeper/GetNewGameFromSettings/{0}", settings.Id.ToString());
         }
 
         public async Task<Game> GetGameState(string gameKey)
