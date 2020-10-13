@@ -6,6 +6,7 @@ namespace BattleSweeperServer.Models
     {
         [JsonProperty("ImageName")]
         public string ImageName { get; set; }
+
         public Mine()
         {
 

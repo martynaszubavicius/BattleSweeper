@@ -12,12 +12,7 @@ namespace BattleSweeperServer.Models
 
         public Tile()
         {
-            this.State = -1;
-        }
 
-        public Tile(int state)
-        {
-            this.State = state;
         }
 
         public override string ToString()

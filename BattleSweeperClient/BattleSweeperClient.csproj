@@ -78,7 +78,6 @@
     <Compile Include="Models\GameSettings.cs" />
     <Compile Include="Models\Mine.cs" />
     <Compile Include="Models\Player.cs" />
-    <Compile Include="Models\Shot.cs" />
     <Compile Include="Models\Tile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,7 +100,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\BattleSweeperServer.Models.GameSettings.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
