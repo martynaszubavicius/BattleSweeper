@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Configuration;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -21,14 +22,34 @@ namespace BattleSweeperClient
         // TODO delete when this shit is properly done, only for testing
         Random random = new Random();
         // testing shit over
-        private int boardSize;
+        
+        // Game settings 
         private string gameKey;
-        private GameSettings gameSettings;
+        private GameSettings gameSettings; // TODO: calculate bounds sometimes gets called before this is set somehow, or select doesnt innitialise properly for some reason
 
-        public BattleSweeperWindow(string gameKey)
+        // Player bounds
+        private RectangleF playerBoardBounds;
+        private RectangleF playerMinesBounds; // 39x23
+        private RectangleF playerAmmoBounds;
+
+        // Enemy bounds
+        private RectangleF enemyBoardBounds;
+        private RectangleF enemyMinesBounds;
+        private RectangleF enemyAmmoBounds;
+
+        private float boardCellSize;
+
+
+
+        private bool enableClicks = false;
+
+        public BattleSweeperWindow(string gameKey, GameSettings gameSettings)
         {
             this.gameKey = gameKey;
-            this.boardSize = 10;
+            this.gameSettings = gameSettings; // TODO: this is an ugly fix, rethink this whole thing
+
+            //this.MinimumSize = new Size(700, 400);
+            //this.Size = new Size(700, 400);
 
             InitializeComponent();
             LoadTextures("../../Textures");
@@ -37,47 +58,19 @@ namespace BattleSweeperClient
         private async void BattleSweeperWindow_Load(object sender, EventArgs e)
         {
             gameSettings = await APIAccessorSingleton.Instance.GetObject<GameSettings>("BattleSweeper/Game/{0}/Settings", gameKey);
-            boardSize = gameSettings.BoardSize;
+            CalculateBounds();
+
             gameUpdateTimer.Start();
         }
-
-        
 
         private async void gameUpdateTimer_Tick(object sender, EventArgs e)
         {
             gameUpdateTimer.Stop();
 
             Game game = await APIAccessorSingleton.Instance.GetGameState(this.gameKey);
-
-            if (game.Player1 != null)
-                PaintBoardForPanel(playerBoard, game.Player1.Board);
-            if (game.Player2 != null)
-                PaintBoardForPanel(enemyBoard, game.Player2.Board);
-
-            // TODO: update numbers as well you trash
-            SetNumberForPanel(playerAmmo, 084, 3);
-            SetNumberForPanel(playerMinesLeft, 701, 3);
+            DrawGame(game);
 
             gameUpdateTimer.Start();
-        }
-
-        private int getGridStart(int raw, int gridSize)
-        {
-            return raw / gridSize * gridSize;
-        }
-
-        private string[] TranslateNumberToFontEntries(int number, int digitCount)
-        {
-            string[] translation = new string[digitCount];
-            
-            for (int i = digitCount - 1; i >= 0; i--)
-            {
-                int digit = number % 10;
-                number /= 10;
-                translation[i] = string.Format("font{0}", digit);
-            }
-
-            return translation;
         }
 
         private void LoadTextures(string path)
@@ -88,12 +81,79 @@ namespace BattleSweeperClient
                 textures[string.Concat(imgFile.Split(new char[] { '\\' }).Last().Reverse().Skip(4).Reverse())] = new Bitmap(imgFile);
         }
 
-        private void PaintBoardForPanel(Panel panel, Board board)
+        private string[] TranslateNumberToFontEntries(int number, int digitCount)
         {
-            float cellSizeX = (float)panel.Width / board.Size;
-            float cellSizeY = (float)panel.Height / board.Size;
+            string[] translation = new string[digitCount];
 
-            Graphics g = panel.CreateGraphics();
+            for (int i = digitCount - 1; i >= 0; i--)
+            {
+                int digit = number % 10;
+                number /= 10;
+                translation[i] = string.Format("font{0}", digit);
+            }
+
+            return translation;
+        }
+
+        private void CalculateBounds()
+        {
+            int topBarWidth = 80;
+            int spacer = 5;
+
+            int split1 = topBarWidth + spacer;
+            int split2 = split1 + 2 * spacer + 23;
+
+            float boardSize = Math.Min(gameWindow.Height - topBarWidth - spacer * 3f - 23, gameWindow.Width / 2f - spacer * 2f);
+
+            playerBoardBounds = new RectangleF(gameWindow.Width / 4f - boardSize / 2f, (gameWindow.Height - topBarWidth - 23 - spacer) / 2f - boardSize / 2f + topBarWidth + 23 + spacer, boardSize, boardSize);
+            playerMinesBounds = new RectangleF(playerBoardBounds.X, playerBoardBounds.Y - spacer - 23, 39, 23);
+            playerAmmoBounds = new RectangleF(playerBoardBounds.X + boardSize - 39, playerBoardBounds.Y - spacer - 23, 39, 23);
+
+            enemyBoardBounds = new RectangleF(gameWindow.Width / 4f * 3f - boardSize / 2f, (gameWindow.Height - topBarWidth - 23 - spacer) / 2f - boardSize / 2f + topBarWidth + 23 + spacer, boardSize, boardSize);
+            enemyMinesBounds = new RectangleF(enemyBoardBounds.X, enemyBoardBounds.Y - spacer - 23, 39, 23);
+            enemyAmmoBounds = new RectangleF(enemyBoardBounds.X + boardSize - 39, enemyBoardBounds.Y - spacer - 23, 39, 23);
+
+            boardCellSize = boardSize / gameSettings.BoardSize;
+        }
+
+        private void DrawGame(Game game, bool fullRedraw = false)
+        {
+            Graphics g = gameWindow.CreateGraphics();
+
+            DrawBoardInBounds(game.Player1.Board, g, playerBoardBounds);
+            if (game.Player2 != null)
+                DrawBoardInBounds(game.Player2.Board, g, enemyBoardBounds);
+
+            DrawNumbersInBounds(123, 3, g, playerMinesBounds);
+            DrawNumbersInBounds(456, 3, g, playerAmmoBounds);
+            DrawNumbersInBounds(789, 3, g, enemyMinesBounds);
+            DrawNumbersInBounds(010, 3, g, enemyAmmoBounds);
+
+            g.Dispose();
+        }
+
+        private void DrawWindow()
+        {
+            Graphics g = gameWindow.CreateGraphics();
+
+            // fill background
+            g.FillRectangle(new SolidBrush(Color.Silver), gameWindow.DisplayRectangle);
+
+            g.Dispose();
+        }
+
+        private void DrawNumbersInBounds(int number, int digits, Graphics g, RectangleF bounds)
+        {
+            string[] fontNumbers = TranslateNumberToFontEntries(number, digits);
+
+            for (int i = 0; i < digits; i++)
+            {
+                g.DrawImage(textures[fontNumbers[i]], new RectangleF(bounds.X +13 * i, bounds.Y, 13, 23));
+            }
+        }
+
+        private void DrawBoardInBounds(Board board, Graphics g, RectangleF bounds)
+        {
             for (int x = 0; x < board.Size; x++)
             {
                 for (int y = 0; y < board.Size; y++)
@@ -108,51 +168,61 @@ namespace BattleSweeperClient
                     else // -1
                         img = textures["tile"];
 
-                    g.DrawImage(img, new RectangleF(cellSizeX * x, cellSizeY * y, cellSizeX, cellSizeY));
+                    g.DrawImage(img, new RectangleF(bounds.X + boardCellSize * x, bounds.Y + boardCellSize * y, boardCellSize, boardCellSize));
                 }
             }
-            g.Dispose();
         }
 
-        private void SetNumberForPanel(Panel panel, int number, int digits)
+        private void ProcessWindowClick(object sender, MouseEventArgs e)
         {
-            Graphics g = panel.CreateGraphics();
-            string[] fontNumbers = TranslateNumberToFontEntries(number, digits);
-            for (int i = 0; i < digits; i++)
+            // determine which bounds
+            Console.WriteLine();
+            if (playerBoardBounds.Contains(e.Location))
             {
-                g.DrawImage(textures[fontNumbers[i]], new Rectangle(13 * i, 0, 13, 23));
+                ProcessBoardClick(playerBoardBounds, false, e);
             }
-            g.Dispose();
+            if (enemyBoardBounds.Contains(e.Location))
+            {
+                ProcessBoardClick(enemyBoardBounds, true, e);
+            }
         }
 
-        private async void enemyBoard_MouseClick(object sender, MouseEventArgs e)
+        private async void ProcessBoardClick(RectangleF bounds, bool enemy, MouseEventArgs e)
         {
-            // TODO: Move these somewhere global
-            float cellSizeX = (float)enemyBoard.Width / boardSize;
-            float cellSizeY = (float)enemyBoard.Height / boardSize;
+            int x = (int)((e.X - bounds.X) / boardCellSize);
+            int y = (int)((e.Y - bounds.Y) / boardCellSize);
 
-            // TODO: Edge cases - right now bottom right corner won't work
-            int x = (int)(e.X / cellSizeX);
-            int y = (int)(e.Y / cellSizeY);
+            if (enemy)
+            {
+                await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestShot", gameKey),
+                    new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
+            }
+            else
+            {
+                await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestMineCycle", gameKey),
+                    new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
+            }
 
-            await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestShot", gameKey),
-                new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
             gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }
 
-        private async void playerBoard_MouseClick(object sender, MouseEventArgs e)
+        private void gameWindow_Paint(object sender, PaintEventArgs e)
         {
-            // TODO: Move these somewhere global
-            float cellSizeX = (float)enemyBoard.Width / boardSize;
-            float cellSizeY = (float)enemyBoard.Height / boardSize;
+            // TODO: These lines below
+            // paint redraws non game elements, and disables the click event handler;
+            // next request re-enables it when you get game data again
 
-            // TODO: Edge cases - right now bottom right corner won't work
-            int x = (int)(e.X / cellSizeX);
-            int y = (int)(e.Y / cellSizeY);
 
-            await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestMineCycle", gameKey),
-                new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
-            gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
+            CalculateBounds();
+            DrawWindow();
+
+            enableClicks = false;
+        }
+
+        private void gameWindow_Resize(object sender, EventArgs e)
+        {
+            CalculateBounds();
+            DrawWindow();
         }
     }
 }
