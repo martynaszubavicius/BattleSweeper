@@ -180,7 +180,7 @@ namespace BattleSweeperServer.Controllers
 
 
         [HttpPost("Game/{id}/TestShot")]
-        public ActionResult TestShot(int id, Shot shot)
+        public ActionResult TestShot(int id, CoordInfo info)
         {
             Game game = games.Find(game => game.Id == id);
 
@@ -190,14 +190,14 @@ namespace BattleSweeperServer.Controllers
 
             lock (game)
             {
-                game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(shot.positionX, shot.positionY);
+                game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(info.PositionX, info.PositionY);
             }
 
             return StatusCode(200); //CreatedAtAction("TestShot", new { id = game.Id }, game);
         }
 
         [HttpPost("Game/{id}/TestMineCycle")]
-        public ActionResult TestMineCycle(int id, Shot shot)
+        public ActionResult TestMineCycle(int id, CoordInfo info)
         {
             Game game = games.Find(game => game.Id == id);
 
@@ -207,7 +207,7 @@ namespace BattleSweeperServer.Controllers
 
             lock (game)
             {
-                game.GetPlayerByIdentifier(Request.Headers["PlayerIdentifier"]).Board.CycleMine(shot.positionX, shot.positionY);
+                game.GetPlayerByIdentifier(Request.Headers["PlayerIdentifier"]).Board.CycleMine(info.PositionX, info.PositionY);
             }
 
             return StatusCode(200);

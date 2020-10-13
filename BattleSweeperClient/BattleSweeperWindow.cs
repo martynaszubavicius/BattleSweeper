@@ -135,7 +135,8 @@ namespace BattleSweeperClient
             int x = (int)(e.X / cellSizeX);
             int y = (int)(e.Y / cellSizeY);
 
-            await APIAccessorSingleton.Instance.PostObject<Shot>(string.Format("BattleSweeper/Game/{0}/TestShot", gameKey), new Shot(x, y));
+            await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestShot", gameKey),
+                new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
             gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }
 
@@ -149,7 +150,8 @@ namespace BattleSweeperClient
             int x = (int)(e.X / cellSizeX);
             int y = (int)(e.Y / cellSizeY);
 
-            await APIAccessorSingleton.Instance.PostObject<Shot>(string.Format("BattleSweeper/Game/{0}/TestMineCycle", gameKey), new Shot(x, y));
+            await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestMineCycle", gameKey),
+                new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
             gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }
     }
