@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace BattleSweeperServer.Models
 {
     //Todo: needs to extend Shot abstract class
-    public abstract class SquareShot 
+    public abstract class SquareShot : Shot
     {
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BattleSweeperServer.DesignPatternClasses;
 using BattleSweeperServer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -188,8 +189,27 @@ namespace BattleSweeperServer.Controllers
             if (error != null)
                 return error;
 
+            
+
+            ShotAbstractFactory shotFactory;
+            switch (info.Data[0])
+            {
+                case 'C':
+                    shotFactory = new CustomShotFactory();
+                    break;
+                case 'S':
+                    shotFactory = new SquareShotFactory();
+                    break;
+                default:
+                    return NotFound();
+            }
+
+            Shot shot = shotFactory.CreateShot(info.Data.Substring(1));
+
             lock (game)
             {
+                // TODO: use strategy here
+                //shot.shotBeh.Shoot(game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board);
                 game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(info.PositionX, info.PositionY);
             }
 

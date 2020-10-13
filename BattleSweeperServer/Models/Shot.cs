@@ -1,25 +1,19 @@
 ﻿using Newtonsoft.Json;
+using System.Reflection;
 
 namespace BattleSweeperServer.Models
 {
     //TODO: Edvinas, Shoot class has to be changed to abstract(constructor shouldn't be in the abstract class)
-    public  class Shot
+    public abstract class Shot
     {
-        [JsonProperty("positionX")]
-        public int positionX { get; set; }
+        public int ammoCost { get;set; }
 
-        [JsonProperty("positionY")]
-        public int positionY { get; set; }
+        // ShotBehaviour shotBeh = ...
 
-        public Shot()
-        {
+        //[JsonProperty("positionX")]
+        //public int positionX { get; set; }
 
-        }
-
-        public Shot(int x, int y)
-        {
-            positionX = x;
-            positionY = y;
-        }
+        //[JsonProperty("positionY")]
+        //public int positionY { get; set; }
     }
 }

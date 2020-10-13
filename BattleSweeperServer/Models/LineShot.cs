@@ -7,5 +7,9 @@ namespace BattleSweeperServer.Models
 {
     public class LineShot : CustomShot
     {
+        public LineShot()
+        {
+            this.ammoCost = 4;
+        }
     }
 }

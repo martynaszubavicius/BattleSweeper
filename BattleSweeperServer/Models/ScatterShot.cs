@@ -7,6 +7,9 @@ namespace BattleSweeperServer.Models
 {
     public class ScatterShot : CustomShot
     {
-
+        public ScatterShot()
+        {
+            this.ammoCost = 11;
+        }
     }
 }

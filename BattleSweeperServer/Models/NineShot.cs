@@ -7,5 +7,9 @@ namespace BattleSweeperServer.Models
 {
     public class NineShot : SquareShot
     {
+        public NineShot()
+        {
+            this.ammoCost = 7;
+        }
     }
 }
