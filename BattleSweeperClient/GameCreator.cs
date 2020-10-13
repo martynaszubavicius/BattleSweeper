@@ -64,7 +64,7 @@ namespace BattleSweeperClient
 
             if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player))
             {
-                new BattleSweeperWindow(gameKey).ShowDialog();
+                new BattleSweeperWindow(gameKey, (GameSettings)gameSettingscomboBox.SelectedItem).ShowDialog();
                 errorLabel.Text = "";
             }
             else

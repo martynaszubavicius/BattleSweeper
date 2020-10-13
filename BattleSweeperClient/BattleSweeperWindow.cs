@@ -24,9 +24,8 @@ namespace BattleSweeperClient
         // testing shit over
         
         // Game settings 
-        private int boardSize;
         private string gameKey;
-        private GameSettings gameSettings;
+        private GameSettings gameSettings; // TODO: calculate bounds sometimes gets called before this is set somehow, or select doesnt innitialise properly for some reason
 
         // Player bounds
         private RectangleF playerBoardBounds;
@@ -44,10 +43,10 @@ namespace BattleSweeperClient
 
         private bool enableClicks = false;
 
-        public BattleSweeperWindow(string gameKey)
+        public BattleSweeperWindow(string gameKey, GameSettings gameSettings)
         {
             this.gameKey = gameKey;
-            this.boardSize = 10;
+            this.gameSettings = gameSettings; // TODO: this is an ugly fix, rethink this whole thing
 
             //this.MinimumSize = new Size(700, 400);
             //this.Size = new Size(700, 400);
@@ -59,7 +58,8 @@ namespace BattleSweeperClient
         private async void BattleSweeperWindow_Load(object sender, EventArgs e)
         {
             gameSettings = await APIAccessorSingleton.Instance.GetObject<GameSettings>("BattleSweeper/Game/{0}/Settings", gameKey);
-            boardSize = gameSettings.BoardSize;
+            CalculateBounds();
+
             gameUpdateTimer.Start();
         }
 
