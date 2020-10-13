@@ -101,7 +101,7 @@
             this.Controls.Add(this.playerBoard);
             this.Name = "BattleSweeperWindow";
             this.Text = "GameWindow";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.BattleSweeperWindow_Load);
             this.ResumeLayout(false);
 
         }

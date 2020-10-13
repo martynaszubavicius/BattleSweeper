@@ -34,7 +34,7 @@ namespace BattleSweeperClient
             LoadTextures("../../Textures");
         }
 
-        private async void Form1_Load(object sender, EventArgs e)
+        private async void BattleSweeperWindow_Load(object sender, EventArgs e)
         {
             gameSettings = await APIAccessorSingleton.Instance.GetObject<GameSettings>("BattleSweeper/Game/{0}/Settings", gameKey);
             boardSize = gameSettings.BoardSize;

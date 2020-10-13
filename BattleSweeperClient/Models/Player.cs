@@ -21,29 +21,5 @@ namespace BattleSweeperServer.Models
         {
             
         }
-
-        public string CreateIdentifier(int seed)
-        {
-            // TODO: implement better random identifier,  for now same for everyone, which is stupid. I am stupid
-            this.Identifier = string.Format("{0}{1}","ABCDABCDABCDABCD" , seed);
-            return this.Identifier;
-        }
-
-        public Board CreateBoard(int size)
-        {
-            this.Board = new Board(size);
-            return this.Board;
-        }
-
-        public Player GetEnemyView()
-        {
-            Player enemyView = new Player
-            {
-                Name = this.Name,
-                Board = this.Board.GetEnemyView()
-            };
-
-            return enemyView;
-        }
     }
 }
