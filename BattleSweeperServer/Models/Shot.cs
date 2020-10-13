@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json;
-using System.Reflection;
+﻿using BattleSweeperServer.DesignPatternClasses;
 
 namespace BattleSweeperServer.Models
 {
-    //TODO: Edvinas, Shoot class has to be changed to abstract(constructor shouldn't be in the abstract class)
     public abstract class Shot
     {
         public int ammoCost { get;set; }
+
+        public ShotBehaviour shotBeh { get; set; }
+        
 
         // ShotBehaviour shotBeh = ...
 
