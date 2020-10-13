@@ -94,6 +94,10 @@ namespace BattleSweeperServer.Models
             Tile tile = Tiles[GetIndex(positionX, positionY)];
             if (tile.Mine == null)
                 tile.Mine = mineFactory.CreateMine(0);
+            else if (tile.Mine is SimpleMine)
+                tile.Mine = mineFactory.CreateMine(1);
+            else if (tile.Mine is WideMine)
+                tile.Mine = mineFactory.CreateMine(2);
             else
                 tile.Mine = null;
         }
