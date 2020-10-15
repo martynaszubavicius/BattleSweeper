@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BattleSweeperServer.DesignPatternClasses;
 using BattleSweeperServer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -184,12 +185,39 @@ namespace BattleSweeperServer.Controllers
             if (error != null)
                 return error;
 
+
+
+            //Testing purposes
+            info.Data = "SSingleShot";
+            //info.Data = "SFourShot";
+            //info.Data = "CLineShot";
+
+
+
+            ShotAbstractFactory shotFactory;
+            switch (info.Data[0])
+            {
+                case 'C':
+                    shotFactory = new CustomShotFactory();
+                    break;
+                case 'S':
+                    shotFactory = new SquareShotFactory();
+                    break;
+                default:
+                    return NotFound();
+            }
+
+            Shot shot = shotFactory.CreateShot(info.Data.Substring(1));
+
             if (game.Player1 == null || game.Player2 == null)
                 return BadRequest("Both players havent registered yet");
 
             lock (game)
             {
-                game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(info.PositionX, info.PositionY);
+                // TODO: use strategy here
+                //shot.shotBeh.Shoot(game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board);
+                shot.shotBeh.Shoot(game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board, info.PositionX, info.PositionY);
+                //game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(info.PositionX, info.PositionY);
             }
 
             return StatusCode(200); //CreatedAtAction("TestShot", new { id = game.Id }, game);

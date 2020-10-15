@@ -69,6 +69,11 @@ namespace BattleSweeperServer.Models
             }
         }
 
+        public bool WithinBounds(int x , int y)
+        {
+            return 0 <= x && x < Size && 0 <= y && y < Size;
+        }
+
         private List<Tile> GetNeighbours(int x, int y)
         {
             List<Tile> neighbours = new List<Tile>();
@@ -80,7 +85,7 @@ namespace BattleSweeperServer.Models
                 for (int yy = y - 1; yy <= y + 1; yy++)
                 {
                     int index = GetIndex(xx, yy);
-                    if (0 <= xx && xx < Size && 0 <= yy && yy < Size && index != currentIndex)
+                    if (WithinBounds(xx,yy) && index != currentIndex)
                         neighbours.Add(Tiles[index]);
                 }
             }

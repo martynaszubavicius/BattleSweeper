@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BattleSweeperServer.DesignPatternClasses
 {
-    public abstract class ShotAbstractFactory
+    public abstract class ShotBehaviour
     {
-        public abstract Shot CreateShot(string shotType);
+        public abstract void Shoot(Board board, int x, int y);
     }
 }
