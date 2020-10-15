@@ -40,7 +40,7 @@
             // 
             // gameWindow
             // 
-            this.gameWindow.BackColor = System.Drawing.Color.DarkGray;
+            this.gameWindow.BackColor = System.Drawing.Color.Silver;
             this.gameWindow.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gameWindow.Location = new System.Drawing.Point(0, 0);
             this.gameWindow.Name = "gameWindow";

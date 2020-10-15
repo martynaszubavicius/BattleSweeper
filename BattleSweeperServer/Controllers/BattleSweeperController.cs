@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BattleSweeperServer.Controllers
 {
-    // TODO: issiaiskint del inheritance ir POST/GET su skirtingais tipais
-
     [Route("BattleSweeper")]
     [ApiController]
     public class BattleSweeperController : ControllerBase
@@ -114,8 +112,6 @@ namespace BattleSweeperServer.Controllers
                 return NotFound();
             }
 
-
-
             if (game.RegisterPlayer(player))
             {
                 player.AmmoCount = 3;
@@ -188,6 +184,9 @@ namespace BattleSweeperServer.Controllers
             if (error != null)
                 return error;
 
+            if (game.Player1 == null || game.Player2 == null)
+                return BadRequest("Both players havent registered yet");
+
             lock (game)
             {
                 game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(info.PositionX, info.PositionY);
@@ -213,7 +212,7 @@ namespace BattleSweeperServer.Controllers
             return StatusCode(200);
         }
 
-        // TODO: Will be a decorator later
+        // TODO: Will be a decorator later i think?
         private ActionResult EnsureIntegrity(Game game)
         {
             if (game == null)
@@ -224,91 +223,5 @@ namespace BattleSweeperServer.Controllers
                 return StatusCode(403);
             return null;
         }
-    }
-
-    /*
-    public class GamesController : ControllerBase
-    {
-
-
-        // GET: api/Games
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Game>>> GetGameItems()
-        {
-            var games = await _context.GameItems.ToListAsync();
-            //foreach (Game g in games)
-            //{
-            //    _context.Entry(g).Reference(p => p.PLayer1).Load();
-            //    _context.Entry(g).Reference(p => p.PLayer2).Load();
-            //}
-            return games;
-        }
-
-        // GET: api/Games/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Game>> GetGame(int id)
-        {
-            var game = await _context.GameItems.FindAsync(id);
-
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            return game;
-        }
-
-
-
-        [HttpPost("setmine/{id}")]
-        public async Task<ActionResult<Tile>> SetMine(int id, [FromBody] dynamic data)
-        {
-            var game = await _context.GameItems.FindAsync(id);
-
-            if (game == null)
-            {
-                return NotFound();
-            }
-
-            if (data.X == null || data.Y == null || data.PlayerId == null)
-            {
-                return BadRequest(new { error = "not enough args" });
-            }
-
-            Tile tile = new Tile();
-            if (data.PlayerId == game.PLayer1.Id)
-            {
-                tile = (Tile)game.PLayer1.Board.Tiles.Where(x => x.X == data.X && x.Y == data.Y);
-            }
-            else if (data.PlayerId == game.PLayer2.Id)
-            {
-                tile = (Tile)game.PLayer2.Board.Tiles.Where(x => x.X == data.X && x.Y == data.Y);
-            }
-            else
-            {
-                return BadRequest(new { error = "player not found" });
-            }
-
-
-            var mine = tile.SetMine();
-            if (mine != null)
-            {
-                _context.MineItems.Add(mine);
-                await _context.SaveChangesAsync();
-
-                _context.Entry(game).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-
-                return tile;
-            }
-
-            return BadRequest(new { error = "failed to set mine" });
-        }
-
-
-        private bool GameExists(int id)
-        {
-            return _context.GameItems.Any(e => e.Id == id);
-        }
-    }*/
+    } 
 }

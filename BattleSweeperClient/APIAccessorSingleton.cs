@@ -71,8 +71,11 @@ namespace BattleSweeperClient
 
             if (registeredPlayer != null)
             {
-                // TODO: remove header after game is finished
+                if (httpClient.DefaultRequestHeaders.Contains("PlayerIdentifier"))
+                    httpClient.DefaultRequestHeaders.Remove("PlayerIdentifier");
                 httpClient.DefaultRequestHeaders.Add("PlayerIdentifier", registeredPlayer.Identifier);
+                
+                
                 return true;
             }
             else

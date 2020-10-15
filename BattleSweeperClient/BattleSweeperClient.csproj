@@ -65,7 +65,6 @@
     <Compile Include="BattleSweeperWindow.Designer.cs">
       <DependentUpon>BattleSweeperWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormPainter.cs" />
     <Compile Include="GameCreator.cs">
       <SubType>Form</SubType>
     </Compile>

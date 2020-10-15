@@ -72,7 +72,7 @@ namespace BattleSweeperServer.Models
 
         public bool HasPlayerWithIdentifier(string playerIdentifier)
         {
-            return Player1.Identifier == playerIdentifier || Player2.Identifier == playerIdentifier;
+            return ( Player1 != null && Player1.Identifier == playerIdentifier) || (Player2 != null && Player2.Identifier == playerIdentifier);
         }
 
         public Player GetPlayerByIdentifier(string playerIdentifier)

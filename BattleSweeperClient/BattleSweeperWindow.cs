@@ -1,4 +1,5 @@
 ﻿using BattleSweeperServer.Models;
+using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +26,7 @@ namespace BattleSweeperClient
         
         // Game settings 
         private string gameKey;
+        private List<string> shotTypes;
         private GameSettings gameSettings; // TODO: calculate bounds sometimes gets called before this is set somehow, or select doesnt innitialise properly for some reason
 
         // Player bounds
@@ -39,13 +41,12 @@ namespace BattleSweeperClient
 
         private float boardCellSize;
 
-
-
         private bool enableClicks = false;
 
         public BattleSweeperWindow(string gameKey, GameSettings gameSettings)
         {
             this.gameKey = gameKey;
+            shotTypes = new List<string> { "SSingleShot", "SFourShot" };
             this.gameSettings = gameSettings; // TODO: this is an ugly fix, rethink this whole thing
 
             //this.MinimumSize = new Size(700, 400);
@@ -98,7 +99,7 @@ namespace BattleSweeperClient
         private void CalculateBounds()
         {
             int topBarWidth = 80;
-            int spacer = 5;
+            int spacer = 9;
 
             int split1 = topBarWidth + spacer;
             int split2 = split1 + 2 * spacer + 23;
@@ -113,6 +114,8 @@ namespace BattleSweeperClient
             enemyMinesBounds = new RectangleF(enemyBoardBounds.X, enemyBoardBounds.Y - spacer - 23, 39, 23);
             enemyAmmoBounds = new RectangleF(enemyBoardBounds.X + boardSize - 39, enemyBoardBounds.Y - spacer - 23, 39, 23);
 
+
+
             boardCellSize = boardSize / gameSettings.BoardSize;
         }
 
@@ -120,9 +123,9 @@ namespace BattleSweeperClient
         {
             Graphics g = gameWindow.CreateGraphics();
 
-            DrawBoardInBounds(game.Player1.Board, g, playerBoardBounds);
+            DrawBoardInBounds(g, game.Player1.Board, playerBoardBounds);
             if (game.Player2 != null)
-                DrawBoardInBounds(game.Player2.Board, g, enemyBoardBounds);
+                DrawBoardInBounds(g, game.Player2.Board, enemyBoardBounds);
 
             DrawNumbersInBounds(123, 3, g, playerMinesBounds);
             DrawNumbersInBounds(456, 3, g, playerAmmoBounds);
@@ -134,12 +137,42 @@ namespace BattleSweeperClient
 
         private void DrawWindow()
         {
+            // TODO: optimize board drawing, atm big boards chug when being drawn
             Graphics g = gameWindow.CreateGraphics();
 
             // fill background
             g.FillRectangle(new SolidBrush(Color.Silver), gameWindow.DisplayRectangle);
 
+            SolidBrush drawBrush = new SolidBrush(Color.Red);
+            StringFormat drawFormat = new StringFormat();
+
+            // Draw title bar
+            Font drawFont = new Font("Arial", 45, FontStyle.Bold);
+            g.DrawString("BattleSweeper", drawFont, drawBrush, 5, 5, drawFormat);
+            drawFont.Dispose();
+
+            // Draw by who text
+            drawFont = new Font("Arial", 12, FontStyle.Bold);
+            g.DrawString("by MELV team", drawFont, drawBrush, 430, 45, drawFormat);
+            drawFont.Dispose();
+
+            drawBrush.Dispose();
+            drawFormat.Dispose();
+
+            // Draw divider
+            g.DrawLine(Pens.Gray, 0, 80, gameWindow.ClientSize.Width, 80);
+
+            // Draw Board frames
+            DrawBorderForBounds(g, playerBoardBounds, 4);
+            DrawBorderForBounds(g, enemyBoardBounds, 4);
+
+
             g.Dispose();
+        }
+
+        private void DrawButtonInBounds()
+        {
+
         }
 
         private void DrawNumbersInBounds(int number, int digits, Graphics g, RectangleF bounds)
@@ -152,7 +185,7 @@ namespace BattleSweeperClient
             }
         }
 
-        private void DrawBoardInBounds(Board board, Graphics g, RectangleF bounds)
+        private void DrawBoardInBounds(Graphics g, Board board, RectangleF bounds)
         {
             for (int x = 0; x < board.Size; x++)
             {
@@ -173,6 +206,26 @@ namespace BattleSweeperClient
             }
         }
 
+        private void DrawBorderForBounds(Graphics g, RectangleF bounds, int borderWidth)
+        {
+            g.FillPolygon(Brushes.Gray, new PointF[] {
+                new PointF(bounds.X - borderWidth, bounds.Y - borderWidth), // top left outside
+                new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y - borderWidth), // top right outside
+                new PointF(bounds.X + bounds.Width, bounds.Y), // top right inside
+                new PointF(bounds.X, bounds.Y), // top left inside
+                new PointF(bounds.X, bounds.Y + bounds.Height), // bottom left inside
+                new PointF(bounds.X - borderWidth, bounds.Y + bounds.Height + borderWidth) // bottom left outside
+            });
+            g.FillPolygon(Brushes.White, new PointF[] {
+                new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y + bounds.Height + borderWidth), // bottom right outside
+                new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y - borderWidth), // top right outside
+                new PointF(bounds.X + bounds.Width, bounds.Y), // top right inside
+                new PointF(bounds.X + bounds.Width, bounds.Y + bounds.Height), // bottom right inside
+                new PointF(bounds.X, bounds.Y + bounds.Height), // bottom left inside
+                new PointF(bounds.X - borderWidth, bounds.Y + bounds.Height + borderWidth), // bottom left outside
+            });
+        }
+
         private void ProcessWindowClick(object sender, MouseEventArgs e)
         {
             // determine which bounds
@@ -181,7 +234,7 @@ namespace BattleSweeperClient
             {
                 ProcessBoardClick(playerBoardBounds, false, e);
             }
-            if (enemyBoardBounds.Contains(e.Location))
+            else if (enemyBoardBounds.Contains(e.Location))
             {
                 ProcessBoardClick(enemyBoardBounds, true, e);
             }
