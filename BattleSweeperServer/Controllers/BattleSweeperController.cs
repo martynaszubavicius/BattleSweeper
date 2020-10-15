@@ -222,11 +222,6 @@ namespace BattleSweeperServer.Controllers
             if (error != null)
                 return error;
 
-            //Testing purposes
-            //info.Data = "SSingleShot";
-            //info.Data = "SFourShot";
-            //info.Data = "CLineShot";
-
             ShotAbstractFactory shotFactory;
             switch (info.Data[0])
             {

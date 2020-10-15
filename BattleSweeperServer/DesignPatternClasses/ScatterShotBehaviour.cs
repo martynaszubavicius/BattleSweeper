@@ -9,14 +9,25 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public class ScatterShotBehaviour : ShotBehaviour
     {
-        //TODO: NineShot shot needs to be in the center 
-
+        private bool reveal = true;
         //TODO: Check if it's still within bounds!!!!!!
         public override void Shoot(Board board, int x, int y) // x y 
         {
-            //for (int i = x; i < x + width; i++)
-             //   for (int j = y; j < y + width; j++)
-              //      board.RevealTile(i, j);
+            for (int i = x - 2; i < x + 3; i++)
+            {
+                for (int j = y - 2; j < y + 3; j++)
+                {
+                    if (board.WithinBounds(i, j) && reveal == true)
+                    {
+                        board.RevealTile(i, j);
+                        reveal = false;
+                    }
+                    else
+                    {
+                        reveal = true;
+                    }
+                }
+            }
             //TODO: square shoot implementation
 
         }

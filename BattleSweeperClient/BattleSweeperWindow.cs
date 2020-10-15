@@ -27,7 +27,7 @@ namespace BattleSweeperClient
         
         // Game settings 
         private string gameKey;
-        private List<string> shotTypes = new List<string> { "SSingleShot", "SFourShot", "SNineShot", "CLineShot" }; // "CScatterShot"
+        private List<string> shotTypes = new List<string> { "SSingleShot", "SFourShot", "SNineShot", "CLineShot", "CScatterShot" };
         private GameSettings gameSettings;
         private int selectedShotType = 0;
 
