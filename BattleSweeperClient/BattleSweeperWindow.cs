@@ -10,6 +10,7 @@ using System.Drawing.Configuration;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,6 +34,7 @@ namespace BattleSweeperClient
         private RectangleF playerBoardBounds;
         private RectangleF playerMinesBounds; // 39x23
         private RectangleF playerAmmoBounds;
+        private RectangleF shotTypeSelectorBounds; // 50x19
 
         // Enemy bounds
         private RectangleF enemyBoardBounds;
@@ -42,11 +44,14 @@ namespace BattleSweeperClient
         private float boardCellSize;
 
         private bool enableClicks = false;
+        private bool redrawButton = true;
+        private int selectedShotType;
 
         public BattleSweeperWindow(string gameKey, GameSettings gameSettings)
         {
             this.gameKey = gameKey;
-            shotTypes = new List<string> { "SSingleShot", "SFourShot" };
+            shotTypes = new List<string> { "SSingleShot", "SFourShot", "SNineShot", "CLineShot" }; // "CScatterShot"
+            selectedShotType = 0;
             this.gameSettings = gameSettings; // TODO: this is an ugly fix, rethink this whole thing
 
             //this.MinimumSize = new Size(700, 400);
@@ -106,13 +111,19 @@ namespace BattleSweeperClient
 
             float boardSize = Math.Min(gameWindow.Height - topBarWidth - spacer * 3f - 23, gameWindow.Width / 2f - spacer * 2f);
 
+            // player
             playerBoardBounds = new RectangleF(gameWindow.Width / 4f - boardSize / 2f, (gameWindow.Height - topBarWidth - 23 - spacer) / 2f - boardSize / 2f + topBarWidth + 23 + spacer, boardSize, boardSize);
             playerMinesBounds = new RectangleF(playerBoardBounds.X, playerBoardBounds.Y - spacer - 23, 39, 23);
             playerAmmoBounds = new RectangleF(playerBoardBounds.X + boardSize - 39, playerBoardBounds.Y - spacer - 23, 39, 23);
 
+            shotTypeSelectorBounds = new RectangleF(playerBoardBounds.X + boardSize / 2f - 25, playerBoardBounds.Y - spacer - 23 + 2, 50, 19);
+
+            // enemy
             enemyBoardBounds = new RectangleF(gameWindow.Width / 4f * 3f - boardSize / 2f, (gameWindow.Height - topBarWidth - 23 - spacer) / 2f - boardSize / 2f + topBarWidth + 23 + spacer, boardSize, boardSize);
             enemyMinesBounds = new RectangleF(enemyBoardBounds.X, enemyBoardBounds.Y - spacer - 23, 39, 23);
             enemyAmmoBounds = new RectangleF(enemyBoardBounds.X + boardSize - 39, enemyBoardBounds.Y - spacer - 23, 39, 23);
+
+            
 
 
 
@@ -122,6 +133,13 @@ namespace BattleSweeperClient
         private void DrawGame(Game game, bool fullRedraw = false)
         {
             Graphics g = gameWindow.CreateGraphics();
+
+            if (redrawButton)
+            {
+                g.DrawImage(textures[shotTypes[selectedShotType]], shotTypeSelectorBounds);
+                redrawButton = false;
+            }
+                
 
             DrawBoardInBounds(g, game.Player1.Board, playerBoardBounds);
             if (game.Player2 != null)
@@ -166,13 +184,17 @@ namespace BattleSweeperClient
             DrawBorderForBounds(g, playerBoardBounds, 4);
             DrawBorderForBounds(g, enemyBoardBounds, 4);
 
+            // Draw button frames
+            DrawBorderForBounds(g, shotTypeSelectorBounds, 2);
+            
 
             g.Dispose();
         }
 
-        private void DrawButtonInBounds()
+        private void DrawButtonInBounds(Graphics g, RectangleF bounds, int borderWidth, string textureKey)
         {
-
+            DrawBorderForBounds(g, bounds, borderWidth);
+            g.DrawImage(textures[textureKey], bounds);
         }
 
         private void DrawNumbersInBounds(int number, int digits, Graphics g, RectangleF bounds)
@@ -195,7 +217,10 @@ namespace BattleSweeperClient
 
                     Image img;
                     if (tile.Mine != null)
-                        img = textures[tile.Mine.ImageName];
+                        if (tile.State == -1)
+                            img = textures[tile.Mine.ImageName];
+                        else
+                            img = textures[tile.Mine.ImageName + "_revealed"];
                     else if (tile.State >= 0)
                         img = textures[string.Format("empty{0}", tile.State)];
                     else // -1
@@ -238,6 +263,12 @@ namespace BattleSweeperClient
             {
                 ProcessBoardClick(enemyBoardBounds, true, e);
             }
+            else if (shotTypeSelectorBounds.Contains(e.Location))
+            {
+                selectedShotType = (selectedShotType + 1) % shotTypes.Count;
+                redrawButton = true;
+            }
+
         }
 
         private async void ProcessBoardClick(RectangleF bounds, bool enemy, MouseEventArgs e)
@@ -248,7 +279,7 @@ namespace BattleSweeperClient
             if (enemy)
             {
                 await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestShot", gameKey),
-                    new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
+                    new CoordInfo() { PositionX = x, PositionY = y, Data = shotTypes[selectedShotType] });
             }
             else
             {
@@ -276,6 +307,7 @@ namespace BattleSweeperClient
         {
             CalculateBounds();
             DrawWindow();
+            redrawButton = true;
         }
     }
 }

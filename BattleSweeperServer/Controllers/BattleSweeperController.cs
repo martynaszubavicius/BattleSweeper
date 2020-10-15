@@ -185,14 +185,10 @@ namespace BattleSweeperServer.Controllers
             if (error != null)
                 return error;
 
-
-
             //Testing purposes
-            info.Data = "SSingleShot";
+            //info.Data = "SSingleShot";
             //info.Data = "SFourShot";
             //info.Data = "CLineShot";
-
-
 
             ShotAbstractFactory shotFactory;
             switch (info.Data[0])
@@ -214,10 +210,7 @@ namespace BattleSweeperServer.Controllers
 
             lock (game)
             {
-                // TODO: use strategy here
-                //shot.shotBeh.Shoot(game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board);
                 shot.shotBeh.Shoot(game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board, info.PositionX, info.PositionY);
-                //game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board.RevealTile(info.PositionX, info.PositionY);
             }
 
             return StatusCode(200); //CreatedAtAction("TestShot", new { id = game.Id }, game);
