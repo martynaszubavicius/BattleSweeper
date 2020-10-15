@@ -46,9 +46,6 @@
             this.gameWindow.Name = "gameWindow";
             this.gameWindow.Size = new System.Drawing.Size(684, 361);
             this.gameWindow.TabIndex = 4;
-            this.gameWindow.Paint += new System.Windows.Forms.PaintEventHandler(this.gameWindow_Paint);
-            this.gameWindow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.ProcessWindowClick);
-            this.gameWindow.Resize += new System.EventHandler(this.gameWindow_Resize);
             // 
             // BattleSweeperWindow
             // 
@@ -60,7 +57,6 @@
             this.MinimumSize = new System.Drawing.Size(700, 400);
             this.Name = "BattleSweeperWindow";
             this.Text = "GameWindow";
-            this.Load += new System.EventHandler(this.BattleSweeperWindow_Load);
             this.ResumeLayout(false);
 
         }

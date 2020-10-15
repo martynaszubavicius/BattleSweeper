@@ -27,8 +27,9 @@ namespace BattleSweeperClient
         
         // Game settings 
         private string gameKey;
-        private List<string> shotTypes;
-        private GameSettings gameSettings; // TODO: calculate bounds sometimes gets called before this is set somehow, or select doesnt innitialise properly for some reason
+        private List<string> shotTypes = new List<string> { "SSingleShot", "SFourShot", "SNineShot", "CLineShot" }; // "CScatterShot"
+        private GameSettings gameSettings;
+        private int selectedShotType = 0;
 
         // Player bounds
         private RectangleF playerBoardBounds;
@@ -45,36 +46,70 @@ namespace BattleSweeperClient
 
         private bool enableClicks = false;
         private bool redrawButton = true;
-        private int selectedShotType;
 
-        public BattleSweeperWindow(string gameKey, GameSettings gameSettings)
+        // TODO: do the same for paint/resize/click? 
+
+        // TODO: right now UI thread hangs on timer tick - yay. Drawing needs to happen on UI thread, and so do click events
+        // TODO: probable solution - cache game data and only draw changes, keeping UI intensive tasks to a minimum. 
+        Action timerTickAction = () => {  };
+        
+        public BattleSweeperWindow(string gameKey)
         {
             this.gameKey = gameKey;
-            shotTypes = new List<string> { "SSingleShot", "SFourShot", "SNineShot", "CLineShot" }; // "CScatterShot"
-            selectedShotType = 0;
-            this.gameSettings = gameSettings; // TODO: this is an ugly fix, rethink this whole thing
 
-            //this.MinimumSize = new Size(700, 400);
-            //this.Size = new Size(700, 400);
-
+            // Load Form
             InitializeComponent();
             LoadTextures("../../Textures");
+
+            // Keep asking for game settings until you receive them, then draw game window
+            timerTickAction = () => { SetupGame(); };
+            
+            this.gameUpdateTimer.Start();
         }
 
-        private async void BattleSweeperWindow_Load(object sender, EventArgs e)
+        private void gameUpdateTimer_Tick(object sender, EventArgs e)
         {
-            gameSettings = await APIAccessorSingleton.Instance.GetObject<GameSettings>("BattleSweeper/Game/{0}/Settings", gameKey);
-            CalculateBounds();
+            // actions themselves should stop and restart the timer once done with their work 
+            // in order to not make 2 actions at the same time if it takes too long
+            timerTickAction();
+        }
+
+        private async void SetupGame()
+        {
+            gameUpdateTimer.Stop();
+
+            this.gameSettings = await APIAccessorSingleton.Instance.GetObject<GameSettings>("BattleSweeper/Game/{0}/Settings", gameKey);
+
+            if (this.gameSettings != null)
+            {                
+                CalculateBounds();
+                DrawWindow();
+                redrawButton = true;
+
+                // once we get the game settings, switch to getting game state on a timer
+                timerTickAction = () => { UpdateGame(); };
+
+                // add in event handlers to redraw the form if it has been resized, since it was actually drawn now
+                this.gameWindow.Paint += new PaintEventHandler(this.gameWindow_Paint);
+                this.gameWindow.MouseClick += new MouseEventHandler(this.ProcessWindowClick);
+                this.gameWindow.Resize += new EventHandler(this.gameWindow_Resize);
+            }
+            else
+            {
+                // TODO: Draw an innitial screen saying it is waiting for server, or 2nd player or whatever
+            }
 
             gameUpdateTimer.Start();
         }
 
-        private async void gameUpdateTimer_Tick(object sender, EventArgs e)
+        private async void UpdateGame()
         {
             gameUpdateTimer.Stop();
 
             Game game = await APIAccessorSingleton.Instance.GetGameState(this.gameKey);
-            DrawGame(game);
+
+            if (game != null)
+                DrawGame(game);
 
             gameUpdateTimer.Start();
         }
@@ -123,10 +158,6 @@ namespace BattleSweeperClient
             enemyMinesBounds = new RectangleF(enemyBoardBounds.X, enemyBoardBounds.Y - spacer - 23, 39, 23);
             enemyAmmoBounds = new RectangleF(enemyBoardBounds.X + boardSize - 39, enemyBoardBounds.Y - spacer - 23, 39, 23);
 
-            
-
-
-
             boardCellSize = boardSize / gameSettings.BoardSize;
         }
 
@@ -139,16 +170,15 @@ namespace BattleSweeperClient
                 g.DrawImage(textures[shotTypes[selectedShotType]], shotTypeSelectorBounds);
                 redrawButton = false;
             }
-                
-
-            DrawBoardInBounds(g, game.Player1.Board, playerBoardBounds);
-            if (game.Player2 != null)
-                DrawBoardInBounds(g, game.Player2.Board, enemyBoardBounds);
 
             DrawNumbersInBounds(123, 3, g, playerMinesBounds);
             DrawNumbersInBounds(456, 3, g, playerAmmoBounds);
             DrawNumbersInBounds(789, 3, g, enemyMinesBounds);
             DrawNumbersInBounds(010, 3, g, enemyAmmoBounds);
+
+            DrawBoardInBounds(g, game.Player1.Board, playerBoardBounds);
+            if (game.Player2 != null)
+                DrawBoardInBounds(g, game.Player2.Board, enemyBoardBounds);
 
             g.Dispose();
         }
@@ -189,12 +219,6 @@ namespace BattleSweeperClient
             
 
             g.Dispose();
-        }
-
-        private void DrawButtonInBounds(Graphics g, RectangleF bounds, int borderWidth, string textureKey)
-        {
-            DrawBorderForBounds(g, bounds, borderWidth);
-            g.DrawImage(textures[textureKey], bounds);
         }
 
         private void DrawNumbersInBounds(int number, int digits, Graphics g, RectangleF bounds)
@@ -292,22 +316,24 @@ namespace BattleSweeperClient
 
         private void gameWindow_Paint(object sender, PaintEventArgs e)
         {
-            // TODO: These lines below
-            // paint redraws non game elements, and disables the click event handler;
-            // next request re-enables it when you get game data again
-
+            gameUpdateTimer.Stop();
 
             CalculateBounds();
             DrawWindow();
+            redrawButton = true;
 
-            enableClicks = false;
+            gameUpdateTimer.Start();
         }
 
         private void gameWindow_Resize(object sender, EventArgs e)
         {
+            gameUpdateTimer.Stop();
+
             CalculateBounds();
             DrawWindow();
             redrawButton = true;
+
+            gameUpdateTimer.Start();
         }
     }
 }

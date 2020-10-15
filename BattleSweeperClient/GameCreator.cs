@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -44,11 +45,12 @@ namespace BattleSweeperClient
                 return;
             }
                 
-            Game game = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings);
+            //Game game = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings);
+            string gameKey = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings);
 
-            if (game != null)
+            if (gameKey != default)
             {
-                gameIdTextBox.Text = game.Key;
+                gameIdTextBox.Text = gameKey;
                 errorLabel.Text = "";
             }
             else
@@ -64,7 +66,10 @@ namespace BattleSweeperClient
 
             if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player))
             {
-                new BattleSweeperWindow(gameKey, (GameSettings)gameSettingscomboBox.SelectedItem).ShowDialog();
+                if (secondPlayerForTesting.Checked)
+                    await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = "tester123" });
+
+                new BattleSweeperWindow(gameKey).ShowDialog();
                 errorLabel.Text = "";
             }
             else

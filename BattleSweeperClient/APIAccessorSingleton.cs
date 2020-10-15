@@ -50,14 +50,9 @@ namespace BattleSweeperClient
             httpClient.BaseAddress = new Uri(string.Format("{0}:{1}/", apiEndpoint, apiPort));
         }
 
-        public async Task<Game> CreateGame(Game game)
+        public async Task<string> GetNewGameFromSettings(GameSettings settings)
         {
-            return await PostObject<Game>("BattleSweeper/CreateGame", game);
-        }
-
-        public async Task<Game> GetNewGameFromSettings(GameSettings settings)
-        {
-            return await GetObject<Game>("BattleSweeper/GetNewGameFromSettings/{0}", settings.Id.ToString());
+            return await GetObject<string>("BattleSweeper/GetNewGameFromSettings/{0}", settings.Id.ToString());
         }
 
         public async Task<Game> GetGameState(string gameKey)
@@ -74,7 +69,6 @@ namespace BattleSweeperClient
                 if (httpClient.DefaultRequestHeaders.Contains("PlayerIdentifier"))
                     httpClient.DefaultRequestHeaders.Remove("PlayerIdentifier");
                 httpClient.DefaultRequestHeaders.Add("PlayerIdentifier", registeredPlayer.Identifier);
-                
                 
                 return true;
             }

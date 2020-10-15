@@ -11,13 +11,14 @@ namespace BattleSweeperServer.DesignPatternClasses
     public class GameBuilder
     {
         private Game game;
+        private bool generateRandomBoards = false;
 
         public int Id { get { return this.game.Id; } }
         public string Key { get { return this.game.Key; } }
 
         public bool LastOpSuccessful { get; private set; }
 
-        public GameBuilder(int id) // TODO: different solution for Id - repeating id's since games list doesnt get stuff added to it. Use gameBuilders id and switch on finalize
+        public GameBuilder(int id)
         {
             game = new Game() {Id = id };
         }
@@ -48,6 +49,30 @@ namespace BattleSweeperServer.DesignPatternClasses
                 LastOpSuccessful = false;
             }
 
+            // Generate player - prototype should start here if we use it for board generation
+            if (LastOpSuccessful)
+            {
+                player.AmmoCount = game.Settings.ShotsPerTurn;
+                Board board = player.CreateBoard(game.Settings.BoardSize);
+
+                if (generateRandomBoards)
+                {
+                    Random rnd = new Random();
+                    MineFactory mineFactory = new MineFactory();
+                    for (int i = 0; i < board.Size * board.Size; i++)
+                    {
+                        board.Tiles.Add(new Tile());
+                        int random_nr = rnd.Next(0, 19);
+                        if (random_nr == 0)
+                            board.Tiles[i].Mine = mineFactory.CreateMine(0); // Simple Mine
+                        if (random_nr == 1)
+                            board.Tiles[i].Mine = mineFactory.CreateMine(1); // Wide Mine
+                        if (random_nr == 2)
+                            board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
+                    }
+                }
+            }
+
             return this;
         }
 
@@ -64,6 +89,12 @@ namespace BattleSweeperServer.DesignPatternClasses
                 LastOpSuccessful = false;
                 return null;
             }
+        }
+
+        public GameBuilder RandomBoardGeneration(bool value)
+        {
+            generateRandomBoards = value;
+            return this;
         }
     }
 }

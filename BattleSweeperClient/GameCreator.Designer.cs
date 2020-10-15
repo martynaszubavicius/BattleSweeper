@@ -34,6 +34,7 @@
             this.nameTextBox = new System.Windows.Forms.TextBox();
             this.gameSettingscomboBox = new System.Windows.Forms.ComboBox();
             this.errorLabel = new System.Windows.Forms.Label();
+            this.secondPlayerForTesting = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // newGameButton
@@ -89,11 +90,22 @@
             this.errorLabel.TabIndex = 6;
             this.errorLabel.Text = "label1";
             // 
+            // secondPlayerForTesting
+            // 
+            this.secondPlayerForTesting.AutoSize = true;
+            this.secondPlayerForTesting.Location = new System.Drawing.Point(111, 147);
+            this.secondPlayerForTesting.Name = "secondPlayerForTesting";
+            this.secondPlayerForTesting.Size = new System.Drawing.Size(140, 17);
+            this.secondPlayerForTesting.TabIndex = 7;
+            this.secondPlayerForTesting.Text = "secondPlayerForTesting";
+            this.secondPlayerForTesting.UseVisualStyleBackColor = true;
+            // 
             // GameCreator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(348, 349);
+            this.Controls.Add(this.secondPlayerForTesting);
             this.Controls.Add(this.errorLabel);
             this.Controls.Add(this.gameSettingscomboBox);
             this.Controls.Add(this.nameTextBox);
@@ -115,5 +127,6 @@
         private System.Windows.Forms.TextBox nameTextBox;
         private System.Windows.Forms.ComboBox gameSettingscomboBox;
         private System.Windows.Forms.Label errorLabel;
+        private System.Windows.Forms.CheckBox secondPlayerForTesting;
     }
 }

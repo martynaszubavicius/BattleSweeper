@@ -84,7 +84,7 @@ namespace BattleSweeperServer.Controllers
         //}
 
         [HttpGet("GetNewGameFromSettings/{id}")]
-        public ActionResult<Game> CreateGameFromSettings(int Id)
+        public ActionResult<string> CreateGameFromSettings(int Id)
         {
             // TODO: in general, switch to string keys
             // TODO: this will return only the key
@@ -96,31 +96,36 @@ namespace BattleSweeperServer.Controllers
 
             lock (gameBuilders)
             {
-                builder = new GameBuilder(gameBuilders.Count).SetSettings(settings);
+                builder = new GameBuilder(gameBuilders.Count)
+                    .SetSettings(settings)
+                    .RandomBoardGeneration(true);
                 gameBuilders.Add(builder);
             }
 
-            // return builder.Key;
+            return builder.Key;
 
             // TODO: deprecate: Will use builder instead
-            Game game = new Game() {
-                Settings = settings
-            };
+            //Game game = new Game() {
+            //    Settings = settings
+            //};
 
-            lock (games)
-            {
-                game.Id = games.Count;
-                games.Add(game);
-            }
+            //lock (games)
+            //{
+            //    game.Id = games.Count;
+            //    games.Add(game);
+            //}
 
-            return game;
+            //return game;
         }
 
-        [HttpPost("Game/{id}/RegisterPlayer")]
-        public ActionResult<Player> RegisterPlayer(int id, Player player)
+        [HttpPost("Game/{key}/RegisterPlayer")]
+        public ActionResult<Player> RegisterPlayer(string key, Player player)
         {
             // switch to key 
-            GameBuilder builder = gameBuilders.Find(b => b.Id == id);
+            GameBuilder builder = gameBuilders.Find(b => b.Key == key);
+
+            if (builder == null)
+                return NotFound();
 
             lock(builder)
             {
@@ -128,73 +133,59 @@ namespace BattleSweeperServer.Controllers
                 if (!builder.LastOpSuccessful)
                     return BadRequest(new { error = "game full" });
 
-                player.AmmoCount = 3;
-                Board board = player.CreateBoard(35); // game.Settings.BoardSize);
-
-                // temporary for testing
-                Random rnd = new Random();
-                int random_nr;
-                board.Tiles = new List<Tile>();
-                MineFactory mineFactory = new MineFactory();
-                for (int i = 0; i < board.Size * board.Size; i++)
+                lock(games)
                 {
-                    board.Tiles.Add(new Tile());
-                    random_nr = rnd.Next(0, 9);
-                    if (random_nr == 0)
-                        board.Tiles[i].Mine = mineFactory.CreateMine(0); // Simple Mine
-                    if (random_nr == 1)
-                        board.Tiles[i].Mine = mineFactory.CreateMine(1); // Wide Mine
-                    if (random_nr == 2)
-                        board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
+                    Game game = builder.Finalize(games.Count);
+                    if (game != null)
+                        games.Add(game);
                 }
+                
 
+                
             }
 
-
-            
-
+            // TODO: should probably only return a string here
+            return player;
 
             // TODO: deprecate, will use builder instead
-            Game game = games.Find(game => game.Id == id);
+            //Game game = games.Find(game => game.Id == id);
 
-            if (game == null)
-            {
-                return NotFound();
-            }
+            //if (game == null)
+            //{
+            //    return NotFound();
+            //}
 
-            lock (game)
-            {
-                if (game.RegisterPlayer(player))
-                {
-                    player.AmmoCount = 3;
-                    Board board = player.CreateBoard(game.Settings.BoardSize);
+            //lock (game)
+            //{
+            //    if (game.RegisterPlayer(player))
+            //    {
+            //        player.AmmoCount = 3;
+            //        Board board = player.CreateBoard(game.Settings.BoardSize);
 
-                    // temporary for testing
-                    Random rnd = new Random();
-                    int random_nr;
-                    board.Tiles = new List<Tile>();
-                    MineFactory mineFactory = new MineFactory();
-                    for (int i = 0; i < board.Size * board.Size; i++)
-                    {
-                        board.Tiles.Add(new Tile());
-                        random_nr = rnd.Next(0, 9);
-                        if (random_nr == 0)
-                            board.Tiles[i].Mine = mineFactory.CreateMine(0); // Simple Mine
-                        if (random_nr == 1)
-                            board.Tiles[i].Mine = mineFactory.CreateMine(1); // Wide Mine
-                        if (random_nr == 2)
-                            board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
-                    }
-                }
-                else
-                {
-                    return BadRequest(new { error = "game full" });
-                }
-            }
+            //        // temporary for testing
+            //        Random rnd = new Random();
+            //        int random_nr;
+            //        board.Tiles = new List<Tile>();
+            //        MineFactory mineFactory = new MineFactory();
+            //        for (int i = 0; i < board.Size * board.Size; i++)
+            //        {
+            //            board.Tiles.Add(new Tile());
+            //            random_nr = rnd.Next(0, 9);
+            //            if (random_nr == 0)
+            //                board.Tiles[i].Mine = mineFactory.CreateMine(0); // Simple Mine
+            //            if (random_nr == 1)
+            //                board.Tiles[i].Mine = mineFactory.CreateMine(1); // Wide Mine
+            //            if (random_nr == 2)
+            //                board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
+            //        }
+            //    }
+            //    else
+            //    {
+            //        return BadRequest(new { error = "game full" });
+            //    }
+            //}
 
-            
-
-            return player;
+            //return player;
         }
 
         [HttpGet("Game/{id}/Settings")]
