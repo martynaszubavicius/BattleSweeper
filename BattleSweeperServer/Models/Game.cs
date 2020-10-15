@@ -19,9 +19,6 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Settings")]
         public GameSettings Settings { get; set; }
 
-        [JsonProperty("BoardSize")]
-        public int BoardSize { get; set; }
-
         public Game()
         {
 
@@ -58,8 +55,7 @@ namespace BattleSweeperServer.Models
 
             Game playerView = new Game 
             { 
-                Id = this.Id, 
-                BoardSize = this.BoardSize
+                Id = this.Id
             };
             
             if (Player1 != null)
