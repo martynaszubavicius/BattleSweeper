@@ -96,7 +96,8 @@ namespace BattleSweeperServer.Controllers
 
             lock (gameBuilders)
             {
-                builder = new GameBuilder(games.Count).SetSettings(settings);
+                builder = new GameBuilder(gameBuilders.Count).SetSettings(settings);
+                gameBuilders.Add(builder);
             }
 
             // return builder.Key;
