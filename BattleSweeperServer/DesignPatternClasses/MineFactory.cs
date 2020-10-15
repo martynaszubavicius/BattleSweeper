@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BattleSweeperServer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BattleSweeperServer.Models
+namespace BattleSweeperServer.DesignPatternClasses
 {
     public class MineFactory
     {

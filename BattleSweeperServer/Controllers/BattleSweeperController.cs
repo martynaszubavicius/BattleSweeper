@@ -15,6 +15,7 @@ namespace BattleSweeperServer.Controllers
     {
         private static List<Game> games = new List<Game>();
         private static List<GameSettings> gameSettings = new List<GameSettings>();
+        private static List<GameBuilder> gameBuilders = new List<GameBuilder>();
 
 
         public BattleSweeperController()
@@ -70,26 +71,37 @@ namespace BattleSweeperServer.Controllers
         }
 
         // TODO: Deprecated, to be removed. Functionality moved to GetNewGameFromSettings
-        [HttpPost("CreateGame")]
-        public ActionResult<Game> CreateGame(Game game)
-        {
-            lock (games)
-            {
-                game.Id = games.Count;
-                games.Add(game);
-            }
+        //[HttpPost("CreateGame")]
+        //public ActionResult<Game> CreateGame(Game game)
+        //{
+        //    lock (games)
+        //    {
+        //        game.Id = games.Count;
+        //        games.Add(game);
+        //    }
 
-            return CreatedAtAction("CreateGame", new { id = game.Id }, game);
-        }
+        //    return CreatedAtAction("CreateGame", new { id = game.Id }, game);
+        //}
 
         [HttpGet("GetNewGameFromSettings/{id}")]
         public ActionResult<Game> CreateGameFromSettings(int Id)
         {
+            // TODO: in general, switch to string keys
+            // TODO: this will return only the key
             GameSettings settings = gameSettings.Find(st => st.Id == Id);
             if (settings == null)
                 return NotFound();
 
-            // TODO: Will use builder instead
+            GameBuilder builder;
+
+            lock (gameBuilders)
+            {
+                builder = new GameBuilder(games.Count).SetSettings(settings);
+            }
+
+            // return builder.Key;
+
+            // TODO: deprecate: Will use builder instead
             Game game = new Game() {
                 Settings = settings
             };
@@ -106,18 +118,18 @@ namespace BattleSweeperServer.Controllers
         [HttpPost("Game/{id}/RegisterPlayer")]
         public ActionResult<Player> RegisterPlayer(int id, Player player)
         {
-            Game game = games.Find(game => game.Id == id);
+            // switch to key 
+            GameBuilder builder = gameBuilders.Find(b => b.Id == id);
 
-            if (game == null)
+            lock(builder)
             {
-                return NotFound();
-            }
+                builder.RegisterPlayer(player);
+                if (!builder.LastOpSuccessful)
+                    return BadRequest(new { error = "game full" });
 
-            if (game.RegisterPlayer(player))
-            {
                 player.AmmoCount = 3;
-                Board board = player.CreateBoard(game.Settings.BoardSize);
-                
+                Board board = player.CreateBoard(35); // game.Settings.BoardSize);
+
                 // temporary for testing
                 Random rnd = new Random();
                 int random_nr;
@@ -134,19 +146,52 @@ namespace BattleSweeperServer.Controllers
                     if (random_nr == 2)
                         board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
                 }
-                //for (int x = 0; x < board.Size; x++)
-                //{
-                //    for (int y = 0; y < board.Size; y++)
-                //    {
-                //        board.RevealTile(x, y);
-                //    }
-                //}
-                // done yay
+
             }
-            else
+
+
+            
+
+
+            // TODO: deprecate, will use builder instead
+            Game game = games.Find(game => game.Id == id);
+
+            if (game == null)
             {
-                return BadRequest(new { error = "game full" });
+                return NotFound();
             }
+
+            lock (game)
+            {
+                if (game.RegisterPlayer(player))
+                {
+                    player.AmmoCount = 3;
+                    Board board = player.CreateBoard(game.Settings.BoardSize);
+
+                    // temporary for testing
+                    Random rnd = new Random();
+                    int random_nr;
+                    board.Tiles = new List<Tile>();
+                    MineFactory mineFactory = new MineFactory();
+                    for (int i = 0; i < board.Size * board.Size; i++)
+                    {
+                        board.Tiles.Add(new Tile());
+                        random_nr = rnd.Next(0, 9);
+                        if (random_nr == 0)
+                            board.Tiles[i].Mine = mineFactory.CreateMine(0); // Simple Mine
+                        if (random_nr == 1)
+                            board.Tiles[i].Mine = mineFactory.CreateMine(1); // Wide Mine
+                        if (random_nr == 2)
+                            board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
+                    }
+                }
+                else
+                {
+                    return BadRequest(new { error = "game full" });
+                }
+            }
+
+            
 
             return player;
         }

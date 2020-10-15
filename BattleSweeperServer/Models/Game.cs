@@ -11,10 +11,10 @@ namespace BattleSweeperServer.Models
         public string Key { get { return this.Id.ToString(); } } // TODO: use this instead of id in requests
 
         [JsonProperty("Player1")]
-        public Player Player1 { get; private set; }
+        public Player Player1 { get; set; }
 
         [JsonProperty("Player2")]
-        public Player Player2 { get; private set; }
+        public Player Player2 { get; set; }
         
         [JsonProperty("Settings")]
         public GameSettings Settings { get; set; }
@@ -26,24 +26,21 @@ namespace BattleSweeperServer.Models
 
         public bool RegisterPlayer(Player player)
         {
-            lock (this)
+            if (Player1 == null)
             {
-                if (Player1 == null)
-                {
-                    player.CreateIdentifier(1);
-                    Player1 = player;
-                    return true;
-                }
-                else if (Player2 == null)
-                {
-                    player.CreateIdentifier(2);
-                    Player2 = player;
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                player.CreateIdentifier(1);
+                Player1 = player;
+                return true;
+            }
+            else if (Player2 == null)
+            {
+                player.CreateIdentifier(2);
+                Player2 = player;
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
