@@ -14,8 +14,6 @@ namespace BattleSweeperClient.DesignPatternClasses
         private Graphics graphics;
         private Dictionary<string, Image> textures;
 
-        public Graphics G { get { return this.graphics; } } //TODO: remove after
-
         public GraphicsAdapter(Panel panel, Dictionary<string, Image> textures)
         {
             this.graphics = panel.CreateGraphics();
