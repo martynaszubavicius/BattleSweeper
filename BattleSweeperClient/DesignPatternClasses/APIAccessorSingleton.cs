@@ -16,7 +16,7 @@ using System.Runtime.CompilerServices;
 using System.Net;
 using System.Diagnostics;
 
-namespace BattleSweeperClient
+namespace BattleSweeperClient.DesignPatternClasses
 {
     class APIAccessorSingleton
     {

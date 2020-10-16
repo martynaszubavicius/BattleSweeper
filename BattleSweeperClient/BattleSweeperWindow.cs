@@ -1,4 +1,5 @@
-﻿using BattleSweeperServer.Models;
+﻿using BattleSweeperClient.DesignPatternClasses;
+using BattleSweeperServer.Models;
 using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
@@ -122,20 +123,6 @@ namespace BattleSweeperClient
                 textures[string.Concat(imgFile.Split(new char[] { '\\' }).Last().Reverse().Skip(4).Reverse())] = new Bitmap(imgFile);
         }
 
-        private string[] TranslateNumberToFontEntries(int number, int digitCount)
-        {
-            string[] translation = new string[digitCount];
-
-            for (int i = digitCount - 1; i >= 0; i--)
-            {
-                int digit = number % 10;
-                number /= 10;
-                translation[i] = string.Format("font{0}", digit);
-            }
-
-            return translation;
-        }
-
         private void CalculateBounds()
         {
             int topBarWidth = 80;
@@ -163,116 +150,39 @@ namespace BattleSweeperClient
 
         private void DrawGame(Game game, bool fullRedraw = false)
         {
-            Graphics g = gameWindow.CreateGraphics();
+            GraphicsAdapter g = new GraphicsAdapter(gameWindow, textures);
 
             if (redrawButton)
             {
-                g.DrawImage(textures[shotTypes[selectedShotType]], shotTypeSelectorBounds);
+                g.DrawImage(shotTypes[selectedShotType], shotTypeSelectorBounds);
                 redrawButton = false;
             }
 
-            DrawNumbersInBounds(123, 3, g, playerMinesBounds);
-            DrawNumbersInBounds(456, 3, g, playerAmmoBounds);
-            DrawNumbersInBounds(789, 3, g, enemyMinesBounds);
-            DrawNumbersInBounds(010, 3, g, enemyAmmoBounds);
+            g.DrawBattleSweeperNumbers(123, 3, playerMinesBounds);
+            g.DrawBattleSweeperNumbers(456, 3, playerAmmoBounds);
+            g.DrawBattleSweeperNumbers(789, 3, enemyMinesBounds);
+            g.DrawBattleSweeperNumbers(010, 3, enemyAmmoBounds);
 
-            DrawBoardInBounds(g, game.Player1.Board, playerBoardBounds);
-            if (game.Player2 != null)
-                DrawBoardInBounds(g, game.Player2.Board, enemyBoardBounds);
+            // TODO: this is slow as fuck, implement staggering to keep UI responsive? Changes redrawn only?
+            g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize);
+            g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize);
 
             g.Dispose();
         }
 
         private void DrawWindow()
         {
-            // TODO: optimize board drawing, atm big boards chug when being drawn
-            Graphics g = gameWindow.CreateGraphics();
+            GraphicsAdapter g = new GraphicsAdapter(gameWindow, textures);
 
-            // fill background
-            g.FillRectangle(new SolidBrush(Color.Silver), gameWindow.DisplayRectangle);
-
-            SolidBrush drawBrush = new SolidBrush(Color.Red);
-            StringFormat drawFormat = new StringFormat();
-
-            // Draw title bar
-            Font drawFont = new Font("Arial", 45, FontStyle.Bold);
-            g.DrawString("BattleSweeper", drawFont, drawBrush, 5, 5, drawFormat);
-            drawFont.Dispose();
-
-            // Draw by who text
-            drawFont = new Font("Arial", 12, FontStyle.Bold);
-            g.DrawString("by MELV team", drawFont, drawBrush, 430, 45, drawFormat);
-            drawFont.Dispose();
-
-            drawBrush.Dispose();
-            drawFormat.Dispose();
-
-            // Draw divider
-            g.DrawLine(Pens.Gray, 0, 80, gameWindow.ClientSize.Width, 80);
-
-            // Draw Board frames
-            DrawBorderForBounds(g, playerBoardBounds, 4);
-            DrawBorderForBounds(g, enemyBoardBounds, 4);
-
-            // Draw button frames
-            DrawBorderForBounds(g, shotTypeSelectorBounds, 2);
-            
+            g.SetBackground(Color.Silver, gameWindow.DisplayRectangle);
+            g.DrawBattleSweeperText("BattleSweeper", 45, Color.Red, new PointF(5, 5));
+            g.DrawBattleSweeperText("by MELV team", 12, Color.Red, new PointF(430, 45));
+            g.DrawLine(Pens.Gray, new PointF(0, 80), new PointF(gameWindow.ClientSize.Width, 80));
+            g.DrawBattleSweeperBorder(4, playerBoardBounds);
+            g.DrawBattleSweeperBorder(4, enemyBoardBounds);
+            g.DrawBattleSweeperBorder(2, shotTypeSelectorBounds);
 
             g.Dispose();
-        }
-
-        private void DrawNumbersInBounds(int number, int digits, Graphics g, RectangleF bounds)
-        {
-            string[] fontNumbers = TranslateNumberToFontEntries(number, digits);
-
-            for (int i = 0; i < digits; i++)
-            {
-                g.DrawImage(textures[fontNumbers[i]], new RectangleF(bounds.X +13 * i, bounds.Y, 13, 23));
-            }
-        }
-
-        private void DrawBoardInBounds(Graphics g, Board board, RectangleF bounds)
-        {
-            for (int x = 0; x < board.Size; x++)
-            {
-                for (int y = 0; y < board.Size; y++)
-                {
-                    Tile tile = board.Tiles[board.GetIndex(x, y)];
-
-                    Image img;
-                    if (tile.Mine != null)
-                        if (tile.State == -1)
-                            img = textures[tile.Mine.ImageName];
-                        else
-                            img = textures[tile.Mine.ImageName + "_revealed"];
-                    else if (tile.State >= 0)
-                        img = textures[string.Format("empty{0}", tile.State)];
-                    else // -1
-                        img = textures["tile"];
-
-                    g.DrawImage(img, new RectangleF(bounds.X + boardCellSize * x, bounds.Y + boardCellSize * y, boardCellSize, boardCellSize));
-                }
-            }
-        }
-
-        private void DrawBorderForBounds(Graphics g, RectangleF bounds, int borderWidth)
-        {
-            g.FillPolygon(Brushes.Gray, new PointF[] {
-                new PointF(bounds.X - borderWidth, bounds.Y - borderWidth), // top left outside
-                new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y - borderWidth), // top right outside
-                new PointF(bounds.X + bounds.Width, bounds.Y), // top right inside
-                new PointF(bounds.X, bounds.Y), // top left inside
-                new PointF(bounds.X, bounds.Y + bounds.Height), // bottom left inside
-                new PointF(bounds.X - borderWidth, bounds.Y + bounds.Height + borderWidth) // bottom left outside
-            });
-            g.FillPolygon(Brushes.White, new PointF[] {
-                new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y + bounds.Height + borderWidth), // bottom right outside
-                new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y - borderWidth), // top right outside
-                new PointF(bounds.X + bounds.Width, bounds.Y), // top right inside
-                new PointF(bounds.X + bounds.Width, bounds.Y + bounds.Height), // bottom right inside
-                new PointF(bounds.X, bounds.Y + bounds.Height), // bottom left inside
-                new PointF(bounds.X - borderWidth, bounds.Y + bounds.Height + borderWidth), // bottom left outside
-            });
         }
 
         private void ProcessWindowClick(object sender, MouseEventArgs e)

@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APIAccessorSingleton.cs" />
+    <Compile Include="DesignPatternClasses\APIAccessorSingleton.cs" />
     <Compile Include="ChatWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +65,7 @@
     <Compile Include="BattleSweeperWindow.Designer.cs">
       <DependentUpon>BattleSweeperWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="DesignPatternClasses\GraphicsAdapter.cs" />
     <Compile Include="GameCreator.cs">
       <SubType>Form</SubType>
     </Compile>
