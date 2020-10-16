@@ -18,6 +18,7 @@ namespace BattleSweeperServer.Models
         public override string ToString()
         {
             return string.Format("State: {0}, Mine: {1}", State, Mine == null ? 0 : 1);
+
         }
     }
 }

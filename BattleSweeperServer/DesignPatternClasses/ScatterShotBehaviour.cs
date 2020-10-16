@@ -18,14 +18,8 @@ namespace BattleSweeperServer.DesignPatternClasses
                 for (int j = y - 2; j < y + 3; j++)
                 {
                     if (board.WithinBounds(i, j) && reveal == true)
-                    {
                         board.RevealTile(i, j);
-                        reveal = false;
-                    }
-                    else
-                    {
-                        reveal = true;
-                    }
+                    reveal = !reveal;
                 }
             }
             //TODO: square shoot implementation
