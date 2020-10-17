@@ -20,6 +20,9 @@ namespace BattleSweeperServer.Controllers
 
         public BattleSweeperController()
         {
+            if (gameSettings.Count > 0)
+                return;
+
             gameSettings.Add(new GameSettings()
             {
                 Id = gameSettings.Count,

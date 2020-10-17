@@ -60,7 +60,10 @@ namespace BattleSweeperServer.Models
             currentTile.State = 0;
 
             if (currentTile.Mine != null)
+            {
+                currentTile.Mine.OnReveal(this, x, y);
                 return;
+            }
 
             List<Tile> neighbours = GetNeighbours(x, y);
             foreach (Tile tile in neighbours)
