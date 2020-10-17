@@ -52,7 +52,7 @@ namespace BattleSweeperClient
 
         // TODO: right now UI thread hangs on timer tick - yay. Drawing needs to happen on UI thread, and so do click events
         // TODO: probable solution - cache game data and only draw changes, keeping UI intensive tasks to a minimum. 
-        Action timerTickAction = () => {  };
+        Action timerTickAction = () => { };
         
         public BattleSweeperWindow(string gameKey)
         {
@@ -64,7 +64,7 @@ namespace BattleSweeperClient
 
             // Keep asking for game settings until you receive them, then draw game window
             timerTickAction = () => { SetupGame(); };
-            
+
             this.gameUpdateTimer.Start();
         }
 
@@ -88,7 +88,8 @@ namespace BattleSweeperClient
                 redrawButton = true;
 
                 // once we get the game settings, switch to getting game state on a timer
-                timerTickAction = () => { UpdateGame(); };
+                // timerTickAction = () => { UpdateGame(); };
+                timerTickAction = () => { StaggeredUpdateGame(); };
 
                 // add in event handlers to redraw the form if it has been resized, since it was actually drawn now
                 this.gameWindow.Paint += new PaintEventHandler(this.gameWindow_Paint);
@@ -111,6 +112,59 @@ namespace BattleSweeperClient
 
             if (game != null)
                 DrawGame(game);
+
+            gameUpdateTimer.Start();
+        }
+
+        private async void StaggeredUpdateGame()
+        {
+            gameUpdateTimer.Stop();
+
+            Game game = await APIAccessorSingleton.Instance.GetGameState(this.gameKey);
+
+            if (game != null)
+            {
+                GraphicsAdapter g = new GraphicsAdapter(gameWindow, textures);
+                gameUpdateTimer.Interval = 1;
+
+                timerTickAction = () => {
+                    StaggeredDrawGame(game, g, 0, 2);
+                };
+            }
+
+            gameUpdateTimer.Start();
+        }
+
+        private void StaggeredDrawGame(Game game, GraphicsAdapter g, int startLine, int lineCount)
+        {
+            gameUpdateTimer.Stop();
+
+            if (redrawButton)
+            {
+                g.DrawImage(shotTypes[selectedShotType], shotTypeSelectorBounds);
+                redrawButton = false;
+            }
+
+            g.DrawBattleSweeperNumbers(123, 3, playerMinesBounds);
+            g.DrawBattleSweeperNumbers(456, 3, playerAmmoBounds);
+            g.DrawBattleSweeperNumbers(789, 3, enemyMinesBounds);
+            g.DrawBattleSweeperNumbers(010, 3, enemyAmmoBounds);
+
+            g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize, startLine, lineCount);
+            g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize, startLine, lineCount);
+
+            if (startLine + lineCount >= gameSettings.BoardSize)
+            {
+                // we done, next update after 15ms - can afford to do that now since the ui thread doesnt hang as much
+                gameUpdateTimer.Interval = 15;
+                timerTickAction = () => { StaggeredUpdateGame(); };
+            }
+            else
+            {
+                timerTickAction = () => {
+                    StaggeredDrawGame(game, g, startLine + lineCount, lineCount);
+                };
+            }
 
             gameUpdateTimer.Start();
         }
@@ -224,7 +278,7 @@ namespace BattleSweeperClient
             gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }
 
-        private void gameWindow_Paint(object sender, PaintEventArgs e)
+        private void OnResize()
         {
             gameUpdateTimer.Stop();
 
@@ -232,18 +286,21 @@ namespace BattleSweeperClient
             DrawWindow();
             redrawButton = true;
 
+            // Whole game needs to be redrawn, so we do that, except the timer interval is short
+            // to update it immediately
+            gameUpdateTimer.Interval = 1;
+            timerTickAction = () => { StaggeredUpdateGame(); };
             gameUpdateTimer.Start();
+        }
+
+        private void gameWindow_Paint(object sender, PaintEventArgs e)
+        {
+            OnResize();
         }
 
         private void gameWindow_Resize(object sender, EventArgs e)
         {
-            gameUpdateTimer.Stop();
-
-            CalculateBounds();
-            DrawWindow();
-            redrawButton = true;
-
-            gameUpdateTimer.Start();
+            OnResize();
         }
     }
 }

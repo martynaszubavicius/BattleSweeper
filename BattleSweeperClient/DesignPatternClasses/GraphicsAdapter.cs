@@ -34,11 +34,11 @@ namespace BattleSweeperClient.DesignPatternClasses
             }
         }
         
-        public void DrawBattleSweeperBoard(Board board, RectangleF bounds, float boardCellSize)
+        public void DrawBattleSweeperBoard(Board board, RectangleF bounds, float boardCellSize, int startLine = 0, int lineCount = 0)
         {
             if (board == null) return;
 
-            for (int x = 0; x < board.Size; x++)
+            for (int x = startLine; x < (lineCount > 0 ? Math.Min(startLine + lineCount, board.Size) : board.Size); x++)
             {
                 for (int y = 0; y < board.Size; y++)
                 {
