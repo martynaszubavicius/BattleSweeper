@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BattleSweeperClient.DesignPatternClasses
 {
-    class GraphicsAdapter
+    public class GraphicsAdapter
     {
         private Graphics graphics;
         private Dictionary<string, Image> textures;
@@ -38,24 +38,39 @@ namespace BattleSweeperClient.DesignPatternClasses
         {
             if (board == null) return;
 
+            DecoratedTile tmp = new Tile() { State = -1, Mine = null };
+            DecoratedTile tmp2 = new TileCrossDecorator(tmp);
+            this.graphics.DrawImage(tmp.GetImage(textures), 0, 20);
+            this.graphics.DrawImage(tmp2.GetImage(textures), 20, 20);
+
+
+
             for (int x = startLine; x < (lineCount > 0 ? Math.Min(startLine + lineCount, board.Size) : board.Size); x++)
             {
                 for (int y = 0; y < board.Size; y++)
                 {
                     Tile tile = board.Tiles[board.GetIndex(x, y)];
+                    DecoratedTile decoTile = tile;
 
-                    Image img;
-                    if (tile.Mine != null)
-                        if (tile.State == -1)
-                            img = textures[tile.Mine.ImageName];
+                    if (tile.State != -1)
+                    {
+                        decoTile = new TileRevealedDecorator(decoTile);
+                        
+                        if (tile.Mine != null)
+                        {
+                            decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
+                            decoTile = new TileCrossDecorator(decoTile);
+                        }
                         else
-                            img = textures[tile.Mine.ImageName + "_revealed"];
-                    else if (tile.State >= 0)
-                        img = textures[string.Format("empty{0}", tile.State)];
-                    else // -1
-                        img = textures["tile"];
-
-                    this.graphics.DrawImage(img, new RectangleF(bounds.X + boardCellSize * x, bounds.Y + boardCellSize * y, boardCellSize, boardCellSize));
+                            decoTile = new TileNumberDecorator(decoTile, tile.State);
+                    }
+                    else
+                    {
+                        if (tile.Mine != null)
+                            decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
+                    }
+                    
+                    this.graphics.DrawImage(decoTile.GetImage(this.textures), new RectangleF(bounds.X + boardCellSize * x, bounds.Y + boardCellSize * y, boardCellSize, boardCellSize));
                 }
             }
         }
