@@ -158,6 +158,7 @@ namespace BattleSweeperClient
                 // we done, next update after 15ms - can afford to do that now since the ui thread doesnt hang as much
                 gameUpdateTimer.Interval = 15;
                 timerTickAction = () => { StaggeredUpdateGame(); };
+                g.Dispose();
             }
             else
             {
