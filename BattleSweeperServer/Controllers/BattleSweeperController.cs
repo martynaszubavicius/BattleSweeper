@@ -130,21 +130,21 @@ namespace BattleSweeperServer.Controllers
             if (builder == null)
                 return NotFound();
 
-            lock(builder)
+            lock (builder)
             {
                 builder.RegisterPlayer(player);
                 if (!builder.LastOpSuccessful)
                     return BadRequest(new { error = "game full" });
 
-                lock(games)
+                lock (games)
                 {
                     Game game = builder.Finalize(games.Count);
                     if (game != null)
                         games.Add(game);
                 }
-                
 
-                
+
+
             }
 
             // TODO: should probably only return a string here
@@ -213,6 +213,18 @@ namespace BattleSweeperServer.Controllers
                 return error;
 
             return game.GetPlayerView(Request.Headers["PlayerIdentifier"]);
+        }
+
+        [HttpGet("Game/{id}/State/{stateNr}")]
+        public ActionResult<Game> GetChangedGameState(int id, int stateNr)
+        {
+            Game game = games.Find(game => game.Id == id);
+
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
+
+            return game.GetPlayerView(Request.Headers["PlayerIdentifier"], stateNr);
         }
 
         [HttpPost("Game/{id}/ExecuteCommand")]

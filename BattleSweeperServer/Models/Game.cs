@@ -1,6 +1,7 @@
 ﻿using BattleSweeperServer.DesignPatternClasses;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BattleSweeperServer.Models
 {
@@ -24,9 +25,12 @@ namespace BattleSweeperServer.Models
         [JsonProperty("History")]
         public List<Command> History { get; set; }
 
+        [JsonProperty("HistoryLastIndex")]
+        public int HistoryLastIndex { get; set; } // only for use by the client and json serialising. Server should not use this anywhere else
+
         public Game()
         {
-
+            this.History = new List<Command>();
         }
 
         public bool RegisterPlayer(Player player)
@@ -50,7 +54,7 @@ namespace BattleSweeperServer.Models
         }
 
         // Returns a sanitized Game object that only has information that the player with specified identifier should have
-        public Game GetPlayerView(string playerIdentifier)
+        public Game GetPlayerView(string playerIdentifier, int historyStartIndex = -1)
         {
             if (!HasPlayerWithIdentifier(playerIdentifier))
                 return null; // not your game, scrub
@@ -64,6 +68,12 @@ namespace BattleSweeperServer.Models
                 playerView.Player1 = Player1.Identifier == playerIdentifier ? Player1 : Player2;
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
+            if (historyStartIndex >= 0)
+                playerView.History = this.History.GetRange(historyStartIndex, this.History.Count - historyStartIndex)
+                                                 .Where(item => !(item.PlayerId != playerIdentifier && item.Info.CommandType == "mine")).ToList();
+            else
+                playerView.History = new List<Command>();
+            playerView.HistoryLastIndex = this.History.Count;
 
             return playerView;
         }
