@@ -53,12 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DesignPatternClasses\APIAccessorSingleton.cs" />
-    <Compile Include="ChatWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChatWindow.Designer.cs">
-      <DependentUpon>ChatWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="BattleSweeperWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,9 +84,6 @@
     <Compile Include="Models\Tile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ChatWindow.resx">
-      <DependentUpon>ChatWindow.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="BattleSweeperWindow.resx">
       <DependentUpon>BattleSweeperWindow.cs</DependentUpon>
     </EmbeddedResource>

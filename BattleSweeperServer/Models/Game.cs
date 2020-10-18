@@ -64,8 +64,7 @@ namespace BattleSweeperServer.Models
                 Id = this.Id
             };
             
-            if (Player1 != null)
-                playerView.Player1 = Player1.Identifier == playerIdentifier ? Player1 : Player2;
+            playerView.Player1 = Player1.Identifier == playerIdentifier ? Player1 : Player2;
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
             if (historyStartIndex >= 0)
