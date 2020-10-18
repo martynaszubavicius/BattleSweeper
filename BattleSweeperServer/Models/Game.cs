@@ -69,8 +69,7 @@ namespace BattleSweeperServer.Models
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
             if (historyStartIndex >= 0)
-                playerView.History = this.History.GetRange(historyStartIndex, this.History.Count - historyStartIndex)
-                                                 .Where(item => !(item.PlayerId != playerIdentifier && item.Info.CommandType == "mine")).ToList();
+                playerView.History = GetPlayerViewCommands(playerIdentifier, historyStartIndex);
             else
                 playerView.History = new List<Command>();
             playerView.HistoryLastIndex = this.History.Count;
@@ -97,6 +96,24 @@ namespace BattleSweeperServer.Models
                 return Player1.Identifier == playerIdentifier ? Player2 : Player1;
             else
                 return null;
+        }
+        
+        private List<Command> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)
+        {
+            List<Command> commands = this.History
+                .GetRange(historyStartIndex, this.History.Count - historyStartIndex)
+                .Where(item => !(item.PlayerId != playerIdentifier && item.Info.CommandType == "mine"))
+                .ToList();
+            
+            // clean up the player id's from enemy commands - in order to not ruin data, 
+            // we need to create new command objects with null values in place of id
+            for (int i = 0; i < commands.Count; i++)
+            {
+                if (commands[i].Info.CommandType == "shot" && commands[i].PlayerId != playerIdentifier)
+                    commands[i] = new ShotCommand(commands[i].Info, default) { Points = commands[i].Points };
+            }
+
+            return commands;
         }
     }
 }
