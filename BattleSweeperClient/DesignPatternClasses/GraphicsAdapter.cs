@@ -1,4 +1,4 @@
-﻿using BattleSweeperServer.Models;
+﻿using BattleSweeperClient.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,13 +37,6 @@ namespace BattleSweeperClient.DesignPatternClasses
         public void DrawBattleSweeperBoard(Board board, RectangleF bounds, float boardCellSize, int startLine = 0, int lineCount = 0)
         {
             if (board == null) return;
-
-            DecoratedTile tmp = new Tile() { State = -1, Mine = null };
-            DecoratedTile tmp2 = new TileCrossDecorator(tmp);
-            this.graphics.DrawImage(tmp.GetImage(textures), 0, 20);
-            this.graphics.DrawImage(tmp2.GetImage(textures), 20, 20);
-
-
 
             for (int x = startLine; x < (lineCount > 0 ? Math.Min(startLine + lineCount, board.Size) : board.Size); x++)
             {

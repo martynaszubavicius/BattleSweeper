@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace BattleSweeperServer.Models
+namespace BattleSweeperClient.Models
 {
     public class Player
     {

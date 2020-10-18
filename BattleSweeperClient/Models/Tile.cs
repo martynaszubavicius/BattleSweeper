@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace BattleSweeperServer.Models
+namespace BattleSweeperClient.Models
 {
     public class Tile : DecoratedTile
     {

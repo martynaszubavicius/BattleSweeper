@@ -1,4 +1,4 @@
-﻿namespace BattleSweeperServer.Models
+﻿namespace BattleSweeperClient.Models
 {
     public class Chat
     {
