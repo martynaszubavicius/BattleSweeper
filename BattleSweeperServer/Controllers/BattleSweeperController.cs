@@ -215,9 +215,8 @@ namespace BattleSweeperServer.Controllers
             return game.GetPlayerView(Request.Headers["PlayerIdentifier"]);
         }
 
-
-        [HttpPost("Game/{id}/TestShot")]
-        public ActionResult TestShot(int id, CoordInfo info)
+        [HttpPost("Game/{id}/ExecuteCommand")]
+        public ActionResult ExecuteCommand(int id, CoordInfo info)
         {
             Game game = games.Find(game => game.Id == id);
 
@@ -225,48 +224,81 @@ namespace BattleSweeperServer.Controllers
             if (error != null)
                 return error;
 
-            ShotAbstractFactory shotFactory;
-            switch (info.Data[0])
+            if (game.Player1 == null || game.Player2 == null)
+                return BadRequest("Both players haven't registered yet");
+
+            Command cmd = null;
+
+            switch (info.CommandType)
             {
-                case 'C':
-                    shotFactory = new CustomShotFactory();
+                case "mine":
+                    cmd = new MineCommand(info, Request.Headers["PlayerIdentifier"]);
                     break;
-                case 'S':
-                    shotFactory = new SquareShotFactory();
+                case "shot":
+                    cmd = new ShotCommand(info, Request.Headers["PlayerIdentifier"]);
                     break;
                 default:
                     return NotFound();
             }
 
-            Shot shot = shotFactory.CreateShot(info.Data.Substring(1));
-
-            if (game.Player1 == null || game.Player2 == null)
-                return BadRequest("Both players havent registered yet");
-
-            lock (game)
-            {
-                shot.shotBeh.Shoot(game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board, info.PositionX, info.PositionY);
-            }
-
-            return StatusCode(200); //CreatedAtAction("TestShot", new { id = game.Id }, game);
-        }
-
-        [HttpPost("Game/{id}/TestMineCycle")]
-        public ActionResult TestMineCycle(int id, CoordInfo info)
-        {
-            Game game = games.Find(game => game.Id == id);
-
-            ActionResult error = EnsureIntegrity(game);
-            if (error != null)
-                return error;
-
-            lock (game)
-            {
-                game.GetPlayerByIdentifier(Request.Headers["PlayerIdentifier"]).Board.CycleMine(info.PositionX, info.PositionY);
-            }
+            cmd.Execute(game);
+            game.History.Add(cmd);
 
             return StatusCode(200);
         }
+
+
+        //[HttpPost("Game/{id}/TestShot")]
+        //public ActionResult TestShot(int id, CoordInfo info)
+        //{
+        //    Game game = games.Find(game => game.Id == id);
+
+        //    ActionResult error = EnsureIntegrity(game);
+        //    if (error != null)
+        //        return error;
+
+        //    ShotAbstractFactory shotFactory;
+        //    switch (info.Data[0])
+        //    {
+        //        case 'C':
+        //            shotFactory = new CustomShotFactory();
+        //            break;
+        //        case 'S':
+        //            shotFactory = new SquareShotFactory();
+        //            break;
+        //        default:
+        //            return NotFound();
+        //    }
+
+        //    Shot shot = shotFactory.CreateShot(info.Data.Substring(1));
+
+        //    if (game.Player1 == null || game.Player2 == null)
+        //        return BadRequest("Both players havent registered yet");
+
+        //    lock (game)
+        //    {
+        //        shot.shotBeh.Shoot(game.GetEnemyByIdentifier(Request.Headers["PlayerIdentifier"]).Board, info.PositionX, info.PositionY);
+        //    }
+
+        //    return StatusCode(200); //CreatedAtAction("TestShot", new { id = game.Id }, game);
+        //}
+
+        //[HttpPost("Game/{id}/TestMineCycle")]
+        //public ActionResult TestMineCycle(int id, CoordInfo info)
+        //{
+        //    Game game = games.Find(game => game.Id == id);
+
+        //    ActionResult error = EnsureIntegrity(game);
+        //    if (error != null)
+        //        return error;
+
+        //    lock (game)
+        //    {
+        //        game.GetPlayerByIdentifier(Request.Headers["PlayerIdentifier"]).Board.CycleMine(info.PositionX, info.PositionY);
+        //    }
+
+        //    return StatusCode(200);
+        //}
 
         // TODO: Will be a decorator later i think?
         private ActionResult EnsureIntegrity(Game game)

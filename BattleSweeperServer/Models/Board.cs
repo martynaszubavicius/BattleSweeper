@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace BattleSweeperServer.Models
 {
@@ -51,18 +53,19 @@ namespace BattleSweeperServer.Models
             return enemyView;
         }
 
-        public void RevealTile(int x, int y)
+        public List<Point> RevealTile(int x, int y)
         {
+            List<Point> points = new List<Point>();
             Tile currentTile = Tiles[GetIndex(x, y)];
             if (currentTile.State >= 0)
-                return; // already revealed dumbass
+                return points; // already revealed dumbass
             
             currentTile.State = 0;
 
             if (currentTile.Mine != null)
             {
-                currentTile.Mine.OnReveal(this, x, y);
-                return;
+                //currentTile.Mine.OnReveal(this, x, y);
+                return points.Concat(currentTile.Mine.OnReveal(this, x, y)).ToList();
             }
 
             List<Tile> neighbours = GetNeighbours(x, y);
@@ -71,6 +74,9 @@ namespace BattleSweeperServer.Models
                 if (tile.Mine != null)
                     currentTile.State++;
             }
+            
+            points.Add(new Point(x, y));
+            return points;
         }
 
         public bool WithinBounds(int x , int y)
@@ -97,7 +103,7 @@ namespace BattleSweeperServer.Models
             return neighbours;
         }
 
-        internal void CycleMine(int positionX, int positionY)
+        internal Point CycleMine(int positionX, int positionY)
         {
             MineFactory mineFactory = new MineFactory();
             Tile tile = Tiles[GetIndex(positionX, positionY)];
@@ -109,6 +115,8 @@ namespace BattleSweeperServer.Models
                 tile.Mine = mineFactory.CreateMine(2);
             else
                 tile.Mine = null;
+
+            return new Point(positionX, positionY);
         }
     }
 }

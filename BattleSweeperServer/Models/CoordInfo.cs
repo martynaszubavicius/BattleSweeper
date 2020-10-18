@@ -13,6 +13,9 @@ namespace BattleSweeperServer.Models
         [JsonProperty("data")]
         public string Data { get; set; }
 
+        [JsonProperty("commandType")]
+        public string CommandType { get; set; }
+
         public CoordInfo()
         {
 

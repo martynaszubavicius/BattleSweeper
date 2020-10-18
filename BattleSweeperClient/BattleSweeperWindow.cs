@@ -265,16 +265,17 @@ namespace BattleSweeperClient
             int x = (int)((e.X - bounds.X) / boardCellSize);
             int y = (int)((e.Y - bounds.Y) / boardCellSize);
 
+            CoordInfo coords;
             if (enemy)
             {
-                await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestShot", gameKey),
-                    new CoordInfo() { PositionX = x, PositionY = y, Data = shotTypes[selectedShotType] });
+                coords = new CoordInfo() { PositionX = x, PositionY = y, Data = shotTypes[selectedShotType], CommandType = "shot" };
             }
             else
             {
-                await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/TestMineCycle", gameKey),
-                    new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot" });
+                coords = new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot", CommandType = "mine" };
             }
+
+            await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/ExecuteCommand", gameKey), coords);
 
             gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }

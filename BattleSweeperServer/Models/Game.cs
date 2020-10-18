@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using BattleSweeperServer.DesignPatternClasses;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace BattleSweeperServer.Models
 {
@@ -18,6 +20,9 @@ namespace BattleSweeperServer.Models
         
         [JsonProperty("Settings")]
         public GameSettings Settings { get; set; }
+
+        [JsonProperty("History")]
+        public List<Command> History { get; set; }
 
         public Game()
         {

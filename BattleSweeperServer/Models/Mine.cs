@@ -1,4 +1,7 @@
-﻿using System.Data.Entity.Core.Mapping;
+﻿using System.Collections.Generic;
+using System.Data.Entity.Core.Mapping;
+using System.Drawing;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace BattleSweeperServer.Models
 {
@@ -11,9 +14,11 @@ namespace BattleSweeperServer.Models
 
         }
 
-        public virtual void OnReveal(Board board, int x, int y)
+        public virtual List<Point> OnReveal(Board board, int x, int y)
         {
-
+            List<Point> points = new List<Point>();
+            points.Add(new Point(x, y));
+            return points;
         }
     }
 }
