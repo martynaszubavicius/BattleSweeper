@@ -1,5 +1,6 @@
 ﻿using BattleSweeperClient.DesignPatternClasses;
 using BattleSweeperClient.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ namespace BattleSweeperClient
         private List<string> shotTypes = new List<string> { "SSingleShot", "SFourShot", "SNineShot", "CLineShot", "CScatterShot" };
         private GameSettings gameSettings;
         private int selectedShotType = 0;
+        private int lastState = -1;
 
         // Player bounds
         private RectangleF playerBoardBounds;
@@ -89,7 +91,7 @@ namespace BattleSweeperClient
 
                 // once we get the game settings, switch to getting game state on a timer
                 // timerTickAction = () => { UpdateGame(); };
-                timerTickAction = () => { StaggeredUpdateGame(); };
+                timerTickAction = () => { StaggeredUpdateGame(true); };
 
                 // add in event handlers to redraw the form if it has been resized, since it was actually drawn now
                 this.gameWindow.Paint += new PaintEventHandler(this.gameWindow_Paint);
@@ -116,11 +118,15 @@ namespace BattleSweeperClient
             gameUpdateTimer.Start();
         }
 
-        private async void StaggeredUpdateGame()
+        private async void StaggeredUpdateGame(bool fullRedraw = false)
         {
             gameUpdateTimer.Stop();
 
-            Game game = await APIAccessorSingleton.Instance.GetGameState(this.gameKey);
+            
+
+
+            Game game = await APIAccessorSingleton.Instance.GetGameState(this.gameKey, fullRedraw ? -1 : this.lastState);
+            this.lastState = game.HistoryLastIndex;
 
             if (game != null)
             {
@@ -128,14 +134,14 @@ namespace BattleSweeperClient
                 gameUpdateTimer.Interval = 1;
 
                 timerTickAction = () => {
-                    StaggeredDrawGame(game, g, 0, 2);
+                    StaggeredDrawGame(game, g, fullRedraw, 0, 2);
                 };
             }
 
             gameUpdateTimer.Start();
         }
 
-        private void StaggeredDrawGame(Game game, GraphicsAdapter g, int startLine, int lineCount)
+        private void StaggeredDrawGame(Game game, GraphicsAdapter g, bool fullRedraw, int startLine, int lineCount)
         {
             gameUpdateTimer.Stop();
 
@@ -150,10 +156,19 @@ namespace BattleSweeperClient
             g.DrawBattleSweeperNumbers(789, 3, enemyMinesBounds);
             g.DrawBattleSweeperNumbers(010, 3, enemyAmmoBounds);
 
-            g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize, startLine, lineCount);
-            g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize, startLine, lineCount);
+            if (fullRedraw)
+            {
+                g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize, startLine, lineCount);
+                g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize, startLine, lineCount);
+            }
+            else
+            {
+                g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize, game.History);
+                g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize, game.History);
+            }
+            
 
-            if (startLine + lineCount >= gameSettings.BoardSize)
+            if (startLine + lineCount >= gameSettings.BoardSize || !fullRedraw)
             {
                 // we done, next update after 15ms - can afford to do that now since the ui thread doesnt hang as much
                 gameUpdateTimer.Interval = 15;
@@ -163,7 +178,7 @@ namespace BattleSweeperClient
             else
             {
                 timerTickAction = () => {
-                    StaggeredDrawGame(game, g, startLine + lineCount, lineCount);
+                    StaggeredDrawGame(game, g, fullRedraw, startLine + lineCount, lineCount);
                 };
             }
 
@@ -291,7 +306,7 @@ namespace BattleSweeperClient
             // Whole game needs to be redrawn, so we do that, except the timer interval is short
             // to update it immediately
             gameUpdateTimer.Interval = 1;
-            timerTickAction = () => { StaggeredUpdateGame(); };
+            timerTickAction = () => { StaggeredUpdateGame(true); };
             gameUpdateTimer.Start();
         }
 

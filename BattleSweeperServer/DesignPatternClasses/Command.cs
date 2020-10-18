@@ -10,8 +10,13 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public abstract class Command
     {
+        [JsonProperty("Info")]
         public CoordInfo Info { get; set; }
-        public List<Point> Points { get; set; }
+
+        [JsonProperty("Points")]
+        public List<ChangePoint> Points { get; set; }
+
+        [JsonProperty("PlayerId")]
         public string PlayerId { get; set; }
 
         public Command(CoordInfo info, string playerId)

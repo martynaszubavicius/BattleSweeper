@@ -12,9 +12,9 @@ namespace BattleSweeperServer.DesignPatternClasses
     {
         private bool reveal = true;
         //TODO: Check if it's still within bounds!!!!!!
-        public override List<Point> Shoot(Board board, int x, int y) // x y 
+        public override List<ChangePoint> Shoot(Board board, int x, int y) // x y 
         {
-            List<Point> points = new List<Point>();
+            List<ChangePoint> points = new List<ChangePoint>();
             for (int i = x - 2; i < x + 3; i++)
             {
                 for (int j = y - 2; j < y + 3; j++)

@@ -17,7 +17,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public override void Execute(Game game)
         {
-            Points = new List<Point>();
+            Points = new List<ChangePoint>();
             lock (game)
             {
                 Points.Add(game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY));

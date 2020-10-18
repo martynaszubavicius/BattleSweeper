@@ -55,9 +55,10 @@ namespace BattleSweeperClient.DesignPatternClasses
             return await GetObject<string>("BattleSweeper/GetNewGameFromSettings/{0}", settings.Id.ToString());
         }
 
-        public async Task<Game> GetGameState(string gameKey)
+        public async Task<Game> GetGameState(string gameKey, int lastState = -1)
         {
-            return await GetObject<Game>("BattleSweeper/Game/{0}/State", gameKey);
+            string route = lastState >= 0 ? string.Format("BattleSweeper/Game/{{0}}/State/{0}", lastState) : "BattleSweeper/Game/{0}/State";
+            return await GetObject<Game>(route, gameKey);
         }
 
         public async Task<bool> RegisterPlayerToGame(string gameKey, Player player)
@@ -108,6 +109,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             HttpResponseMessage response;
             try
             {
+               
                 response = await this.httpClient.GetAsync(string.Format(route, id));
             }
             catch (Exception e)

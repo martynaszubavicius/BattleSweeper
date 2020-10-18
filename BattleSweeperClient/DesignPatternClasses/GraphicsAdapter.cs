@@ -68,6 +68,41 @@ namespace BattleSweeperClient.DesignPatternClasses
             }
         }
 
+        public void DrawBattleSweeperBoard(Board board, RectangleF bounds, float boardCellSize, List<Command> commands)
+        {
+            if (board == null) return;
+
+            foreach (Command cmd in commands)
+            {
+                foreach (ChangePoint point in cmd.Points)
+                {
+                    Tile tile = board.Tiles[board.GetIndex(point.X, point.Y)];
+                    DecoratedTile decoTile = tile;
+
+                    if (tile.State != -1)
+                    {
+                        decoTile = new TileRevealedDecorator(decoTile);
+
+                        if (tile.Mine != null)
+                        {
+                            decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
+                            decoTile = new TileCrossDecorator(decoTile);
+                        }
+                        else
+                            decoTile = new TileNumberDecorator(decoTile, tile.State);
+                    }
+                    else
+                    {
+                        if (tile.Mine != null)
+                            decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
+                    }
+
+                    this.graphics.DrawImage(decoTile.GetImage(this.textures), new RectangleF(bounds.X + boardCellSize * point.X, bounds.Y + boardCellSize * point.Y, boardCellSize, boardCellSize));
+                }
+
+            }
+        }
+
         public void SetBackground(Color color, RectangleF bounds)
         {
             this.graphics.FillRectangle(new SolidBrush(Color.Silver), bounds);

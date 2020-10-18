@@ -14,10 +14,10 @@ namespace BattleSweeperServer.Models
 
         }
 
-        public virtual List<Point> OnReveal(Board board, int x, int y)
+        public virtual List<ChangePoint> OnReveal(Board board, int x, int y)
         {
-            List<Point> points = new List<Point>();
-            points.Add(new Point(x, y));
+            List<ChangePoint> points = new List<ChangePoint>();
+            points.Add(new ChangePoint(x, y));
             return points;
         }
     }

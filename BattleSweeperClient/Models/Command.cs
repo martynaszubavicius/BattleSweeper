@@ -14,7 +14,7 @@ namespace BattleSweeperClient.Models
         public CoordInfo Info { get; set; }
 
         [JsonProperty("Points")]
-        public List<Point> Points { get; set; }
+        public List<ChangePoint> Points { get; set; }
 
         [JsonProperty("PlayerId")]
         public string PlayerId { get; set; }
@@ -24,3 +24,4 @@ namespace BattleSweeperClient.Models
 
         }
     }
+}

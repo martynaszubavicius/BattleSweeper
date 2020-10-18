@@ -18,9 +18,9 @@ namespace BattleSweeperServer.DesignPatternClasses
         }
 
         //TODO: NineShot shot needs to be in the center 
-        public override List<Point> Shoot(Board board, int x, int y) // x y 
+        public override List<ChangePoint> Shoot(Board board, int x, int y) // x y 
         {
-            List<Point> points = new List<Point>();
+            List<ChangePoint> points = new List<ChangePoint>();
             for (int i = x; i < x + width; i++)
                 for (int j = y; j < y + width; j++)
                     if (board.WithinBounds(i, j))

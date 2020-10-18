@@ -53,9 +53,9 @@ namespace BattleSweeperServer.Models
             return enemyView;
         }
 
-        public List<Point> RevealTile(int x, int y)
+        public List<ChangePoint> RevealTile(int x, int y)
         {
-            List<Point> points = new List<Point>();
+            List<ChangePoint> points = new List<ChangePoint>();
             Tile currentTile = Tiles[GetIndex(x, y)];
             if (currentTile.State >= 0)
                 return points; // already revealed dumbass
@@ -75,7 +75,7 @@ namespace BattleSweeperServer.Models
                     currentTile.State++;
             }
             
-            points.Add(new Point(x, y));
+            points.Add(new ChangePoint(x, y));
             return points;
         }
 
@@ -103,7 +103,7 @@ namespace BattleSweeperServer.Models
             return neighbours;
         }
 
-        internal Point CycleMine(int positionX, int positionY)
+        internal ChangePoint CycleMine(int positionX, int positionY)
         {
             MineFactory mineFactory = new MineFactory();
             Tile tile = Tiles[GetIndex(positionX, positionY)];
@@ -116,7 +116,7 @@ namespace BattleSweeperServer.Models
             else
                 tile.Mine = null;
 
-            return new Point(positionX, positionY);
+            return new ChangePoint(positionX, positionY);
         }
     }
 }

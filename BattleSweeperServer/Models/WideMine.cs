@@ -13,10 +13,11 @@ namespace BattleSweeperServer.Models
             ImageName = "red_bomb";
         }
 
-        public override List<Point> OnReveal(Board board, int x, int y)
+        public override List<ChangePoint> OnReveal(Board board, int x, int y)
         {
-            List<Point> points = new List<Point>();
+            List<ChangePoint> points = new List<ChangePoint>();
             int radius = 2;
+            points.Add(new ChangePoint(x, y));
 
             for (int i = x - radius + 1; i < x + radius; i++)
                 for (int j = y - radius + 1; j < y + radius; j++)

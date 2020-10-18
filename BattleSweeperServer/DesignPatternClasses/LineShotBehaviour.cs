@@ -17,9 +17,9 @@ namespace BattleSweeperServer.DesignPatternClasses
         }
 
 
-        public override List<Point> Shoot(Board board, int x, int y) // x y 
+        public override List<ChangePoint> Shoot(Board board, int x, int y) // x y 
         {
-            List<Point> points = new List<Point>();
+            List<ChangePoint> points = new List<ChangePoint>();
             for (int i = x-(width/2); i < x + width - width / 2; i++)
             {
                 if (board.WithinBounds(i, y))
