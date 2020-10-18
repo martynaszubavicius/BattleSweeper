@@ -31,8 +31,11 @@ namespace BattleSweeperClient.DesignPatternClasses
 
         public static readonly string ChatsRoute = "api/Chats";
         public static readonly string GameSettingsRoute = "BattleSweeper/GameSettings";
-        
 
+        // Change this to true if you want to use heroku deployed server
+        // Deployed version uses heroku_deploy branch - merge master on heroku_deploy to update deployed version
+        // Deploying takes time - be patient. And make sure that the deployed version is actually working...
+        private bool use_heroku_server = false;
 
         static APIAccessorSingleton()
         {
@@ -47,7 +50,11 @@ namespace BattleSweeperClient.DesignPatternClasses
         {
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.BaseAddress = new Uri(string.Format("{0}:{1}/", apiEndpoint, apiPort));
+            
+            if (use_heroku_server)
+                httpClient.BaseAddress = new Uri("https://battle-sweeper.herokuapp.com/");
+            else
+                httpClient.BaseAddress = new Uri(string.Format("{0}:{1}/", apiEndpoint, apiPort));
         }
 
         public async Task<string> GetNewGameFromSettings(GameSettings settings)
