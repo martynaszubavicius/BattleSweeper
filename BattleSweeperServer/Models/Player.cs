@@ -1,5 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using BattleSweeperServer.DesignPatternClasses;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BattleSweeperServer.Models
 {
@@ -29,9 +33,39 @@ namespace BattleSweeperServer.Models
             return this.Identifier;
         }
 
-        public Board CreateBoard(int size)
+        public Board CreateBoard(GameSettings settings)
         {
-            this.Board = new Board(size);
+            this.Board = new Board(settings.BoardSize);
+            return this.Board;
+        }
+
+        public Board CreateRandomBoard(GameSettings settings)
+        {
+            this.Board = new Board(settings.BoardSize);
+
+            Random rnd = new Random();
+            List<int> choices = Enumerable.Range(0, settings.BoardSize * settings.BoardSize).ToList();
+            MineFactory mineFactory = new MineFactory();
+
+            for (int i = 0; i < settings.SimpleMineCount; i++)
+            {
+                int choicesIndex = rnd.Next(0, choices.Count);
+                this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(0); // Simple Mine
+                choices.RemoveAt(choicesIndex);
+            }
+            for (int i = 0; i < settings.WideMineCount; i++)
+            {
+                int choicesIndex = rnd.Next(0, choices.Count);
+                this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(1); // Wide Mine
+                choices.RemoveAt(choicesIndex);
+            }
+            for (int i = 0; i < settings.FakeMineCount; i++)
+            {
+                int choicesIndex = rnd.Next(0, choices.Count);
+                this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(2); // Fake Mine
+                choices.RemoveAt(choicesIndex);
+            }
+
             return this.Board;
         }
 

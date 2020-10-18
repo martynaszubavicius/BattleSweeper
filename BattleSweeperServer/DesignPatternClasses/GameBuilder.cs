@@ -53,24 +53,11 @@ namespace BattleSweeperServer.DesignPatternClasses
             if (LastOpSuccessful)
             {
                 player.AmmoCount = game.Settings.ShotsPerTurn;
-                Board board = player.CreateBoard(game.Settings.BoardSize);
 
                 if (generateRandomBoards)
-                {
-                    Random rnd = new Random();
-                    MineFactory mineFactory = new MineFactory();
-                    for (int i = 0; i < board.Size * board.Size; i++)
-                    {
-                        board.Tiles.Add(new Tile());
-                        int random_nr = rnd.Next(0, 19);
-                        if (random_nr == 0)
-                            board.Tiles[i].Mine = mineFactory.CreateMine(0); // Simple Mine
-                        if (random_nr == 1)
-                            board.Tiles[i].Mine = mineFactory.CreateMine(1); // Wide Mine
-                        if (random_nr == 2)
-                            board.Tiles[i].Mine = mineFactory.CreateMine(2); // Fake Mine
-                    }
-                }
+                    player.CreateRandomBoard(game.Settings);
+                else
+                    player.CreateBoard(game.Settings);
             }
 
             return this;

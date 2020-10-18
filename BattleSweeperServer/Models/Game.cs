@@ -33,26 +33,6 @@ namespace BattleSweeperServer.Models
             this.History = new List<Command>();
         }
 
-        public bool RegisterPlayer(Player player)
-        {
-            if (Player1 == null)
-            {
-                player.CreateIdentifier(1);
-                Player1 = player;
-                return true;
-            }
-            else if (Player2 == null)
-            {
-                player.CreateIdentifier(2);
-                Player2 = player;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         // Returns a sanitized Game object that only has information that the player with specified identifier should have
         public Game GetPlayerView(string playerIdentifier, int historyStartIndex = -1)
         {
