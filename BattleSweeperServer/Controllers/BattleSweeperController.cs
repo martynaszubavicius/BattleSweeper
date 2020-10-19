@@ -123,10 +123,10 @@ namespace BattleSweeperServer.Controllers
             return player;
         }
 
-        [HttpGet("Game/{id}/Settings")]
-        public ActionResult<GameSettings> GetGameSettings(int id)
+        [HttpGet("Game/{key}/Settings")]
+        public ActionResult<GameSettings> GetGameSettings(string key)
         {
-            Game game = games.Find(game => game.Id == id);
+            Game game = games.Find(game => game.Key == key);
 
             ActionResult error = EnsureIntegrity(game);
             if (error != null)
@@ -135,10 +135,10 @@ namespace BattleSweeperServer.Controllers
             return game.Settings;
         }
 
-        [HttpGet("Game/{id}/State")]
-        public ActionResult<Game> GetGameState(int id)
+        [HttpGet("Game/{key}/State")]
+        public ActionResult<Game> GetGameState(string key)
         {
-            Game game = games.Find(game => game.Id == id);
+            Game game = games.Find(game => game.Key == key);
 
             ActionResult error = EnsureIntegrity(game);
             if (error != null)
@@ -147,10 +147,10 @@ namespace BattleSweeperServer.Controllers
             return game.GetPlayerView(Request.Headers["PlayerIdentifier"]);
         }
 
-        [HttpGet("Game/{id}/State/{stateNr}")]
-        public ActionResult<Game> GetChangedGameState(int id, int stateNr)
+        [HttpGet("Game/{key}/State/{stateNr}")]
+        public ActionResult<Game> GetChangedGameState(string key, int stateNr)
         {
-            Game game = games.Find(game => game.Id == id);
+            Game game = games.Find(game => game.Key == key);
 
             ActionResult error = EnsureIntegrity(game);
             if (error != null)
@@ -159,10 +159,10 @@ namespace BattleSweeperServer.Controllers
             return game.GetPlayerView(Request.Headers["PlayerIdentifier"], stateNr);
         }
 
-        [HttpPost("Game/{id}/ExecuteCommand")]
-        public ActionResult ExecuteCommand(int id, CoordInfo info)
+        [HttpPost("Game/{key}/ExecuteCommand")]
+        public ActionResult ExecuteCommand(string key, CoordInfo info)
         {
-            Game game = games.Find(game => game.Id == id);
+            Game game = games.Find(game => game.Key == key);
 
             ActionResult error = EnsureIntegrity(game);
             if (error != null)
