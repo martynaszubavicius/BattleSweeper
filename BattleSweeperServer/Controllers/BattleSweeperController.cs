@@ -57,15 +57,16 @@ namespace BattleSweeperServer.Controllers
 
         // https://localhost:44337/BattleSweeper
         //
-        // GET  GameTypes - all the game types available
-        // POST CreateGame - new game data
-        // POST Game/{id}/RegisterPlayer - register player to a game with id
+        // GET  GameSettings - get all allowed game settings
+        // POST GetNewGameFromSettings/{id} - create a new game from a settings id
+        // POST Game/{key}/RegisterPlayer - register player to a game with id
         // 
         // Requests below require "PlayerIdentifier" Header
         // 
+        // POST Game/{id}/ExecuteCommand - post a command to cycle mine or shoot a shot
         // GET  Game/{id}/State - get current game state
-        // POST Game/{id}/TestMineCycle - cycle a mine on players board
-        // POST Game/{id}/TestShot - reveal tile on enemys board
+        // GET  Game/{id}/State/{stateNr} - get current game state and commands since state nr with their changes
+        // GET  Game/{id}/Settings - get the settings for the current game
 
         [HttpGet("GameSettings")]
         public ActionResult<IEnumerable<GameSettings>> GetGameSettings()
