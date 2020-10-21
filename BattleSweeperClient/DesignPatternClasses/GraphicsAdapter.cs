@@ -114,7 +114,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             StringFormat drawFormat = new StringFormat();
             Font drawFont = new Font("Arial", fontSize, FontStyle.Bold);
 
-            this.graphics.DrawString("BattleSweeper", drawFont, drawBrush, point.X, point.Y, drawFormat);
+            this.graphics.DrawString(text, drawFont, drawBrush, point.X, point.Y, drawFormat);
 
             drawFont.Dispose();
             drawBrush.Dispose();
