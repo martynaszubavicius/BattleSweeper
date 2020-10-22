@@ -17,7 +17,6 @@ namespace BattleSweeperServer.Controllers
         private static List<GameSettings> gameSettings = new List<GameSettings>();
         private static List<GameBuilder> gameBuilders = new List<GameBuilder>();
 
-
         public BattleSweeperController()
         {
             if (gameSettings.Count > 0)
@@ -77,8 +76,6 @@ namespace BattleSweeperServer.Controllers
         [HttpGet("GetNewGameFromSettings/{id}")]
         public ActionResult<string> CreateGameFromSettings(int Id)
         {
-            // TODO: in general, switch to string keys
-            // TODO: this will return only the key
             GameSettings settings = gameSettings.Find(st => st.Id == Id);
             if (settings == null)
                 return NotFound();
@@ -157,6 +154,42 @@ namespace BattleSweeperServer.Controllers
                 return error;
 
             return game.GetPlayerView(Request.Headers["PlayerIdentifier"], stateNr);
+        }
+
+        // TODO: POST with no info?
+        [HttpPost("Game/{key}/UndoLastCommand")]
+        public ActionResult UndoLastCommand(string key)
+        {
+            Game game = games.Find(game => game.Key == key);
+
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
+
+            if (game.Player1 == null || game.Player2 == null)
+                return BadRequest("Both players haven't registered yet");
+
+            // TODO: now removes the last command by anyone, fix filtering
+            // TODO: solve client side redraw after the undo
+            // TODO: command type undo? filter history getting 
+
+            if (game.History.Count > 0)
+            {
+                game.History[game.History.Count - 1].Undo(game);
+                //game.History.RemoveAt(game.History.Count - 1);
+            }
+
+            return StatusCode(200);
+
+            //for (int i = game.History.Count - 1; i >= 0; i++)
+            //    if (game.History[i].PlayerId == Request.Headers["PlayerIdentifier"])
+            //        cmdIndex = i;
+
+            //{
+            //    cmd = game.History[i];
+            //    game.History[i] = null;
+            //}
+
         }
 
         [HttpPost("Game/{key}/ExecuteCommand")]

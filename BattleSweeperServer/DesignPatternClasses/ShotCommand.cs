@@ -34,5 +34,15 @@ namespace BattleSweeperServer.DesignPatternClasses
                 Points = shot.shotBeh.Shoot(game.GetEnemyByIdentifier(PlayerId).Board, Info.PositionX, Info.PositionY);
             }
         }
+
+        public override void Undo(Game game)
+        {
+            Board board = game.GetEnemyByIdentifier(PlayerId).Board;
+            lock (game)
+            {
+                foreach (ChangePoint pnt in Points)
+                    board.Tiles[board.GetIndex(pnt.X, pnt.Y)].State = -1;
+            }   
+        }
     }
 }

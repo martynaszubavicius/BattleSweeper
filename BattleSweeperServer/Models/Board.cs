@@ -102,18 +102,18 @@ namespace BattleSweeperServer.Models
             return neighbours;
         }
 
-        internal ChangePoint CycleMine(int positionX, int positionY)
+        internal ChangePoint CycleMine(int positionX, int positionY, bool undo = true)
         {
             MineFactory mineFactory = new MineFactory();
             Tile tile = Tiles[GetIndex(positionX, positionY)];
             if (tile.Mine == null)
-                tile.Mine = mineFactory.CreateMine(0);
+                tile.Mine = undo ? mineFactory.CreateMine(2) : mineFactory.CreateMine(0);
             else if (tile.Mine is SimpleMine)
-                tile.Mine = mineFactory.CreateMine(1);
+                tile.Mine = undo ? null : mineFactory.CreateMine(1);
             else if (tile.Mine is WideMine)
-                tile.Mine = mineFactory.CreateMine(2);
+                tile.Mine = undo ? mineFactory.CreateMine(0) : mineFactory.CreateMine(2);
             else
-                tile.Mine = null;
+                tile.Mine = undo ? mineFactory.CreateMine(1) : null;
 
             return new ChangePoint(positionX, positionY);
         }

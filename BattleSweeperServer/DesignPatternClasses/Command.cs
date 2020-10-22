@@ -25,5 +25,6 @@ namespace BattleSweeperServer.DesignPatternClasses
             PlayerId = playerId;
         }
         public abstract void Execute(Game game);
+        public abstract void Undo(Game game);
     }
 }

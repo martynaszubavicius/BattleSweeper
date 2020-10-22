@@ -23,5 +23,13 @@ namespace BattleSweeperServer.DesignPatternClasses
                 Points.Add(game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY));
             }
         }
+
+        public override void Undo(Game game)
+        {
+            lock (game)
+            {
+                game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, true);
+            }
+        }
     }
 }
