@@ -9,12 +9,12 @@ using System.Windows.Forms;
 
 namespace BattleSweeperClient.DesignPatternClasses
 {
-    public class GraphicsAdapter
+    public class GraphicsFacade
     {
         private Graphics graphics;
         private Dictionary<string, Image> textures;
 
-        public GraphicsAdapter(Panel panel, Dictionary<string, Image> textures)
+        public GraphicsFacade(Panel panel, Dictionary<string, Image> textures)
         {
             this.graphics = panel.CreateGraphics();
             this.textures = textures;
@@ -99,18 +99,17 @@ namespace BattleSweeperClient.DesignPatternClasses
 
                     this.graphics.DrawImage(decoTile.GetImage(this.textures), new RectangleF(bounds.X + boardCellSize * point.X, bounds.Y + boardCellSize * point.Y, boardCellSize, boardCellSize));
                 }
-
             }
         }
 
-        public void SetBackground(Color color, RectangleF bounds)
+        public void SetBackground(RectangleF bounds)
         {
             this.graphics.FillRectangle(new SolidBrush(Color.Silver), bounds);
         }
 
-        public void DrawBattleSweeperText(string text, int fontSize, Color color, PointF point)
+        public void DrawBattleSweeperText(string text, int fontSize, PointF point)
         {
-            SolidBrush drawBrush = new SolidBrush(color);
+            SolidBrush drawBrush = new SolidBrush(Color.Red);
             StringFormat drawFormat = new StringFormat();
             Font drawFont = new Font("Arial", fontSize, FontStyle.Bold);
 
@@ -121,9 +120,9 @@ namespace BattleSweeperClient.DesignPatternClasses
             drawFormat.Dispose();
         }
 
-        public void DrawLine(Pen pen, PointF start, PointF end)
+        public void DrawLine(PointF start, PointF end)
         {
-            this.graphics.DrawLine(pen, start, end);
+            this.graphics.DrawLine(Pens.Gray, start, end);
         }
 
         public void DrawBattleSweeperBorder(int borderWidth, RectangleF bounds)

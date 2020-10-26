@@ -60,7 +60,7 @@
       <DependentUpon>BattleSweeperWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="DesignPatternClasses\DecoratedTile.cs" />
-    <Compile Include="DesignPatternClasses\GraphicsAdapter.cs" />
+    <Compile Include="DesignPatternClasses\GraphicsFacade.cs" />
     <Compile Include="DesignPatternClasses\TileBombDecorator.cs" />
     <Compile Include="DesignPatternClasses\TileCrossDecorator.cs" />
     <Compile Include="DesignPatternClasses\TileDecorator.cs" />
