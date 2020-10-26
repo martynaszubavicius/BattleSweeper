@@ -94,5 +94,11 @@ namespace BattleSweeperServer.Models
 
             return commands;
         }
+
+        //TODO: add command given from controller to observer
+        private void AddCommand(Command command)
+        {
+
+        }
     }
 }
