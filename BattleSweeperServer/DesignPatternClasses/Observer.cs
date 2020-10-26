@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BattleSweeperServer.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace BattleSweeperServer.DesignPatternClasses
     public class Observer
     {
         List<Command> History = new List<Command>();
+        public int CommandCount { get { return History.Count; } }
 
         public Observer()
         {
@@ -18,7 +20,7 @@ namespace BattleSweeperServer.DesignPatternClasses
             History.Add(command);
         }
 
-        public List<Command> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)
+        public List<ChangePoint> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)
         {
             List<Command> commands = this.History
                 .GetRange(historyStartIndex, this.History.Count - historyStartIndex)
@@ -33,7 +35,7 @@ namespace BattleSweeperServer.DesignPatternClasses
                     commands[i] = new ShotCommand(commands[i].Info, default) { Points = commands[i].Points };
             }
 
-            return commands;
+            return commands.Aggregate(new List<ChangePoint>(), (accum, cmd) => { return accum.Concat(cmd.Points).ToList(); });
         }
     }
 }

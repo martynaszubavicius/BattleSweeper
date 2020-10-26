@@ -173,11 +173,11 @@ namespace BattleSweeperServer.Controllers
             // TODO: solve client side redraw after the undo
             // TODO: command type undo? filter history getting 
 
-            if (game.History.Count > 0)
-            {
-                game.History[game.History.Count - 1].Undo(game);
-                //game.History.RemoveAt(game.History.Count - 1);
-            }
+            //if (game.History.Count > 0)
+            //{
+            //    game.History[game.History.Count - 1].Undo(game);
+            //    //game.History.RemoveAt(game.History.Count - 1);
+            //}
 
             return StatusCode(200);
 

@@ -68,37 +68,34 @@ namespace BattleSweeperClient.DesignPatternClasses
             }
         }
 
-        public void DrawBattleSweeperBoard(Board board, RectangleF bounds, float boardCellSize, List<Command> commands)
+        public void DrawBattleSweeperBoard(Board board, RectangleF bounds, float boardCellSize, List<ChangePoint> RedrawPoints)
         {
             if (board == null) return;
 
-            foreach (Command cmd in commands)
+            foreach (ChangePoint point in RedrawPoints)
             {
-                foreach (ChangePoint point in cmd.Points)
+                Tile tile = board.Tiles[board.GetIndex(point.X, point.Y)];
+                DecoratedTile decoTile = tile;
+
+                if (tile.State != -1)
                 {
-                    Tile tile = board.Tiles[board.GetIndex(point.X, point.Y)];
-                    DecoratedTile decoTile = tile;
+                    decoTile = new TileRevealedDecorator(decoTile);
 
-                    if (tile.State != -1)
+                    if (tile.Mine != null)
                     {
-                        decoTile = new TileRevealedDecorator(decoTile);
-
-                        if (tile.Mine != null)
-                        {
-                            decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
-                            decoTile = new TileCrossDecorator(decoTile);
-                        }
-                        else
-                            decoTile = new TileNumberDecorator(decoTile, tile.State);
+                        decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
+                        decoTile = new TileCrossDecorator(decoTile);
                     }
                     else
-                    {
-                        if (tile.Mine != null)
-                            decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
-                    }
-
-                    this.graphics.DrawImage(decoTile.GetImage(this.textures), new RectangleF(bounds.X + boardCellSize * point.X, bounds.Y + boardCellSize * point.Y, boardCellSize, boardCellSize));
+                        decoTile = new TileNumberDecorator(decoTile, tile.State);
                 }
+                else
+                {
+                    if (tile.Mine != null)
+                        decoTile = new TileBombDecorator(decoTile, tile.Mine.ImageName);
+                }
+
+                this.graphics.DrawImage(decoTile.GetImage(this.textures), new RectangleF(bounds.X + boardCellSize * point.X, bounds.Y + boardCellSize * point.Y, boardCellSize, boardCellSize));
             }
         }
 

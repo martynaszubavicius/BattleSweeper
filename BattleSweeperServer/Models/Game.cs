@@ -22,20 +22,19 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Settings")]
         public GameSettings Settings { get; set; }
 
-        //TODO: remove after implementing observer
-        [JsonProperty("History")]
-
-        public List<Command> History { get; set; }
-        //------------------------------------------------------------------
+        [JsonIgnore]
         public Observer HistoryObserver { get; set; }
-        //------------------------------------------------------------------
+        
+        // only for use by the client and json serialising. Server should not use this anywhere else
+        [JsonProperty("RedrawPoints")]
+        public List<ChangePoint> RedrawPoints { get; set; }
 
         [JsonProperty("HistoryLastIndex")]
-        public int HistoryLastIndex { get; set; } // only for use by the client and json serialising. Server should not use this anywhere else
+        public int HistoryLastIndex { get; set; }
 
         public Game()
         {
-            this.History = new List<Command>();
+            //this.History = new List<Command>();
             this.HistoryObserver = new Observer();
         }
 
@@ -54,10 +53,10 @@ namespace BattleSweeperServer.Models
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
             if (historyStartIndex >= 0)
-                playerView.History = HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex);
+                playerView.RedrawPoints = HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex);
             else
-                playerView.History = new List<Command>();
-            playerView.HistoryLastIndex = this.History.Count;
+                playerView.RedrawPoints = new List<ChangePoint>();
+            playerView.HistoryLastIndex = this.HistoryObserver.CommandCount;
 
             return playerView;
         }

@@ -75,7 +75,6 @@
     <Compile Include="Models\Board.cs" />
     <Compile Include="Models\ChangePoint.cs" />
     <Compile Include="Models\Chat.cs" />
-    <Compile Include="Models\Command.cs" />
     <Compile Include="Models\CoordInfo.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\GameSettings.cs" />

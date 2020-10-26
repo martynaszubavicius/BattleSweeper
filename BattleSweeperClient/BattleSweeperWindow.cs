@@ -163,8 +163,8 @@ namespace BattleSweeperClient
             }
             else
             {
-                g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize, game.History);
-                g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize, game.History);
+                g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize, game.RedrawPoints);
+                g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize, game.RedrawPoints);
             }
             
 

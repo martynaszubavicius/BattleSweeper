@@ -20,8 +20,8 @@ namespace BattleSweeperClient.Models
         [JsonProperty("Settings")]
         public GameSettings Settings { get; set; }
 
-        [JsonProperty("History")]
-        public List<Command> History { get; set; }
+        [JsonProperty("RedrawPoints")]
+        public List<ChangePoint> RedrawPoints { get; set; }
 
         [JsonProperty("HistoryLastIndex")]
         public int HistoryLastIndex { get; set; }
