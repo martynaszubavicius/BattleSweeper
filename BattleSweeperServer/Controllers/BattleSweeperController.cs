@@ -218,8 +218,7 @@ namespace BattleSweeperServer.Controllers
                     return NotFound();
             }
 
-            cmd.Execute(game);
-            game.History.Add(cmd);
+            game.AddExecuteCommand(cmd);
 
             return StatusCode(200);
         }

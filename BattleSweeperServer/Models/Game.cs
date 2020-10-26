@@ -22,8 +22,13 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Settings")]
         public GameSettings Settings { get; set; }
 
+        //TODO: remove after implementing observer
         [JsonProperty("History")]
+
         public List<Command> History { get; set; }
+        //------------------------------------------------------------------
+        public Observer HistoryObserver { get; set; }
+        //------------------------------------------------------------------
 
         [JsonProperty("HistoryLastIndex")]
         public int HistoryLastIndex { get; set; } // only for use by the client and json serialising. Server should not use this anywhere else
@@ -31,6 +36,7 @@ namespace BattleSweeperServer.Models
         public Game()
         {
             this.History = new List<Command>();
+            this.HistoryObserver = new Observer();
         }
 
         // Returns a sanitized Game object that only has information that the player with specified identifier should have
@@ -48,7 +54,7 @@ namespace BattleSweeperServer.Models
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
             if (historyStartIndex >= 0)
-                playerView.History = GetPlayerViewCommands(playerIdentifier, historyStartIndex);
+                playerView.History = HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex);
             else
                 playerView.History = new List<Command>();
             playerView.HistoryLastIndex = this.History.Count;
@@ -76,29 +82,12 @@ namespace BattleSweeperServer.Models
             else
                 return null;
         }
-        
-        private List<Command> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)
-        {
-            List<Command> commands = this.History
-                .GetRange(historyStartIndex, this.History.Count - historyStartIndex)
-                .Where(item => !(item.PlayerId != playerIdentifier && item.Info.CommandType == "mine"))
-                .ToList();
-            
-            // clean up the player id's from enemy commands - in order to not ruin data, 
-            // we need to create new command objects with null values in place of id
-            for (int i = 0; i < commands.Count; i++)
-            {
-                if (commands[i].Info.CommandType == "shot" && commands[i].PlayerId != playerIdentifier)
-                    commands[i] = new ShotCommand(commands[i].Info, default) { Points = commands[i].Points };
-            }
-
-            return commands;
-        }
 
         //TODO: add command given from controller to observer
-        private void AddCommand(Command command)
+        public void AddExecuteCommand(Command command)
         {
-
+            command.Execute(this);
+            this.HistoryObserver.Add(command);
         }
     }
 }
