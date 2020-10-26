@@ -130,7 +130,7 @@ namespace BattleSweeperClient
 
             if (game != null)
             {
-                GraphicsAdapter g = new GraphicsAdapter(gameWindow, textures);
+                GraphicsFacade g = new GraphicsFacade(gameWindow, textures);
                 gameUpdateTimer.Interval = 1;
 
                 timerTickAction = () => {
@@ -141,7 +141,7 @@ namespace BattleSweeperClient
             gameUpdateTimer.Start();
         }
 
-        private void StaggeredDrawGame(Game game, GraphicsAdapter g, bool fullRedraw, int startLine, int lineCount)
+        private void StaggeredDrawGame(Game game, GraphicsFacade g, bool fullRedraw, int startLine, int lineCount)
         {
             gameUpdateTimer.Stop();
 
@@ -220,7 +220,7 @@ namespace BattleSweeperClient
 
         private void DrawGame(Game game, bool fullRedraw = false)
         {
-            GraphicsAdapter g = new GraphicsAdapter(gameWindow, textures);
+            GraphicsFacade g = new GraphicsFacade(gameWindow, textures);
 
             if (redrawButton)
             {
@@ -242,12 +242,12 @@ namespace BattleSweeperClient
 
         private void DrawWindow()
         {
-            GraphicsAdapter g = new GraphicsAdapter(gameWindow, textures);
+            GraphicsFacade g = new GraphicsFacade(gameWindow, textures);
 
-            g.SetBackground(Color.Silver, gameWindow.DisplayRectangle);
-            g.DrawBattleSweeperText("BattleSweeper", 45, Color.Red, new PointF(5, 5));
-            g.DrawBattleSweeperText("by MELV team", 12, Color.Red, new PointF(430, 45));
-            g.DrawLine(Pens.Gray, new PointF(0, 80), new PointF(gameWindow.ClientSize.Width, 80));
+            g.SetBackground(gameWindow.DisplayRectangle);
+            g.DrawBattleSweeperText("BattleSweeper", 45, new PointF(5, 5));
+            g.DrawBattleSweeperText("by MELV team", 12, new PointF(430, 45));
+            g.DrawLine(new PointF(0, 80), new PointF(gameWindow.ClientSize.Width, 80));
             g.DrawBattleSweeperBorder(4, playerBoardBounds);
             g.DrawBattleSweeperBorder(4, enemyBoardBounds);
             g.DrawBattleSweeperBorder(2, shotTypeSelectorBounds);
