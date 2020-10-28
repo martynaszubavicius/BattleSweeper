@@ -17,7 +17,6 @@ namespace BattleSweeperServer.DesignPatternClasses
             this.width = width;
         }
 
-        //TODO: NineShot shot needs to be in the center 
         public override List<ChangePoint> Shoot(Board board, int x, int y) // x y 
         {
             List<ChangePoint> points = new List<ChangePoint>();
