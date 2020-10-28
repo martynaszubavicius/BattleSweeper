@@ -10,9 +10,9 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public class Observer
     {
-        List<Command> History = new List<Command>();
+        List<Command> history = new List<Command>();
         
-        public int CommandCount { get { return History.Count; } }
+        public int CommandCount { get { return history.Count; } }
 
         public Observer()
         {
@@ -20,24 +20,24 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public void Add(Command command)
         {
-            History.Add(command);
+            history.Add(command);
         }
 
         public void Undo(Game game, string playerIdentifier)
         {
-            for (int i = History.Count - 1; i >= 0; i--)
-                if (History[i].PlayerId == playerIdentifier && !History[i].Undone)
+            for (int i = history.Count - 1; i >= 0; i--)
+                if (history[i].PlayerId == playerIdentifier && !history[i].Undone)
                 {
-                    History[i].Undo(game);
-                    History.Add(History[i]);
+                    history[i].Undo(game);
+                    history.Add(history[i]);
                     break;
                 }
         }
 
         public List<ChangePoint> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)
         {
-            List<Command> commands = this.History
-                .GetRange(historyStartIndex, this.History.Count - historyStartIndex)
+            List<Command> commands = this.history
+                .GetRange(historyStartIndex, this.history.Count - historyStartIndex)
                 .Where(item => !(item.PlayerId != playerIdentifier && item.Info.CommandType == "mine"))
                 .ToList();
 
