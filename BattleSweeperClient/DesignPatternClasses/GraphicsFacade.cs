@@ -11,12 +11,12 @@ namespace BattleSweeperClient.DesignPatternClasses
 {
     public class GraphicsFacade
     {
-        private Graphics graphics;
+        private GraphicsAdapter graphics;
         private Dictionary<string, Image> textures;
 
         public GraphicsFacade(Panel panel, Dictionary<string, Image> textures)
         {
-            this.graphics = panel.CreateGraphics();
+            this.graphics = new GraphicsAdapter(panel);
             this.textures = textures;
         }
 
@@ -110,7 +110,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             StringFormat drawFormat = new StringFormat();
             Font drawFont = new Font("Arial", fontSize, FontStyle.Bold);
 
-            this.graphics.DrawString(text, drawFont, drawBrush, point.X, point.Y, drawFormat);
+            this.graphics.DrawString(text, drawFont, drawBrush, point, drawFormat);
 
             drawFont.Dispose();
             drawBrush.Dispose();
@@ -132,7 +132,7 @@ namespace BattleSweeperClient.DesignPatternClasses
                 new PointF(bounds.X, bounds.Y + bounds.Height), // bottom left inside
                 new PointF(bounds.X - borderWidth, bounds.Y + bounds.Height + borderWidth) // bottom left outside
             });
-            this.graphics.FillPolygon(Brushes.White, new PointF[] {
+            this.graphics.FillPolygon(Brushes.Gray, new PointF[] {
                 new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y + bounds.Height + borderWidth), // bottom right outside
                 new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y - borderWidth), // top right outside
                 new PointF(bounds.X + bounds.Width, bounds.Y), // top right inside
