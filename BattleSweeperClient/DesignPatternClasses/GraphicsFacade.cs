@@ -132,7 +132,7 @@ namespace BattleSweeperClient.DesignPatternClasses
                 new PointF(bounds.X, bounds.Y + bounds.Height), // bottom left inside
                 new PointF(bounds.X - borderWidth, bounds.Y + bounds.Height + borderWidth) // bottom left outside
             });
-            this.graphics.FillPolygon(Brushes.Gray, new PointF[] {
+            this.graphics.FillPolygon(Brushes.White, new PointF[] {
                 new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y + bounds.Height + borderWidth), // bottom right outside
                 new PointF(bounds.X + bounds.Width + borderWidth, bounds.Y - borderWidth), // top right outside
                 new PointF(bounds.X + bounds.Width, bounds.Y), // top right inside
