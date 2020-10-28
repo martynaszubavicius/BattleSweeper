@@ -30,6 +30,7 @@ namespace BattleSweeperServer.Models
         {
             Tile clone = (Tile)this.MemberwiseClone();
             clone.State = State;
+            clone.Mine = Mine;
             return clone;
         }
 

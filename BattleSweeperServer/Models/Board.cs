@@ -51,22 +51,13 @@ namespace BattleSweeperServer.Models
                 Tiles = new List<Tile>()
             };
 
-
             for (int i = 0; i < this.Size * this.Size; i++)
             {
-                Tile tile = this.Tiles[i].DeepCopy();
+                Tile tile = new Tile(this.Tiles[i].State);
                 if (tile.State >= 0)
                     tile.Mine = this.Tiles[i].Mine;
                 enemyView.Tiles.Add(tile);
             }
-
-            //for (int i = 0; i < this.Size * this.Size; i++)
-            //{
-            //    Tile tile = new Tile(this.Tiles[i].State);
-            //    if (tile.State >= 0)
-            //        tile.Mine = this.Tiles[i].Mine;
-            //    enemyView.Tiles.Add(tile);
-            //}
 
             return enemyView;
         }
