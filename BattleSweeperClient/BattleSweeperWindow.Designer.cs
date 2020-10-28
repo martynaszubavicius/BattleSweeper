@@ -56,7 +56,7 @@
             this.Controls.Add(this.gameWindow);
             this.MinimumSize = new System.Drawing.Size(700, 400);
             this.Name = "BattleSweeperWindow";
-            this.Text = "GameWindow";
+            this.Text = "BattleSweeper";
             this.ResumeLayout(false);
 
         }
