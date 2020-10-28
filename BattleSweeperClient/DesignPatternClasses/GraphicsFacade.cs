@@ -11,12 +11,12 @@ namespace BattleSweeperClient.DesignPatternClasses
 {
     public class GraphicsFacade
     {
-        private Graphics graphics;
+        private GraphicsAdapter graphics;
         private Dictionary<string, Image> textures;
 
         public GraphicsFacade(Panel panel, Dictionary<string, Image> textures)
         {
-            this.graphics = panel.CreateGraphics();
+            this.graphics = new GraphicsAdapter(panel);
             this.textures = textures;
         }
 
@@ -110,7 +110,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             StringFormat drawFormat = new StringFormat();
             Font drawFont = new Font("Arial", fontSize, FontStyle.Bold);
 
-            this.graphics.DrawString(text, drawFont, drawBrush, point.X, point.Y, drawFormat);
+            this.graphics.DrawString(text, drawFont, drawBrush, point, drawFormat);
 
             drawFont.Dispose();
             drawBrush.Dispose();
