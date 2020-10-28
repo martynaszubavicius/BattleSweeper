@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BattleSweeperClient.DesignPatternClasses
 {
-    public abstract class DecoratedTile
+    public abstract class DrawableTile
     {
         public abstract Image GetImage(Dictionary<string, Image> textures);
     }

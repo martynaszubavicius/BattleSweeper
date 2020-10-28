@@ -43,7 +43,7 @@ namespace BattleSweeperClient.DesignPatternClasses
                 for (int y = 0; y < board.Size; y++)
                 {
                     Tile tile = board.Tiles[board.GetIndex(x, y)];
-                    DecoratedTile decoTile = tile;
+                    DrawableTile decoTile = tile;
 
                     if (tile.State != -1)
                     {
@@ -75,7 +75,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             foreach (ChangePoint point in RedrawPoints)
             {
                 Tile tile = board.Tiles[board.GetIndex(point.X, point.Y)];
-                DecoratedTile decoTile = tile;
+                DrawableTile decoTile = tile;
 
                 if (tile.State != -1)
                 {

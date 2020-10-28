@@ -24,6 +24,9 @@ namespace BattleSweeperServer.Models
 
         [JsonIgnore]
         public Observer HistoryObserver { get; set; }
+
+        [JsonIgnore]
+        public bool DebugMode { get; set; }
         
         // only for use by the client and json serialising. Server should not use this anywhere else
         [JsonProperty("RedrawPoints")]

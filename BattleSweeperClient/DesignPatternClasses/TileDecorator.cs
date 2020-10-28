@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace BattleSweeperClient.DesignPatternClasses
 {
-    public abstract class TileDecorator : DecoratedTile
+    public abstract class TileDecorator : DrawableTile
     {
-        protected DecoratedTile tile;
+        protected DrawableTile tile;
 
-        public TileDecorator(DecoratedTile tile)
+        public TileDecorator(DrawableTile tile)
         {
             this.tile = tile;
         }

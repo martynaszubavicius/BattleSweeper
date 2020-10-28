@@ -11,7 +11,7 @@ namespace BattleSweeperClient.DesignPatternClasses
     {
         private int number;
 
-        public TileNumberDecorator(DecoratedTile tile, int number) : base(tile) 
+        public TileNumberDecorator(DrawableTile tile, int number) : base(tile) 
         {
             this.number = number;
         }

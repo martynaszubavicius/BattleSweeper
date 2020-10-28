@@ -74,7 +74,7 @@ namespace BattleSweeperServer.Controllers
         }
 
         [HttpGet("GetNewGameFromSettings/{id}")]
-        public ActionResult<string> CreateGameFromSettings(int Id)
+        public ActionResult<string> CreateGameFromSettings(int Id, bool debug = false)
         {
             GameSettings settings = gameSettings.Find(st => st.Id == Id);
             if (settings == null)
@@ -85,18 +85,24 @@ namespace BattleSweeperServer.Controllers
             lock (gameBuilders)
             {
                 builder = new GameBuilder(gameBuilders.Count)
-                    .SetSettings(settings)
-                    .RandomBoardGeneration(true);
+                    .SetSettings(settings);
+
+                if (debug) builder = builder.SetDebugMode();
                 gameBuilders.Add(builder);
             }
 
             return builder.Key;
         }
 
-        [HttpPost("Game/{key}/RegisterPlayer")]
-        public ActionResult<Player> RegisterPlayer(string key, Player player)
+        [HttpGet("GetNewGameFromSettings/{id}/Debug")]
+        public ActionResult<string> CreateGameFromSettings(int Id)
         {
-            // switch to key 
+            return CreateGameFromSettings(Id, true);
+        }
+
+        [HttpPost("Game/{key}/RegisterPlayer")]
+        public ActionResult<Player> RegisterPlayer(string key, Player player, bool randomBoard = false)
+        {
             GameBuilder builder = gameBuilders.Find(b => b.Key == key);
 
             if (builder == null)
@@ -104,7 +110,7 @@ namespace BattleSweeperServer.Controllers
 
             lock (builder)
             {
-                builder.RegisterPlayer(player);
+                builder.RegisterPlayer(player, randomBoard);
                 if (!builder.LastOpSuccessful)
                     return BadRequest(new { error = "game full" });
 
@@ -116,8 +122,13 @@ namespace BattleSweeperServer.Controllers
                 }
             }
 
-            // TODO: should probably only return a string here
             return player;
+        }
+
+        [HttpPost("Game/{key}/RegisterPlayerWithBoard")]
+        public ActionResult<Player> RegisterPlayer(string key, Player player)
+        {
+            return RegisterPlayer(key, player, true);
         }
 
         [HttpGet("Game/{key}/Settings")]
@@ -169,6 +180,9 @@ namespace BattleSweeperServer.Controllers
             if (game.Player1 == null || game.Player2 == null)
                 return BadRequest("Game has not started yet");
 
+            if (!game.DebugMode)
+                return BadRequest("Game is not in debug mode");
+
             lock (game)
                 game.UndoLastPlayerCommand(Request.Headers["PlayerIdentifier"]);
 
@@ -207,7 +221,6 @@ namespace BattleSweeperServer.Controllers
             return StatusCode(200);
         }
 
-        // TODO: Will be a decorator later i think?
         private ActionResult EnsureIntegrity(Game game)
         {
             if (game == null)

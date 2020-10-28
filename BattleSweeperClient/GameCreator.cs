@@ -47,7 +47,7 @@ namespace BattleSweeperClient
             }
                 
             //Game game = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings);
-            string gameKey = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings);
+            string gameKey = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings, debugMode.Checked);
 
             if (gameKey != default)
             {
@@ -65,10 +65,10 @@ namespace BattleSweeperClient
             string gameKey = gameIdTextBox.Text;
             Player player = new Player() { Name = nameTextBox.Text };
 
-            if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player))
+            if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player, randomBoard.Checked))
             {
                 if (secondPlayerForTesting.Checked)
-                    await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = "tester123" });
+                    await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = "tester123" }, true, true);
 
                 new BattleSweeperWindow(gameKey).ShowDialog();
                 errorLabel.Text = "";

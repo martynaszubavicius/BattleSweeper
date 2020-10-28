@@ -9,7 +9,7 @@ namespace BattleSweeperClient.DesignPatternClasses
 {
     class TileRevealedDecorator : TileDecorator
     {
-        public TileRevealedDecorator(DecoratedTile tile) : base(tile) { }
+        public TileRevealedDecorator(DrawableTile tile) : base(tile) { }
 
         public override Image GetImage(Dictionary<string, Image> textures)
         {

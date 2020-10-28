@@ -57,9 +57,9 @@ namespace BattleSweeperClient.DesignPatternClasses
                 httpClient.BaseAddress = new Uri(string.Format("{0}:{1}/", apiEndpoint, apiPort));
         }
 
-        public async Task<string> GetNewGameFromSettings(GameSettings settings)
+        public async Task<string> GetNewGameFromSettings(GameSettings settings, bool debug)
         {
-            return await GetObject<string>("BattleSweeper/GetNewGameFromSettings/{0}", settings.Id.ToString());
+            return await GetObject<string>("BattleSweeper/GetNewGameFromSettings/{0}" + (debug ? "/Debug" : ""), settings.Id.ToString());
         }
 
         public async Task<Game> GetGameState(string gameKey, int lastState = -1)
@@ -68,9 +68,12 @@ namespace BattleSweeperClient.DesignPatternClasses
             return await GetObject<Game>(route, gameKey);
         }
 
-        public async Task<bool> RegisterPlayerToGame(string gameKey, Player player)
+        public async Task<bool> RegisterPlayerToGame(string gameKey, Player player, bool randomBoard, bool secondaryTestPlayer = false)
         {
-            Player registeredPlayer = await PostObject<Player>(string.Format("BattleSweeper/Game/{0}/RegisterPlayer", gameKey), player);
+            Player registeredPlayer = await PostObject<Player>(string.Format("BattleSweeper/Game/{0}/RegisterPlayer" + (randomBoard ? "WithBoard" : ""), gameKey), player);
+
+            if (secondaryTestPlayer)
+                return true;
 
             if (registeredPlayer != null)
             {

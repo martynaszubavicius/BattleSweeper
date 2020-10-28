@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace BattleSweeperClient.Models
 {
-    public class Tile : DecoratedTile
+    public class Tile : DrawableTile
     {
         [JsonProperty("State")]
         public int State { get; set; } // -1 unrevealed, 0 empty or bomb, >0 nearby mine count

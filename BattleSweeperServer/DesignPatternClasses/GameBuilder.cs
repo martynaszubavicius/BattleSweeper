@@ -11,9 +11,7 @@ namespace BattleSweeperServer.DesignPatternClasses
     public class GameBuilder
     {
         private Game game;
-        private bool generateRandomBoards = false;
 
-        public int Id { get { return this.game.Id; } }
         public string Key { get { return this.game.Key; } }
 
         public bool LastOpSuccessful { get; private set; }
@@ -30,7 +28,7 @@ namespace BattleSweeperServer.DesignPatternClasses
             return this;
         }
 
-        public GameBuilder RegisterPlayer(Player player)
+        public GameBuilder RegisterPlayer(Player player, bool randomBoard = false)
         {
             if (game.Player1 == null)
             {
@@ -54,7 +52,7 @@ namespace BattleSweeperServer.DesignPatternClasses
             {
                 player.AmmoCount = game.Settings.ShotsPerTurn;
 
-                if (generateRandomBoards)
+                if (randomBoard)
                     player.CreateRandomBoard(game.Settings);
                 else
                     player.CreateBoard(game.Settings);
@@ -78,9 +76,10 @@ namespace BattleSweeperServer.DesignPatternClasses
             }
         }
 
-        public GameBuilder RandomBoardGeneration(bool value)
+        public GameBuilder SetDebugMode()
         {
-            generateRandomBoards = value;
+            game.DebugMode = true;
+            LastOpSuccessful = true;
             return this;
         }
     }

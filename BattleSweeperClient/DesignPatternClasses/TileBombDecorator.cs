@@ -11,7 +11,7 @@ namespace BattleSweeperClient.DesignPatternClasses
     public class TileBombDecorator : TileDecorator
     {
         private string bombType;
-        public TileBombDecorator(DecoratedTile tile, string bombType) : base(tile) 
+        public TileBombDecorator(DrawableTile tile, string bombType) : base(tile) 
         {
             this.bombType = bombType;
         }
