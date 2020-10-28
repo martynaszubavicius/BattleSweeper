@@ -8,13 +8,5 @@ namespace BattleSweeperServer.Models
 
         public ShotBehaviour shotBeh { get; set; }
         
-
-        // ShotBehaviour shotBeh = ...
-
-        //[JsonProperty("positionX")]
-        //public int positionX { get; set; }
-
-        //[JsonProperty("positionY")]
-        //public int positionY { get; set; }
     }
 }

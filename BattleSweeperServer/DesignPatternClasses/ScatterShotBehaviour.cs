@@ -11,7 +11,6 @@ namespace BattleSweeperServer.DesignPatternClasses
     public class ScatterShotBehaviour : ShotBehaviour
     {
         private bool reveal = true;
-        //TODO: Check if it's still within bounds!!!!!!
         public override List<ChangePoint> Shoot(Board board, int x, int y) // x y 
         {
             List<ChangePoint> points = new List<ChangePoint>();
@@ -25,9 +24,6 @@ namespace BattleSweeperServer.DesignPatternClasses
                 }
             }
             return points;
-
-            //TODO: square shoot implementation
-
         }
     }
 }
