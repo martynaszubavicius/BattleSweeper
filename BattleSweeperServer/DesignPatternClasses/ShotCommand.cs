@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BattleSweeperServer.DesignPatternClasses
 {
@@ -37,12 +38,10 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public override void Undo(Game game)
         {
+            this.Undone = true;
             Board board = game.GetEnemyByIdentifier(PlayerId).Board;
-            lock (game)
-            {
-                foreach (ChangePoint pnt in Points)
-                    board.Tiles[board.GetIndex(pnt.X, pnt.Y)].State = -1;
-            }   
+            foreach (ChangePoint pnt in Points)
+                board.Tiles[board.GetIndex(pnt.X, pnt.Y)].State = -1;  
         }
     }
 }

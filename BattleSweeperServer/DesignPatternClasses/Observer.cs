@@ -1,7 +1,9 @@
 ﻿using BattleSweeperServer.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
 namespace BattleSweeperServer.DesignPatternClasses
@@ -9,6 +11,7 @@ namespace BattleSweeperServer.DesignPatternClasses
     public class Observer
     {
         List<Command> History = new List<Command>();
+        
         public int CommandCount { get { return History.Count; } }
 
         public Observer()
@@ -18,6 +21,17 @@ namespace BattleSweeperServer.DesignPatternClasses
         public void Add(Command command)
         {
             History.Add(command);
+        }
+
+        public void Undo(Game game, string playerIdentifier)
+        {
+            for (int i = History.Count - 1; i >= 0; i--)
+                if (History[i].PlayerId == playerIdentifier && !History[i].Undone)
+                {
+                    History[i].Undo(game);
+                    History.Add(History[i]);
+                    break;
+                }
         }
 
         public List<ChangePoint> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)

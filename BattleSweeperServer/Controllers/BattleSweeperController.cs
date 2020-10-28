@@ -167,29 +167,12 @@ namespace BattleSweeperServer.Controllers
                 return error;
 
             if (game.Player1 == null || game.Player2 == null)
-                return BadRequest("Both players haven't registered yet");
+                return BadRequest("Game has not started yet");
 
-            // TODO: now removes the last command by anyone, fix filtering
-            // TODO: solve client side redraw after the undo
-            // TODO: command type undo? filter history getting 
-
-            //if (game.History.Count > 0)
-            //{
-            //    game.History[game.History.Count - 1].Undo(game);
-            //    //game.History.RemoveAt(game.History.Count - 1);
-            //}
+            lock (game)
+                game.UndoLastPlayerCommand(Request.Headers["PlayerIdentifier"]);
 
             return StatusCode(200);
-
-            //for (int i = game.History.Count - 1; i >= 0; i++)
-            //    if (game.History[i].PlayerId == Request.Headers["PlayerIdentifier"])
-            //        cmdIndex = i;
-
-            //{
-            //    cmd = game.History[i];
-            //    game.History[i] = null;
-            //}
-
         }
 
         [HttpPost("Game/{key}/ExecuteCommand")]
@@ -218,7 +201,8 @@ namespace BattleSweeperServer.Controllers
                     return NotFound();
             }
 
-            game.AddExecuteCommand(cmd);
+            lock (game)
+                game.AddExecuteCommand(cmd);
 
             return StatusCode(200);
         }

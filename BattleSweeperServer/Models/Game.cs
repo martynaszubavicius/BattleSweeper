@@ -88,5 +88,10 @@ namespace BattleSweeperServer.Models
             command.Execute(this);
             this.HistoryObserver.Add(command);
         }
+
+        public void UndoLastPlayerCommand(string playerIdentifier)
+        {
+            this.HistoryObserver.Undo(this, playerIdentifier);
+        }
     }
 }

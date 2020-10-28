@@ -19,10 +19,13 @@ namespace BattleSweeperServer.DesignPatternClasses
         [JsonProperty("PlayerId")]
         public string PlayerId { get; set; }
 
+        public bool Undone { get; protected set; }
+
         public Command(CoordInfo info, string playerId)
         {
             Info = info;
             PlayerId = playerId;
+            Undone = false;
         }
         public abstract void Execute(Game game);
         public abstract void Undo(Game game);

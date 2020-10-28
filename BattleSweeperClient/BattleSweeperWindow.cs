@@ -255,7 +255,7 @@ namespace BattleSweeperClient
             g.Dispose();
         }
 
-        private void ProcessWindowClick(object sender, MouseEventArgs e)
+        private async void ProcessWindowClick(object sender, MouseEventArgs e)
         {
             // determine which bounds
             Console.WriteLine();
@@ -272,7 +272,10 @@ namespace BattleSweeperClient
                 selectedShotType = (selectedShotType + 1) % shotTypes.Count;
                 redrawButton = true;
             }
-
+            else if (playerMinesBounds.Contains(e.Location))
+            {
+                await APIAccessorSingleton.Instance.PostObject<object>(string.Format("BattleSweeper/Game/{0}/UndoLastCommand", gameKey), default);
+            }
         }
 
         private async void ProcessBoardClick(RectangleF bounds, bool enemy, MouseEventArgs e)

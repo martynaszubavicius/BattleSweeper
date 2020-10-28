@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleSweeperServer", "BattleSweeperServer\BattleSweeperServer.csproj", "{D82FC99A-83EC-4867-B06D-3F9D3F8FA015}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleSweeperConsoleClient", "BattleSweeperConsoleClient\BattleSweeperConsoleClient.csproj", "{32E41705-17A6-4CEF-957A-95437ED66CE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleSweeperServer", "BattleSweeperServer\BattleSweeperServer.csproj", "{D82FC99A-83EC-4867-B06D-3F9D3F8FA015}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleSweeperClient", "BattleSweeperClient\BattleSweeperClient.csproj", "{15BE98D6-D118-4100-B587-9C46CB066E58}"
 EndProject
@@ -19,10 +17,6 @@ Global
 		{D82FC99A-83EC-4867-B06D-3F9D3F8FA015}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D82FC99A-83EC-4867-B06D-3F9D3F8FA015}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D82FC99A-83EC-4867-B06D-3F9D3F8FA015}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32E41705-17A6-4CEF-957A-95437ED66CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32E41705-17A6-4CEF-957A-95437ED66CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32E41705-17A6-4CEF-957A-95437ED66CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32E41705-17A6-4CEF-957A-95437ED66CE8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{15BE98D6-D118-4100-B587-9C46CB066E58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15BE98D6-D118-4100-B587-9C46CB066E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15BE98D6-D118-4100-B587-9C46CB066E58}.Release|Any CPU.ActiveCfg = Release|Any CPU

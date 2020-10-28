@@ -111,7 +111,7 @@ namespace BattleSweeperServer.Models
             return neighbours;
         }
 
-        internal ChangePoint CycleMine(int positionX, int positionY, bool undo = true)
+        internal ChangePoint CycleMine(int positionX, int positionY, bool undo = false)
         {
             MineFactory mineFactory = new MineFactory();
             Tile tile = Tiles[GetIndex(positionX, positionY)];

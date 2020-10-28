@@ -26,10 +26,8 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public override void Undo(Game game)
         {
-            lock (game)
-            {
-                game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, true);
-            }
+            this.Undone = true;
+            game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, true);
         }
     }
 }
