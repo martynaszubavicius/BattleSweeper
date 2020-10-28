@@ -29,13 +29,7 @@ namespace BattleSweeperServer.Models
             Tiles.Add(tile);
 
             for (int i = 1; i < this.Size * this.Size; i++)
-                Tiles.Add(tile.ShallowCopy());
-
-            //this.Size = size;
-            //this.Tiles = new List<Tile>();
-
-            //for (int i = 1; i < this.Size * this.Size; i++)
-            //    Tiles.Add(new Tile(-1));
+                Tiles.Add((Tile)tile.Clone());
         }
 
         public int GetIndex(int x, int y)

@@ -47,24 +47,53 @@ namespace BattleSweeperServer.Models
             List<int> choices = Enumerable.Range(0, settings.BoardSize * settings.BoardSize).ToList();
             MineFactory mineFactory = new MineFactory();
 
+            Tile tileWithMine0 = new Tile();
+            tileWithMine0.Mine = mineFactory.CreateMine(0);
+
+            Tile tileWithMine1 = new Tile();
+            tileWithMine1.Mine = mineFactory.CreateMine(1);
+
+            Tile tileWithMine2 = new Tile();
+            tileWithMine2.Mine = mineFactory.CreateMine(2);
+
             for (int i = 0; i < settings.SimpleMineCount; i++)
             {
                 int choicesIndex = rnd.Next(0, choices.Count);
-                this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(0); // Simple Mine
+                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine0.Clone(); // Simple Mine
                 choices.RemoveAt(choicesIndex);
             }
             for (int i = 0; i < settings.WideMineCount; i++)
             {
                 int choicesIndex = rnd.Next(0, choices.Count);
-                this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(1); // Wide Mine
+                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine1.Clone(); // Wide Mine
                 choices.RemoveAt(choicesIndex);
             }
             for (int i = 0; i < settings.FakeMineCount; i++)
             {
                 int choicesIndex = rnd.Next(0, choices.Count);
-                this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(2); // Fake Mine
+                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine2.Clone(); // Fake Mine
                 choices.RemoveAt(choicesIndex);
             }
+
+
+            //for (int i = 0; i < settings.SimpleMineCount; i++)
+            //{
+            //    int choicesIndex = rnd.Next(0, choices.Count);
+            //    this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(0); // Simple Mine
+            //    choices.RemoveAt(choicesIndex);
+            //}
+            //for (int i = 0; i < settings.WideMineCount; i++)
+            //{
+            //    int choicesIndex = rnd.Next(0, choices.Count);
+            //    this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(1); // Wide Mine
+            //    choices.RemoveAt(choicesIndex);
+            //}
+            //for (int i = 0; i < settings.FakeMineCount; i++)
+            //{
+            //    int choicesIndex = rnd.Next(0, choices.Count);
+            //    this.Board.Tiles[choices[choicesIndex]].Mine = mineFactory.CreateMine(2); // Fake Mine
+            //    choices.RemoveAt(choicesIndex);
+            //}
 
             return this.Board;
         }

@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace BattleSweeperServer.Models
 {
-    public class Tile
+    public class Tile : ICloneable
     {
         [JsonProperty("State")]
         public int State { get; set; } // -1 unrevealed, 0 empty or bomb, >0 nearby mine count
@@ -20,13 +21,8 @@ namespace BattleSweeperServer.Models
             this.State = state;
         }
 
-        // Prototype pattern: shallow and deep copy of tile
-        public Tile ShallowCopy()
-        {
-            return (Tile)this.MemberwiseClone();
-        }
-
-        public Tile DeepCopy()
+        // Prototype pattern implemented with ICloneable interface
+        public object Clone()
         {
             Tile clone = (Tile)this.MemberwiseClone();
             clone.State = State;
