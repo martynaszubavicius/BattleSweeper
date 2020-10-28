@@ -67,7 +67,8 @@ namespace BattleSweeperServer.Models
 
             if (currentTile.Mine != null)
             {
-                return points.Concat(currentTile.Mine.OnReveal(this, x, y)).ToList();
+                //return points.Concat(currentTile.Mine.OnReveal(this, x, y)).ToList();
+                return points.Concat(currentTile.Mine.mineReveal.OnReveal(this, x, y)).ToList();
             }
 
             List<Tile> neighbours = GetNeighbours(x, y);
