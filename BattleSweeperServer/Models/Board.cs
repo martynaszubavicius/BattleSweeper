@@ -25,8 +25,17 @@ namespace BattleSweeperServer.Models
             this.Size = size;
             this.Tiles = new List<Tile>();
 
-            for (int i = 0; i < this.Size * this.Size; i++)
-                Tiles.Add(new Tile(-1));
+            Tile tile = new Tile();
+            Tiles.Add(tile);
+
+            for (int i = 1; i < this.Size * this.Size; i++)
+                Tiles.Add(tile.ShallowCopy());
+
+            //this.Size = size;
+            //this.Tiles = new List<Tile>();
+
+            //for (int i = 1; i < this.Size * this.Size; i++)
+            //    Tiles.Add(new Tile(-1));
         }
 
         public int GetIndex(int x, int y)
@@ -42,14 +51,23 @@ namespace BattleSweeperServer.Models
                 Tiles = new List<Tile>()
             };
 
+
             for (int i = 0; i < this.Size * this.Size; i++)
             {
-                Tile tile = new Tile(this.Tiles[i].State);
+                Tile tile = this.Tiles[i].DeepCopy();
                 if (tile.State >= 0)
                     tile.Mine = this.Tiles[i].Mine;
                 enemyView.Tiles.Add(tile);
             }
-            
+
+            //for (int i = 0; i < this.Size * this.Size; i++)
+            //{
+            //    Tile tile = new Tile(this.Tiles[i].State);
+            //    if (tile.State >= 0)
+            //        tile.Mine = this.Tiles[i].Mine;
+            //    enemyView.Tiles.Add(tile);
+            //}
+
             return enemyView;
         }
 

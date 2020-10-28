@@ -20,6 +20,20 @@ namespace BattleSweeperServer.Models
             this.State = state;
         }
 
+        // Prototype pattern: shallow and deep copy of tile
+        public Tile ShallowCopy()
+        {
+            return (Tile)this.MemberwiseClone();
+        }
+
+        public Tile DeepCopy()
+        {
+            Tile clone = (Tile)this.MemberwiseClone();
+            clone.State = State;
+            return clone;
+        }
+
+    
         public override string ToString()
         {
             return string.Format("State: {0}, Mine: {1}", State, Mine == null ? 0 : 1);
