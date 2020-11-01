@@ -57,6 +57,7 @@
             this.MinimumSize = new System.Drawing.Size(700, 400);
             this.Name = "BattleSweeperWindow";
             this.Text = "BattleSweeper";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BattleSweeperWindow_FormClosing);
             this.ResumeLayout(false);
 
         }

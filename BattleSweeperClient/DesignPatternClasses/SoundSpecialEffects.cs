@@ -4,14 +4,16 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Windows.Media;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace BattleSweeperClient.DesignPatternClasses
 {
     class SoundSpecialEffects : SpecialEffects
     {
-        private Dictionary<string, SoundPlayer> sounds = new Dictionary<string, SoundPlayer>();
+        private Dictionary<string, MediaPlayer> sounds = new Dictionary<string, MediaPlayer>();
 
         public SoundSpecialEffects(string soundsDirectory)
         {
@@ -20,39 +22,63 @@ namespace BattleSweeperClient.DesignPatternClasses
 
         public override void BoardClick(RectangleF boardBounds, float cellSize, int x, int y)
         {
-            sounds["chimes"].Play();
+            PlayMedia("chimes", 1);
         }
 
         public override void ButtonClick(RectangleF buttonBounds)
         {
-            sounds["chimes"].Play();
+            PlayMedia("chimes", 1);
         }
 
         public override void Loss()
         {
-            sounds["chimes"].Play();
+            PlayMedia("chimes", 1);
         }
 
         public override void StartBackgroundEffect()
         {
-            sounds["chimes"].Play();
+            PlayMedia("HardBass", 0.1, true);
         }
 
         public override void StopBackgroundEffect()
         {
-            sounds["chimes"].Play();
+            sounds["HardBass"].Stop();
         }
 
         public override void Victory()
         {
-            sounds["chimes"].Play();
+            PlayMedia("chimes", 1);
         }
 
         private void LoadSounds(string path)
         {
+            string executableFilePath = Assembly.GetExecutingAssembly().Location;
+            string executableDirectoryPath = Path.GetDirectoryName(executableFilePath);
+            string SoundsDerectoryPath = Path.Combine(executableDirectoryPath, path);
+
             string[] files = Directory.GetFiles(path, "*.wav");
             foreach (string wavFile in files)
-                sounds[string.Concat(wavFile.Split(new char[] { '\\' }).Last().Reverse().Skip(4).Reverse())] = new SoundPlayer(wavFile);
+            {
+                MediaPlayer player = new MediaPlayer();
+                string audioFilePath = Path.Combine(SoundsDerectoryPath, wavFile);
+                player.Open(new Uri(audioFilePath));
+                sounds[string.Concat(wavFile.Split(new char[] { '\\' }).Last().Reverse().Skip(4).Reverse())] = player;
+            }   
+        }
+
+        private void PlayMedia(string name, double volume, bool looping = false)
+        {
+            this.sounds[name].Position = TimeSpan.Zero;
+            this.sounds[name].Volume = volume;
+            if (looping) this.sounds[name].MediaEnded += LoopingMediaCallback;
+            this.sounds[name].Play();
+        }
+
+        private void LoopingMediaCallback(object sender, EventArgs e)
+        {
+            MediaPlayer player = (MediaPlayer)sender;
+            player.Position = TimeSpan.Zero;
+            player.Play();
         }
     }
 }

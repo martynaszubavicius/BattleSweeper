@@ -67,7 +67,6 @@ namespace BattleSweeperClient
 
             // Load up some dank effects
             effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
-            effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
 
             // Keep asking for game settings until you receive them, then draw game window
             timerTickAction = () => { SetupGame(); };
@@ -108,6 +107,7 @@ namespace BattleSweeperClient
                 // TODO: Draw an innitial screen saying it is waiting for server, or 2nd player or whatever
             }
 
+            effects.ForEach(i => i.StartBackgroundEffect());
             gameUpdateTimer.Start();
         }
 
@@ -330,6 +330,11 @@ namespace BattleSweeperClient
         private void gameWindow_Resize(object sender, EventArgs e)
         {
             OnResize();
+        }
+
+        private void BattleSweeperWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            effects.ForEach(i => i.StopBackgroundEffect());
         }
     }
 }
