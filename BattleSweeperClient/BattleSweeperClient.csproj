@@ -52,7 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DesignPatternClasses\AbstractGraphicsAdapter.cs" />
     <Compile Include="DesignPatternClasses\APIAccessorSingleton.cs" />
     <Compile Include="BattleSweeperWindow.cs">
       <SubType>Form</SubType>
@@ -60,7 +59,6 @@
     <Compile Include="BattleSweeperWindow.Designer.cs">
       <DependentUpon>BattleSweeperWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="DesignPatternClasses\GraphicsAdapter.cs" />
     <Compile Include="DesignPatternClasses\DrawableTile.cs" />
     <Compile Include="DesignPatternClasses\GraphicsFacade.cs" />
     <Compile Include="DesignPatternClasses\TileBombDecorator.cs" />

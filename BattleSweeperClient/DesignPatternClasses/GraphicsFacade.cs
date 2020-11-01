@@ -11,12 +11,12 @@ namespace BattleSweeperClient.DesignPatternClasses
 {
     public class GraphicsFacade
     {
-        private AbstractGraphicsAdapter graphics;
+        private Graphics graphics;
         private Dictionary<string, Image> textures;
 
         public GraphicsFacade(Panel panel, Dictionary<string, Image> textures)
         {
-            this.graphics = new GraphicsAdapter(panel);
+            this.graphics = panel.CreateGraphics();
             this.textures = textures;
         }
 
