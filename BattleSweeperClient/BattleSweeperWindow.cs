@@ -31,6 +31,7 @@ namespace BattleSweeperClient
         private string gameKey;
         private List<string> shotTypes = new List<string> { "SSingleShot", "SFourShot", "SNineShot", "CLineShot", "CScatterShot" };
         private GameSettings gameSettings;
+        private List<SpecialEffects> effects = new List<SpecialEffects>();
         private int selectedShotType = 0;
         private int lastState = -1;
 
@@ -62,7 +63,11 @@ namespace BattleSweeperClient
 
             // Load Form
             InitializeComponent();
-            LoadTextures("../../Textures");
+            LoadTextures("../../Resources/Textures");
+
+            // Load up some dank effects
+            effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
+            effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
 
             // Keep asking for game settings until you receive them, then draw game window
             timerTickAction = () => { SetupGame(); };
@@ -271,9 +276,11 @@ namespace BattleSweeperClient
             {
                 selectedShotType = (selectedShotType + 1) % shotTypes.Count;
                 redrawButton = true;
+                effects.ForEach(i => i.ButtonClick(shotTypeSelectorBounds));
             }
             else if (playerMinesBounds.Contains(e.Location))
             {
+                effects.ForEach(i => i.ButtonClick(shotTypeSelectorBounds));
                 await APIAccessorSingleton.Instance.PostObject<object>(string.Format("BattleSweeper/Game/{0}/UndoLastCommand", gameKey), default);
             }
         }
@@ -282,6 +289,8 @@ namespace BattleSweeperClient
         {
             int x = (int)((e.X - bounds.X) / boardCellSize);
             int y = (int)((e.Y - bounds.Y) / boardCellSize);
+
+            effects.ForEach(i => i.BoardClick(bounds, boardCellSize, x, y));
 
             CoordInfo coords;
             if (enemy)

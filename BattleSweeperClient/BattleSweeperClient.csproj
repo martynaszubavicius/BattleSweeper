@@ -61,6 +61,8 @@
     </Compile>
     <Compile Include="DesignPatternClasses\DrawableTile.cs" />
     <Compile Include="DesignPatternClasses\GraphicsFacade.cs" />
+    <Compile Include="DesignPatternClasses\SoundSpecialEffects.cs" />
+    <Compile Include="DesignPatternClasses\SpecialEffects.cs" />
     <Compile Include="DesignPatternClasses\TileBombDecorator.cs" />
     <Compile Include="DesignPatternClasses\TileCrossDecorator.cs" />
     <Compile Include="DesignPatternClasses\TileDecorator.cs" />
