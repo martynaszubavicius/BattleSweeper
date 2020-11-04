@@ -70,6 +70,7 @@
     <Compile Include="DesignPatternClasses\TileDecorator.cs" />
     <Compile Include="DesignPatternClasses\TileRevealedDecorator.cs" />
     <Compile Include="DesignPatternClasses\TileNumberDecorator.cs" />
+    <Compile Include="DesignPatternClasses\TitleAdditionsSpecialEffects.cs" />
     <Compile Include="GameCreator.cs">
       <SubType>Form</SubType>
     </Compile>
