@@ -94,6 +94,8 @@ namespace BattleSweeperClient
                 DrawWindow();
                 redrawButton = true;
 
+                effects.ForEach(i => i.StartBackgroundEffect());
+
                 // once we get the game settings, switch to getting game state on a timer
                 // timerTickAction = () => { UpdateGame(); };
                 timerTickAction = () => { StaggeredUpdateGame(true); };
@@ -108,7 +110,6 @@ namespace BattleSweeperClient
                 // TODO: Draw an innitial screen saying it is waiting for server, or 2nd player or whatever
             }
 
-            effects.ForEach(i => i.StartBackgroundEffect());
             gameUpdateTimer.Start();
         }
 
