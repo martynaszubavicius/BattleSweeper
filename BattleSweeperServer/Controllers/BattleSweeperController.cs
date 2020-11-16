@@ -16,6 +16,7 @@ namespace BattleSweeperServer.Controllers
         private static List<Game> games = new List<Game>();
         private static List<GameSettings> gameSettings = new List<GameSettings>();
         private static List<GameBuilder> gameBuilders = new List<GameBuilder>();
+        private static FlyweightFactory flyweightFactory = new FlyweightFactory();
 
         public BattleSweeperController()
         {
@@ -100,9 +101,25 @@ namespace BattleSweeperServer.Controllers
             return CreateGameFromSettings(Id, true);
         }
 
+        //TODO: --------------------Flyweight--------------------
         [HttpPost("Game/{key}/RegisterPlayer")]
-        public ActionResult<Player> RegisterPlayer(string key, Player player, bool randomBoard = false)
+        public ActionResult<Player> RegisterPlayer(string key, Player player1, bool randomBoard = false)
         {
+            Player player = new Player();
+            //TODO: Fix replace player with just playername 
+            if(flyweightFactory.CheckPlayerName(player1.Name))
+            {
+                player = flyweightFactory.GetPlayer(player1.Name);
+                player.InGame = false;
+                if (player.InGame == true)
+                    return BadRequest(new { error = "Name is taken. Go away thief" });
+            }
+            else
+            {
+                player = new Player() { Name = player1.Name };
+                flyweightFactory.Add(player1.Name, player);
+            }
+
             GameBuilder builder = gameBuilders.Find(b => b.Key == key);
 
             if (builder == null)

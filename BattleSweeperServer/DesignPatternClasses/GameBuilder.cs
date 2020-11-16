@@ -35,12 +35,14 @@ namespace BattleSweeperServer.DesignPatternClasses
                 player.CreateIdentifier(1);
                 game.Player1 = player;
                 LastOpSuccessful = true;
+                player.InGame = true;
             }
             else if (game.Player2 == null)
             {
                 player.CreateIdentifier(2);
                 game.Player2 = player;
                 LastOpSuccessful = true;
+                player.InGame = true;
             }
             else
             {

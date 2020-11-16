@@ -21,6 +21,8 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Board")]
         public Board Board { get; set; }
 
+        public bool InGame = false;
+
         public Player()
         {
             
