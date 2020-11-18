@@ -14,7 +14,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public void Add(string key, Player player)
         {
-            players.Add(key ,player);
+            players.Add(key, player);
         }
 
         public Player GetPlayer(string key)
