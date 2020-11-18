@@ -128,7 +128,11 @@ namespace BattleSweeperServer.Controllers
             {
                 builder.RegisterPlayer(player, randomBoard);
                 if (!builder.LastOpSuccessful)
+                {
+                    flyweightFactory.Delete(player1.Name);
                     return BadRequest(new { error = "game full" });
+                }
+                    
 
                 lock (games)
                 {

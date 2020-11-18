@@ -24,10 +24,19 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public bool CheckPlayerName(string name)
         {
+            //TODO: for testing purposes
+            Delete("tester123");
+
+            //TODO: if statement to check player identifier if it's the same person
             if (players.ContainsKey(name))
                 return true;
             else
                 return false;
+        }
+
+        public void Delete(string key)
+        {
+            players.Remove(key);
         }
     }
 }
