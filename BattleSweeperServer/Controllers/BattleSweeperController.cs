@@ -110,7 +110,6 @@ namespace BattleSweeperServer.Controllers
             if(flyweightFactory.CheckPlayerName(player1.Name))
             {
                 player = flyweightFactory.GetPlayer(player1.Name);
-                player.InGame = false;
                 if (player.InGame == true)
                     return BadRequest(new { error = "Name is taken. Go away thief" });
             }
