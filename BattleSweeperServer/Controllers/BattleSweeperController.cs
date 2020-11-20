@@ -105,13 +105,13 @@ namespace BattleSweeperServer.Controllers
         [HttpPost("Game/{key}/RegisterPlayer")]
         public ActionResult<Player> RegisterPlayer(string key, Player player1, bool randomBoard = false)
         {
-            Player player = new Player();
+            Player player = null;
             //TODO: Fix replace player with just playername 
             if(flyweightFactory.CheckPlayerName(player1.Name))
             {
                 player = flyweightFactory.GetPlayer(player1.Name);
                 if (player.InGame == true)
-                    return BadRequest(new { error = "Name is taken. Go away thief" });
+                    return BadRequest("Name is taken. Go away thief");
             }
             else
             {
@@ -130,7 +130,7 @@ namespace BattleSweeperServer.Controllers
                 if (!builder.LastOpSuccessful)
                 {
                     flyweightFactory.Delete(player1.Name);
-                    return BadRequest(new { error = "game full" });
+                    return BadRequest("game full");
                 }
                     
 

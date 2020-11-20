@@ -68,25 +68,18 @@ namespace BattleSweeperClient.DesignPatternClasses
             return await GetObject<Game>(route, gameKey);
         }
 
-        public async Task<bool> RegisterPlayerToGame(string gameKey, Player player, bool randomBoard, bool secondaryTestPlayer = false)
+        public async Task<Player> RegisterPlayerToGame(string gameKey, Player player, bool randomBoard, bool secondaryTestPlayer = false)
         {
-            Player registeredPlayer = await PostObject<Player>(string.Format("BattleSweeper/Game/{0}/RegisterPlayer" + (randomBoard ? "WithBoard" : ""), gameKey), player);
+            Player registeredPlayer = await PostObject<Player, Player>(string.Format("BattleSweeper/Game/{0}/RegisterPlayer" + (randomBoard ? "WithBoard" : ""), gameKey), player);
 
-            if (secondaryTestPlayer)
-                return true;
-
-            if (registeredPlayer != null)
+            if (!secondaryTestPlayer)
             {
                 if (httpClient.DefaultRequestHeaders.Contains("PlayerIdentifier"))
                     httpClient.DefaultRequestHeaders.Remove("PlayerIdentifier");
                 httpClient.DefaultRequestHeaders.Add("PlayerIdentifier", registeredPlayer.Identifier);
-                
-                return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return registeredPlayer;
         }
 
         public async Task<IEnumerable<T>> GetObjects<T>(string route)
@@ -142,7 +135,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             }
         }
 
-        public async Task<T> PostObject<T>(string route, T obj)
+        public async Task<Tout> PostObject<Tout, Tin>(string route, Tin obj)
         {
             HttpResponseMessage response;
             var content = new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
@@ -157,7 +150,19 @@ namespace BattleSweeperClient.DesignPatternClasses
                 return default;
             }
 
-            return response.IsSuccessStatusCode ? await response.Content.ReadAsAsync<T>() : default; 
+            if (!response.IsSuccessStatusCode)
+            {
+                string test = await response.Content.ReadAsAsync<string>();
+                throw new APIAccessException(test);
+            }
+                
+
+            return await response.Content.ReadAsAsync<Tout>();
         }
+    }
+
+    public class APIAccessException : Exception 
+    {
+        public APIAccessException(string message) : base(message) { }
     }
 }

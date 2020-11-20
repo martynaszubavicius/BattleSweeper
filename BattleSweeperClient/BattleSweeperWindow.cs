@@ -48,13 +48,10 @@ namespace BattleSweeperClient
 
         private float boardCellSize;
 
+        // TODO: Should this still be here?
         private bool enableClicks = false;
         private bool redrawButton = true;
 
-        // TODO: do the same for paint/resize/click? 
-
-        // TODO: right now UI thread hangs on timer tick - yay. Drawing needs to happen on UI thread, and so do click events
-        // TODO: probable solution - cache game data and only draw changes, keeping UI intensive tasks to a minimum. 
         Action timerTickAction = () => { };
         
         public BattleSweeperWindow(string gameKey)
@@ -240,7 +237,6 @@ namespace BattleSweeperClient
             g.DrawBattleSweeperNumbers(789, 3, enemyMinesBounds);
             g.DrawBattleSweeperNumbers(010, 3, enemyAmmoBounds);
 
-            // TODO: this is slow as fuck, implement staggering to keep UI responsive? Changes redrawn only?
             g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize);
             g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize);
 
@@ -283,7 +279,7 @@ namespace BattleSweeperClient
             else if (playerMinesBounds.Contains(e.Location))
             {
                 effects.ForEach(i => i.ButtonClick(shotTypeSelectorBounds));
-                await APIAccessorSingleton.Instance.PostObject<object>(string.Format("BattleSweeper/Game/{0}/UndoLastCommand", gameKey), default);
+                await APIAccessorSingleton.Instance.PostObject<object, object>(string.Format("BattleSweeper/Game/{0}/UndoLastCommand", gameKey), default);
             }
         }
 
@@ -304,7 +300,7 @@ namespace BattleSweeperClient
                 coords = new CoordInfo() { PositionX = x, PositionY = y, Data = "testShot", CommandType = "mine" };
             }
 
-            await APIAccessorSingleton.Instance.PostObject<CoordInfo>(string.Format("BattleSweeper/Game/{0}/ExecuteCommand", gameKey), coords);
+            await APIAccessorSingleton.Instance.PostObject<CoordInfo, CoordInfo>(string.Format("BattleSweeper/Game/{0}/ExecuteCommand", gameKey), coords);
 
             gameUpdateTimer_Tick(null, null); // TODO: Quick dirty hack, update board properly
         }

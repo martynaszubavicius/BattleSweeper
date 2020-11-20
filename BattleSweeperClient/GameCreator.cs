@@ -63,21 +63,28 @@ namespace BattleSweeperClient
         private async void joinGameButton_Click(object sender, EventArgs e)
         {
             string gameKey = gameIdTextBox.Text;
-            Player player = new Player() { Name = nameTextBox.Text };
+            string playerName = nameTextBox.Text;
 
-            if (await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, player, randomBoard.Checked))
+            try
             {
+                Player player = await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = playerName }, randomBoard.Checked);
+
                 if (secondPlayerForTesting.Checked)
-                    await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = "tester123" }, true, true);
+                {
+                    try
+                    {
+                        await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = "tester123" }, true, true);
+                    }
+                    catch (APIAccessException) { }; // we dont care about the result since this player does nothing
+                }
 
                 new BattleSweeperWindow(gameKey).ShowDialog();
                 errorLabel.Text = "";
             }
-            else
+            catch (APIAccessException exc)
             {
-                errorLabel.Text = "You didn't get registered into the game because you're too fat";
+                errorLabel.Text = exc.Message;
             }
-
         }
 
         private void joinGameButton_Validate(object sender, EventArgs e)
