@@ -16,7 +16,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public override void Add(ChangePoint point)
         {
-            children.Add(point);
+            if (point != null) children.Add(point);
         }
 
         public override IEnumerator<ChangePoint> GetEnumerator()

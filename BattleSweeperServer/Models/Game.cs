@@ -58,7 +58,8 @@ namespace BattleSweeperServer.Models
             if (historyStartIndex >= 0)
                 playerView.RedrawPoints = HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex)
                     .Select(x => { if (x != null) return new ClientChangePoint(x.X, x.Y); else return null; })
-                    .Where(x => x != null).ToList(); // TODO: UGLY UGLY UGLY
+                    //.Where(x => x != null)
+                    .ToList(); // TODO: UGLY UGLY UGLY
             else
                 playerView.RedrawPoints = new List<ClientChangePoint>();
             playerView.HistoryLastIndex = this.HistoryObserver.CommandCount;
