@@ -56,19 +56,20 @@ namespace BattleSweeperServer.Models
             return enemyView;
         }
 
-        public List<ChangePoint> RevealTile(int x, int y)
+        public ChangePoint RevealTile(int x, int y)
         {
-            List<ChangePoint> points = new List<ChangePoint>();
             Tile currentTile = Tiles[GetIndex(x, y)];
+
             if (currentTile.State >= 0)
-                return points; // already revealed dumbass
-            
+                return default; // already revealed this one
+            // TODO: ensure null checks or you will get crashes mr idiot
+
             currentTile.State = 0;
 
             if (currentTile.Mine != null)
             {
                 //return points.Concat(currentTile.Mine.OnReveal(this, x, y)).ToList();
-                return points.Concat(currentTile.Mine.OnReveal(this, x, y)).ToList();
+                return currentTile.Mine.OnReveal(this, x, y);
             }
 
             List<Tile> neighbours = GetNeighbours(x, y);
@@ -78,8 +79,7 @@ namespace BattleSweeperServer.Models
                     currentTile.State++;
             }
             
-            points.Add(new ChangePoint(x, y));
-            return points;
+            return new ChangePointLeaf(x, y);
         }
 
         public bool WithinBounds(int x , int y)
@@ -119,7 +119,7 @@ namespace BattleSweeperServer.Models
             else
                 tile.Mine = undo ? mineFactory.CreateMine(1) : null;
 
-            return new ChangePoint(positionX, positionY);
+            return new ChangePointLeaf(positionX, positionY);
         }
     }
 }

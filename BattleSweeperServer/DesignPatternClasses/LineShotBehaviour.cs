@@ -17,15 +17,17 @@ namespace BattleSweeperServer.DesignPatternClasses
         }
 
 
-        public override List<ChangePoint> Shoot(Board board, int x, int y) // x y 
+        public override ChangePoint Shoot(Board board, int x, int y)
         {
-            List<ChangePoint> points = new List<ChangePoint>();
-            for (int i = x-(width/2); i < x + width - width / 2; i++)
+            ChangePoint point = new ChangePointComposite(x, y);
+
+            for (int i = x - (width / 2); i < x + width - width / 2; i++)
             {
                 if (board.WithinBounds(i, y))
-                    points = points.Concat(board.RevealTile(i, y)).ToList();
+                    point.Add(board.RevealTile(i, y));
             }
-            return points;
+
+            return point;
         }
     }
 }

@@ -9,6 +9,6 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public abstract class ShotBehaviour
     {
-        public abstract List<ChangePoint> Shoot(Board board, int x, int y);
+        public abstract ChangePoint Shoot(Board board, int x, int y);
     }
 }

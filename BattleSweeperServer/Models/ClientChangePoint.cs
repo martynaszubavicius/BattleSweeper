@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BattleSweeperServer.Models
 {
-    public class ChangePoint
+    public class ClientChangePoint
     {
         [JsonProperty("X")]
         public int X { get; set; }
@@ -14,9 +14,9 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Y")]
         public int Y { get; set; }
 
-        public ChangePoint() { }
+        public ClientChangePoint() { }
 
-        public ChangePoint(int x, int y)
+        public ClientChangePoint(int x, int y)
         {
             X = x;
             Y = y;

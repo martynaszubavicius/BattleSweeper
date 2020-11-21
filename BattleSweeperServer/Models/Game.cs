@@ -30,7 +30,7 @@ namespace BattleSweeperServer.Models
         
         // only for use by the client and json serialising. Server should not use this anywhere else
         [JsonProperty("RedrawPoints")]
-        public List<ChangePoint> RedrawPoints { get; set; }
+        public List<ClientChangePoint> RedrawPoints { get; set; } // TODO: THIS IS DIRTY AND UGLY, FIX IT PLS
 
         [JsonProperty("HistoryLastIndex")]
         public int HistoryLastIndex { get; set; }
@@ -56,9 +56,11 @@ namespace BattleSweeperServer.Models
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
             if (historyStartIndex >= 0)
-                playerView.RedrawPoints = HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex);
+                playerView.RedrawPoints = HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex)
+                    .Select(x => { if (x != null) return new ClientChangePoint(x.X, x.Y); else return null; })
+                    .Where(x => x != null).ToList(); // TODO: UGLY UGLY UGLY
             else
-                playerView.RedrawPoints = new List<ChangePoint>();
+                playerView.RedrawPoints = new List<ClientChangePoint>();
             playerView.HistoryLastIndex = this.HistoryObserver.CommandCount;
 
             return playerView;

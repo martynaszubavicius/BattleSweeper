@@ -32,7 +32,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 
             lock (game)
             {
-                Points = shot.shotBeh.Shoot(game.GetEnemyByIdentifier(PlayerId).Board, Info.PositionX, Info.PositionY);
+                Point = shot.shotBeh.Shoot(game.GetEnemyByIdentifier(PlayerId).Board, Info.PositionX, Info.PositionY);
             }
         }
 
@@ -40,7 +40,7 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             this.Undone = true;
             Board board = game.GetEnemyByIdentifier(PlayerId).Board;
-            foreach (ChangePoint pnt in Points)
+            foreach (ChangePoint pnt in Point)
                 board.Tiles[board.GetIndex(pnt.X, pnt.Y)].State = -1;  
         }
     }

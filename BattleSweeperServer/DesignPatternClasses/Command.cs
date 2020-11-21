@@ -10,11 +10,13 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public abstract class Command
     {
+        // TODO: This is never serialised i think? remove the useless json tags
+
         [JsonProperty("Info")]
         public CoordInfo Info { get; set; }
 
-        [JsonProperty("Points")]
-        public List<ChangePoint> Points { get; set; }
+        [JsonProperty("Point")]
+        public ChangePoint Point { get; set; }
 
         [JsonProperty("PlayerId")]
         public string PlayerId { get; set; }

@@ -8,6 +8,6 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public abstract class MineBridgeReveal
     {
-        public abstract List<ChangePoint> OnReveal(Board board, int x, int y);
+        public abstract ChangePoint OnReveal(Board board, int x, int y);
     }
 }

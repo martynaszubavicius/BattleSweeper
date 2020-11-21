@@ -98,6 +98,27 @@ namespace BattleSweeperServer.Controllers
         [HttpGet("GetNewGameFromSettings/{id}/Debug")]
         public ActionResult<string> CreateGameFromSettings(int Id)
         {
+            //ChangePoint tree = new ChangePointComposite(0,0);
+            //ChangePoint node = new ChangePointComposite(1,1);
+
+            //ChangePoint leaf1 = new ChangePointLeaf(1,0);
+            //ChangePoint leaf2 = new ChangePointLeaf(2,1);
+            //ChangePoint leaf3 = new ChangePointLeaf(2,0);
+
+            //node.Add(leaf3);
+            //node.Add(leaf2);
+            //tree.Add(leaf1);
+            //tree.Add(node);
+            
+
+
+            //foreach (ChangePoint p in tree)
+            //    p.Print();
+
+
+
+
+
             return CreateGameFromSettings(Id, true);
         }
 

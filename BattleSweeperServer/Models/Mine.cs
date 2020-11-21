@@ -18,7 +18,7 @@ namespace BattleSweeperServer.Models
 
         }
 
-        public virtual List<ChangePoint> OnReveal(Board board, int x, int y)
+        public virtual ChangePoint OnReveal(Board board, int x, int y)
         {
             return this.mineReveal.OnReveal(board, x, y);
 

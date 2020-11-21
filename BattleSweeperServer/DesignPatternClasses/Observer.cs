@@ -34,7 +34,8 @@ namespace BattleSweeperServer.DesignPatternClasses
                 }
         }
 
-        public List<ChangePoint> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)
+        // returns a list rather than a single point because this is used to serialize it for client, and the client expects a simple array
+        public List<ChangePoint> GetPlayerViewCommands(string playerIdentifier, int historyStartIndex)  
         {
             List<Command> commands = this.history
                 .GetRange(historyStartIndex, this.history.Count - historyStartIndex)
@@ -46,10 +47,10 @@ namespace BattleSweeperServer.DesignPatternClasses
             for (int i = 0; i < commands.Count; i++)
             {
                 if (commands[i].Info.CommandType == "shot" && commands[i].PlayerId != playerIdentifier)
-                    commands[i] = new ShotCommand(commands[i].Info, default) { Points = commands[i].Points };
+                    commands[i] = new ShotCommand(commands[i].Info, default) { Point = commands[i].Point };
             }
 
-            return commands.Aggregate(new List<ChangePoint>(), (accum, cmd) => { return accum.Concat(cmd.Points).ToList(); });
+            return commands.Aggregate(new List<ChangePoint>(), (accum, cmd) => { return accum.Concat(cmd.Point).ToList(); });
         }
     }
 }

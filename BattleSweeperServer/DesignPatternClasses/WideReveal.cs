@@ -8,17 +8,19 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public class WideReveal : MineBridgeReveal
     {
-        public override List<ChangePoint> OnReveal(Board board, int x, int y)
+        public override ChangePoint OnReveal(Board board, int x, int y)
         {
-            List<ChangePoint> points = new List<ChangePoint>();
+            ChangePoint point = new ChangePointComposite(x, y);
+
+            int currIndex = board.GetIndex(x, y);
             int radius = 2;
-            points.Add(new ChangePoint(x, y));
 
             for (int i = x - radius + 1; i < x + radius; i++)
                 for (int j = y - radius + 1; j < y + radius; j++)
-                    if (board.WithinBounds(i, j))
-                        points = points.Concat(board.RevealTile(i, j)).ToList();
-            return points;
+                    if (board.WithinBounds(i, j) && currIndex != board.GetIndex(i, j))
+                        point.Add(board.RevealTile(i, j));
+
+            return point;
         }
     }
 }

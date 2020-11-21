@@ -11,19 +11,21 @@ namespace BattleSweeperServer.DesignPatternClasses
     public class ScatterShotBehaviour : ShotBehaviour
     {
         private bool reveal = true;
-        public override List<ChangePoint> Shoot(Board board, int x, int y) // x y 
+        public override ChangePoint Shoot(Board board, int x, int y) // x y 
         {
-            List<ChangePoint> points = new List<ChangePoint>();
+            ChangePoint point = new ChangePointComposite(x, y);
+
             for (int i = x - 2; i < x + 3; i++)
             {
                 for (int j = y - 2; j < y + 3; j++)
                 {
                     if (board.WithinBounds(i, j) && reveal == true)
-                        points = points.Concat(board.RevealTile(i, j)).ToList();
+                        point.Add(board.RevealTile(i, j));
                     reveal = !reveal;
                 }
             }
-            return points;
+
+            return point;
         }
     }
 }
