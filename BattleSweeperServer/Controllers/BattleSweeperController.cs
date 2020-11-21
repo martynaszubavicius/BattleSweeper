@@ -98,27 +98,6 @@ namespace BattleSweeperServer.Controllers
         [HttpGet("GetNewGameFromSettings/{id}/Debug")]
         public ActionResult<string> CreateGameFromSettings(int Id)
         {
-            //ChangePoint tree = new ChangePointComposite(0,0);
-            //ChangePoint node = new ChangePointComposite(1,1);
-
-            //ChangePoint leaf1 = new ChangePointLeaf(1,0);
-            //ChangePoint leaf2 = new ChangePointLeaf(2,1);
-            //ChangePoint leaf3 = new ChangePointLeaf(2,0);
-
-            //node.Add(leaf3);
-            //node.Add(leaf2);
-            //tree.Add(leaf1);
-            //tree.Add(node);
-            
-
-
-            //foreach (ChangePoint p in tree)
-            //    p.Print();
-
-
-
-
-
             return CreateGameFromSettings(Id, true);
         }
 
@@ -221,7 +200,7 @@ namespace BattleSweeperServer.Controllers
             if (game.Player1 == null || game.Player2 == null)
                 return BadRequest("Game has not started yet");
 
-            if (!game.DebugMode)
+            if (!(game.State is GameStateDebug))
                 return BadRequest("Game is not in debug mode");
 
             lock (game)
@@ -251,6 +230,9 @@ namespace BattleSweeperServer.Controllers
                     break;
                 case "shot":
                     cmd = new ShotCommand(info, Request.Headers["PlayerIdentifier"]);
+                    break;
+                case "endTurn":
+                    cmd = new EndTurnCommand(info, Request.Headers["PlayerIdentifier"]);
                     break;
                 default:
                     return NotFound();

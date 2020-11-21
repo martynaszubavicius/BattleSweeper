@@ -13,6 +13,9 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Key")]
         public string Key { get { return this.Id.ToString(); } } // TODO: use this instead of id in requests
 
+        [JsonIgnore] //[JsonProperty("State")]
+        public GameState State { get; set; }
+
         [JsonProperty("Player1")]
         public Player Player1 { get; set; }
 
@@ -24,9 +27,6 @@ namespace BattleSweeperServer.Models
 
         [JsonIgnore]
         public Observer HistoryObserver { get; set; }
-
-        [JsonIgnore]
-        public bool DebugMode { get; set; }
         
         // only for use by the client and json serialising. Server should not use this anywhere else
         [JsonProperty("RedrawPoints")]
@@ -38,7 +38,7 @@ namespace BattleSweeperServer.Models
         public Game()
         {
             //this.History = new List<Command>();
-            this.HistoryObserver = new Observer();
+            this.State = new GameStateNew();
         }
 
         // Returns a sanitized Game object that only has information that the player with specified identifier should have
@@ -56,13 +56,13 @@ namespace BattleSweeperServer.Models
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
             if (historyStartIndex >= 0)
-                playerView.RedrawPoints = HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex)
+                playerView.RedrawPoints = State.HistoryObserver.GetPlayerViewCommands(playerIdentifier, historyStartIndex)
                     .Select(x => { if (x != null) return new ClientChangePoint(x.X, x.Y); else return null; })
                     //.Where(x => x != null)
                     .ToList(); // TODO: UGLY UGLY UGLY
             else
                 playerView.RedrawPoints = new List<ClientChangePoint>();
-            playerView.HistoryLastIndex = this.HistoryObserver.CommandCount;
+            playerView.HistoryLastIndex = State.HistoryObserver.CommandCount;
 
             return playerView;
         }
@@ -91,13 +91,14 @@ namespace BattleSweeperServer.Models
         //TODO: add command given from controller to observer
         public void AddExecuteCommand(Command command)
         {
-            command.Execute(this);
-            this.HistoryObserver.Add(command);
+            State.ExecuteCommand(this, command);
+            //command.Execute(this);
+            //State.HistoryObserver.Add(command);
         }
 
         public void UndoLastPlayerCommand(string playerIdentifier)
         {
-            this.HistoryObserver.Undo(this, playerIdentifier);
+            State.HistoryObserver.Undo(this, playerIdentifier);
         }
     }
 }

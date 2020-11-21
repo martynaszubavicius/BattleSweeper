@@ -22,10 +22,6 @@ namespace BattleSweeperClient
     public partial class BattleSweeperWindow : Form
     {
         private Dictionary<string, Image> textures; // Font 13x23, Tile 16x16
-
-        // TODO delete when this shit is properly done, only for testing
-        Random random = new Random();
-        // testing shit over
         
         // Game settings 
         private string gameKey;
@@ -278,8 +274,14 @@ namespace BattleSweeperClient
             }
             else if (playerMinesBounds.Contains(e.Location))
             {
-                effects.ForEach(i => i.ButtonClick(shotTypeSelectorBounds));
+                effects.ForEach(i => i.ButtonClick(playerMinesBounds));
                 await APIAccessorSingleton.Instance.PostObject<object, object>(string.Format("BattleSweeper/Game/{0}/UndoLastCommand", gameKey), default);
+            }
+            else if (playerAmmoBounds.Contains(e.Location))
+            {
+                effects.ForEach(i => i.ButtonClick(playerAmmoBounds));
+                CoordInfo coords = new CoordInfo() { PositionX = 0, PositionY = 0, Data = "switchingTurns", CommandType = "endTurn" };
+                await APIAccessorSingleton.Instance.PostObject<CoordInfo, CoordInfo>(string.Format("BattleSweeper/Game/{0}/ExecuteCommand", gameKey), coords);
             }
         }
 

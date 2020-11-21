@@ -80,7 +80,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public GameBuilder SetDebugMode()
         {
-            game.DebugMode = true;
+            game.State = new GameStateDebug(game.State.HistoryObserver);
             LastOpSuccessful = true;
             return this;
         }
