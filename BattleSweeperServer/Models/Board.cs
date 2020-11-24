@@ -106,20 +106,74 @@ namespace BattleSweeperServer.Models
             return neighbours;
         }
 
-        internal ChangePoint CycleMine(int positionX, int positionY, bool undo = false)
+        internal ChangePoint CycleMine(int positionX, int positionY, GameSettings settings, bool undo = false)
         {
             MineFactory mineFactory = new MineFactory();
             Tile tile = Tiles[GetIndex(positionX, positionY)];
-            if (tile.Mine == null)
-                tile.Mine = undo ? mineFactory.CreateMine(2) : mineFactory.CreateMine(0);
-            else if (tile.Mine is SimpleMine)
-                tile.Mine = undo ? null : mineFactory.CreateMine(1);
+
+            bool[] maxMines = new bool[]
+            {
+                CountMineType<SimpleMine>() >= settings.SimpleMineCount,
+                CountMineType<WideMine>() >= settings.WideMineCount,
+                CountMineType<FakeMine>() >= settings.FakeMineCount
+            };
+
+            int currType = undo ? 3 : -1;
+            if (tile.Mine is SimpleMine)
+                currType = 0;
             else if (tile.Mine is WideMine)
-                tile.Mine = undo ? mineFactory.CreateMine(0) : mineFactory.CreateMine(2);
+                currType = 1;
+            else if (tile.Mine is FakeMine)
+                currType = 2;
+
+            if (!undo)
+            {
+                while (++currType <= 2 && maxMines[currType]) ;
+                tile.Mine = (currType <= 2) ? mineFactory.CreateMine(currType) : null;
+            }
             else
-                tile.Mine = undo ? mineFactory.CreateMine(1) : null;
+            {
+                while (--currType >= 0 && maxMines[currType]) ;
+                tile.Mine = (currType >= 0) ? mineFactory.CreateMine(currType) : null;
+            }
+
+
+
+
+            //if (tile.Mine == null)
+            //    tile.Mine = undo ? mineFactory.CreateMine(2) : mineFactory.CreateMine(0);
+            //else if (tile.Mine is SimpleMine)
+            //    tile.Mine = undo ? null : mineFactory.CreateMine(1);
+            //else if (tile.Mine is WideMine)
+            //    tile.Mine = undo ? mineFactory.CreateMine(0) : mineFactory.CreateMine(2);
+            //else
+            //    tile.Mine = undo ? mineFactory.CreateMine(1) : null;
 
             return new ChangePointLeaf(positionX, positionY);
+        }
+
+        public int CountAllMines(bool countRevealed, bool countFake)
+        {
+            IEnumerable<Tile> result = Tiles.Where(x => x.Mine != null);
+
+            if (!countRevealed)
+                result = result.Where(x => x.State == -1);
+
+            if (!countFake)
+                result = result.Where(x => !(x.Mine is FakeMine));
+
+
+            return result.Count();
+        }
+
+        public int CountMineType<T>(bool countRevealed = true) where T : Mine
+        {
+            IEnumerable<Tile> result = Tiles.Where(x => x.Mine is T);
+
+            if (!countRevealed)
+                result = result.Where(x => x.State == -1);
+
+            return result.Count();
         }
     }
 }

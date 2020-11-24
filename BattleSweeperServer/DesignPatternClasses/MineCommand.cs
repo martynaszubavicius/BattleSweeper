@@ -19,14 +19,14 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             lock (game)
             {
-                Point = game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY);
+                Point = game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, game.Settings);
             }
         }
 
         public override void Undo(Game game)
         {
             this.Undone = true;
-            game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, true);
+            Point = game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, game.Settings, true);
         }
     }
 }
