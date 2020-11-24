@@ -49,7 +49,6 @@ namespace BattleSweeperServer.DesignPatternClasses
                 LastOpSuccessful = false;
             }
 
-            // Generate player - prototype should start here if we use it for board generation
             if (LastOpSuccessful)
             {
                 player.AmmoCount = game.Settings.ShotsPerTurn;

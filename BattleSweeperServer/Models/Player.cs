@@ -25,7 +25,7 @@ namespace BattleSweeperServer.Models
 
         public Player()
         {
-            
+            Identifier = ""; // in order for flyweight to correctly allow player names to be taken again if they weren't registered in the game
         }
 
         public string CreateIdentifier(int seed)
@@ -88,7 +88,8 @@ namespace BattleSweeperServer.Models
             Player enemyView = new Player
             {
                 Name = this.Name,
-                Board = this.Board.GetEnemyView()
+                Board = this.Board.GetEnemyView(),
+                AmmoCount = this.AmmoCount
             };
 
             return enemyView;

@@ -151,10 +151,10 @@ namespace BattleSweeperClient
                 redrawButton = false;
             }
 
-            g.DrawBattleSweeperNumbers(123, 3, playerMinesBounds);
-            g.DrawBattleSweeperNumbers(456, 3, playerAmmoBounds);
-            g.DrawBattleSweeperNumbers(789, 3, enemyMinesBounds);
-            g.DrawBattleSweeperNumbers(010, 3, enemyAmmoBounds);
+            g.DrawBattleSweeperNumbers(game.Player1.Board.CountAllMines(false, false), 3, playerMinesBounds);
+            g.DrawBattleSweeperNumbers(game.Player1.AmmoCount, 3, playerAmmoBounds);
+            g.DrawBattleSweeperNumbers(game.Settings.SimpleMineCount + game.Settings.WideMineCount - game.Player2.Board.CountAllMines(true, false), 3, enemyMinesBounds);
+            g.DrawBattleSweeperNumbers(game.Player2.AmmoCount, 3, enemyAmmoBounds);
 
             if (fullRedraw)
             {
@@ -228,10 +228,10 @@ namespace BattleSweeperClient
                 redrawButton = false;
             }
 
-            g.DrawBattleSweeperNumbers(123, 3, playerMinesBounds);
-            g.DrawBattleSweeperNumbers(456, 3, playerAmmoBounds);
-            g.DrawBattleSweeperNumbers(789, 3, enemyMinesBounds);
-            g.DrawBattleSweeperNumbers(010, 3, enemyAmmoBounds);
+            g.DrawBattleSweeperNumbers(game.Player1.Board.CountAllMines(false, false), 3, playerMinesBounds);
+            g.DrawBattleSweeperNumbers(game.Player1.AmmoCount , 3, playerAmmoBounds);
+            g.DrawBattleSweeperNumbers(game.Settings.SimpleMineCount + game.Settings.WideMineCount - game.Player2.Board.CountAllMines(true, false), 3, enemyMinesBounds);
+            g.DrawBattleSweeperNumbers(game.Player2.AmmoCount, 3, enemyAmmoBounds);
 
             g.DrawBattleSweeperBoard(game.Player1.Board, playerBoardBounds, boardCellSize);
             g.DrawBattleSweeperBoard(game.Player2.Board, enemyBoardBounds, boardCellSize);
@@ -275,7 +275,11 @@ namespace BattleSweeperClient
             else if (playerMinesBounds.Contains(e.Location))
             {
                 effects.ForEach(i => i.ButtonClick(playerMinesBounds));
-                await APIAccessorSingleton.Instance.PostObject<object, object>(string.Format("BattleSweeper/Game/{0}/UndoLastCommand", gameKey), default);
+                try
+                {
+                    await APIAccessorSingleton.Instance.PostObject<object, object>(string.Format("BattleSweeper/Game/{0}/UndoLastCommand", gameKey), default);
+                }
+                catch (APIAccessException) { }
             }
             else if (playerAmmoBounds.Contains(e.Location))
             {

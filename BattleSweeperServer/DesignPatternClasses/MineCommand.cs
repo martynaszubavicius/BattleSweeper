@@ -17,10 +17,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public override void Execute(Game game)
         {
-            lock (game)
-            {
-                Point = game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, game.Settings);
-            }
+            Point = game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, game.Settings);
         }
 
         public override void Undo(Game game)

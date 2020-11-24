@@ -9,11 +9,9 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public class ShotCommand : Command
     {
+        public Shot shot { get; private set; }
 
         public ShotCommand(CoordInfo info, string playerId) : base(info, playerId)
-        {
-        }
-        public override void Execute(Game game)
         {
             ShotAbstractFactory shotFactory;
             switch (Info.Data[0])
@@ -28,12 +26,13 @@ namespace BattleSweeperServer.DesignPatternClasses
                     return;
             }
 
-            Shot shot = shotFactory.CreateShot(Info.Data.Substring(1));
-
-            lock (game)
-            {
-                Point = shot.shotBeh.Shoot(game.GetEnemyByIdentifier(PlayerId).Board, Info.PositionX, Info.PositionY);
-            }
+            shot = shotFactory.CreateShot(Info.Data.Substring(1));
+        }
+        public override void Execute(Game game)
+        {
+            Point = shot.shotBeh.Shoot(game.GetEnemyByIdentifier(PlayerId).Board, Info.PositionX, Info.PositionY);
+            if (!(game.State is GameStateDebug))
+                game.GetPlayerByIdentifier(PlayerId).AmmoCount -= shot.ammoCost;
         }
 
         public override void Undo(Game game)

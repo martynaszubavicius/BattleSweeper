@@ -49,7 +49,8 @@ namespace BattleSweeperServer.Models
 
             Game playerView = new Game 
             { 
-                Id = this.Id
+                Id = this.Id,
+                Settings = this.Settings
             };
             
             playerView.Player1 = Player1.Identifier == playerIdentifier ? Player1 : Player2;

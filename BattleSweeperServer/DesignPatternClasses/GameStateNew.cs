@@ -34,7 +34,11 @@ namespace BattleSweeperServer.DesignPatternClasses
             }
 
             if (p1Done && p2Done)
+            {
                 game.State = new GameStatePlayerTurn(HistoryObserver);
+                game.Player1.AmmoCount += game.Settings.ShotsPerTurn;
+            }
+                
         }
     }
 }

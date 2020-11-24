@@ -101,39 +101,29 @@ namespace BattleSweeperServer.Controllers
             return CreateGameFromSettings(Id, true);
         }
 
-        //TODO: --------------------Flyweight--------------------
         [HttpPost("Game/{key}/RegisterPlayer")]
         public ActionResult<Player> RegisterPlayer(string key, Player player1, bool randomBoard = false)
         {
-            Player player = null;
             //TODO: Fix replace player with just playername 
-            if(flyweightFactory.CheckPlayerName(player1.Name))
-            {
-                player = flyweightFactory.GetPlayer(player1.Name);
-                if (player.InGame == true)
-                    return BadRequest("Name is taken. Go away thief");
-            }
-            else
-            {
-                player = new Player() { Name = player1.Name };
-                flyweightFactory.Add(player1.Name, player);
-            }
+            Player player = flyweightFactory.GetPlayer(player1.Name, 
+                Request.Headers.ContainsKey("PlayerIdentifier") ? Request.Headers["PlayerIdentifier"].ToString() : "");
+            
+            if (player == null)
+                return BadRequest("Name is taken. Go away thief");
 
             GameBuilder builder = gameBuilders.Find(b => b.Key == key);
 
             if (builder == null)
                 return NotFound();
 
-            lock (builder)
+            lock (gameBuilders)
             {
                 builder.RegisterPlayer(player, randomBoard);
                 if (!builder.LastOpSuccessful)
                 {
-                    flyweightFactory.Delete(player1.Name);
                     return BadRequest("game full");
                 }
                     
-
                 lock (games)
                 {
                     Game game = builder.Finalize(games.Count);
@@ -203,7 +193,7 @@ namespace BattleSweeperServer.Controllers
             if (!(game.State is GameStateDebug))
                 return BadRequest("Game is not in debug mode");
 
-            lock (game)
+            lock (games)
                 game.UndoLastPlayerCommand(Request.Headers["PlayerIdentifier"]);
 
             return StatusCode(200);
@@ -238,7 +228,7 @@ namespace BattleSweeperServer.Controllers
                     return NotFound();
             }
 
-            lock (game)
+            lock (games)
                 game.AddExecuteCommand(cmd);
 
             return StatusCode(200);

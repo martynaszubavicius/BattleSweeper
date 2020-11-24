@@ -19,19 +19,35 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             if (!(command is ShotCommand))
                 return false;
-            if ((player1 ? game.Player1 : game.Player2).Identifier == command.PlayerId)
-                return true;
-            else
+            if (player(game).Identifier != command.PlayerId)
                 return false;
+
+            if (player(game).AmmoCount < (command as ShotCommand).shot.ammoCost)
+                return false;
+            
+            return true;
         }
 
         protected override void TransitionStates(Game game, Command command)
         {
-            if (false) // TODO: check if the game is finished here
+            if ( enemy(game).Board.CountAllMines(false, false) == 0)
+            {
+                player(game).AmmoCount = 999;
+                player(game).InGame = false;
+                enemy(game).AmmoCount = 0;
+                enemy(game).InGame = false;
+                
                 game.State = new GameStateFinished(HistoryObserver);
-
-            if (command is EndTurnCommand && (player1 ? game.Player1 : game.Player2).Identifier == command.PlayerId)
+            }
+            
+            if (command is EndTurnCommand && player(game).Identifier == command.PlayerId)
+            {
+                enemy(game).AmmoCount += game.Settings.ShotsPerTurn;
                 player1 = !player1;
+            }
         }
+
+        private Player player(Game game) { return player1 ? game.Player1 : game.Player2; }
+        private Player enemy(Game game) { return player1 ? game.Player2 : game.Player1; }
     }
 }

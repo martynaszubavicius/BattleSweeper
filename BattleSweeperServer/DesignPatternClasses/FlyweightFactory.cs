@@ -12,31 +12,22 @@ namespace BattleSweeperServer.DesignPatternClasses
         //Registered players
         private Hashtable players = new Hashtable();
 
-        public void Add(string key, Player player)
+        public Player GetPlayer(string name, string identifier)
         {
-            players.Add(key, player);
-        }
+            if (!players.ContainsKey(name))
+            {
+                Player newP = new Player() { Name = name };
+                if (name != "tester123")
+                    players.Add(name, newP);
+                return newP;
+            }
 
-        public Player GetPlayer(string key)
-        {
-            return ((Player)players[key]);
-        }
+            Player p = (Player)players[name];
 
-        public bool CheckPlayerName(string name)
-        {
-            //TODO: for testing purposes
-            Delete("tester123");
-
-            //TODO: if statement to check player identifier if it's the same person
-            if (players.ContainsKey(name))
-                return true;
+            if (p.Identifier == identifier || p.Identifier == "")
+                return p;  // TODO: Memento logic should move be here and preserve the current board on the current game
             else
-                return false;
-        }
-
-        public void Delete(string key)
-        {
-            players.Remove(key);
+                return null;
         }
     }
 }
