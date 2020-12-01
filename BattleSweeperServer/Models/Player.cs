@@ -31,7 +31,7 @@ namespace BattleSweeperServer.Models
         public string CreateIdentifier(int seed)
         {
             // TODO: implement better random identifier,  for now same for everyone, which is stupid. I am stupid
-            this.Identifier = string.Format("{0}{1}","ABCDABCDABCDABCD" , seed);
+            this.Identifier = string.Format("{0}{1}{2}","ABCDABCDABCDABCD" , seed, Name);
             return this.Identifier;
         }
 
@@ -94,5 +94,21 @@ namespace BattleSweeperServer.Models
 
             return enemyView;
         }
+
+        //---------------Memento-----------------
+        public Memento CreateMemento()
+        {
+            return (new Memento(Identifier, AmmoCount, Name, Board));
+        }
+
+        //RestoreToOriginalState
+        public void SetMemento(Memento memento)
+        {
+            this.Name = memento.NameState();
+            this.Identifier = memento.IdentifierState();
+            this.AmmoCount = memento.AmmoCountState();
+            this.Board = memento.BoardState();
+        }
+
     }
 }

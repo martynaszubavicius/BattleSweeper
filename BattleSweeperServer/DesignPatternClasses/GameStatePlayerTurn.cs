@@ -36,7 +36,11 @@ namespace BattleSweeperServer.DesignPatternClasses
                 player(game).InGame = false;
                 enemy(game).AmmoCount = 0;
                 enemy(game).InGame = false;
-                
+
+                //Calling Memento GameFinished need to save state
+                game.AddMemento(player(game).CreateMemento());
+                game.AddMemento(enemy(game).CreateMemento());
+
                 game.State = new GameStateFinished(HistoryObserver);
             }
             

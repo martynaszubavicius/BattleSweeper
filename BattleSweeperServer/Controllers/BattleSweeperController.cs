@@ -28,7 +28,8 @@ namespace BattleSweeperServer.Controllers
                 Id = gameSettings.Count,
                 Title = "Fast",
                 BoardSize = 10,
-                ShotsPerTurn = 3,
+                //TODO: FIX this shit to 3
+                ShotsPerTurn = 888,
                 SimpleMineCount = 15,
                 WideMineCount = 0,
                 FakeMineCount = 0
@@ -110,6 +111,22 @@ namespace BattleSweeperServer.Controllers
             
             if (player == null)
                 return BadRequest("Name is taken. Go away thief");
+
+            //Check
+            Game OldGame = games.Find(game => game.Key == key);
+
+            if(OldGame != null)
+            {
+                if (!Request.Headers.ContainsKey("PlayerIdentifier"))
+                    return StatusCode(403);
+                if (!OldGame.HasPlayerWithIdentifier(Request.Headers["PlayerIdentifier"]))
+                    return StatusCode(403);
+
+                OldGame.RebuildGame(player1);
+                return player1 = OldGame.Player1;
+
+            }
+            //--------------------------------------------------------------
 
             GameBuilder builder = gameBuilders.Find(b => b.Key == key);
 

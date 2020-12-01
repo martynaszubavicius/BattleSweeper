@@ -21,7 +21,13 @@ namespace BattleSweeperServer.Models
 
         [JsonProperty("Player2")]
         public Player Player2 { get; set; }
-        
+
+        //------------------------------------------------------------------------------
+        //TODO: My part 
+        private List<Memento> MementoStateList = new List<Memento>();
+
+
+        //----------------------------------------------------------------------------
         [JsonProperty("Settings")]
         public GameSettings Settings { get; set; }
 
@@ -39,6 +45,7 @@ namespace BattleSweeperServer.Models
         {
             //this.History = new List<Command>();
             this.State = new GameStateNew();
+
         }
 
         // Returns a sanitized Game object that only has information that the player with specified identifier should have
@@ -100,6 +107,30 @@ namespace BattleSweeperServer.Models
         public void UndoLastPlayerCommand(string playerIdentifier)
         {
             State.HistoryObserver.Undo(this, playerIdentifier);
+        }
+        
+        public void AddMemento(Memento memento)
+        {
+            MementoStateList.Add(memento);
+        }
+
+        public void RebuildGame(Player player)
+        {
+            foreach(Memento m in MementoStateList)
+            {
+                //check if there is such identifier between participated people
+                if (m.NameState() == player.Name)
+                {
+                    //joining player
+                    Player1.SetMemento(m);
+                }
+                else
+                {
+                    // fake player
+                    Player2 = new Player();
+                    Player2.SetMemento(m);
+                }
+            }
         }
     }
 }
