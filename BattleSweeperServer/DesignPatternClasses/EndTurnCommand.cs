@@ -20,7 +20,8 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public override void Undo(Game game)
         {
-            throw new MethodAccessException("This command cannot and should not be undone");
+            this.Undone = true;
+            //throw new MethodAccessException("This command cannot and should not be undone");
         }
 
         public override string Accept(LogVisitor v)
