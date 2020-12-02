@@ -82,6 +82,7 @@
     </Compile>
     <Compile Include="DesignPatternClasses\DrawableTile.cs" />
     <Compile Include="DesignPatternClasses\GraphicsFacade.cs" />
+    <Compile Include="DesignPatternClasses\MediaProxy.cs" />
     <Compile Include="DesignPatternClasses\SoundSpecialEffects.cs" />
     <Compile Include="DesignPatternClasses\SpecialEffects.cs" />
     <Compile Include="DesignPatternClasses\TileBombDecorator.cs" />

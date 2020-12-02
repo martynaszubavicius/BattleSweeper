@@ -13,7 +13,7 @@ namespace BattleSweeperClient.DesignPatternClasses
 {
     class SoundSpecialEffects : SpecialEffects
     {
-        private Dictionary<string, MediaPlayer> sounds = new Dictionary<string, MediaPlayer>();
+        private Dictionary<string, MediaProxy> sounds = new Dictionary<string, MediaProxy>();
 
         public SoundSpecialEffects(string soundsDirectory)
         {
@@ -59,7 +59,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             string[] files = Directory.GetFiles(path, "*.wav");
             foreach (string wavFile in files)
             {
-                MediaPlayer player = new MediaPlayer();
+                MediaProxy player = new MediaProxy();
                 string audioFilePath = Path.Combine(SoundsDerectoryPath, wavFile);
                 player.Open(new Uri(audioFilePath));
                 sounds[string.Concat(wavFile.Split(new char[] { '\\' }).Last().Reverse().Skip(4).Reverse())] = player;
@@ -71,12 +71,13 @@ namespace BattleSweeperClient.DesignPatternClasses
             this.sounds[name].Position = TimeSpan.Zero;
             this.sounds[name].Volume = volume;
             if (looping) this.sounds[name].MediaEnded += LoopingMediaCallback;
+            this.sounds[name].Stop();
             this.sounds[name].Play();
         }
 
         private void LoopingMediaCallback(object sender, EventArgs e)
         {
-            MediaPlayer player = (MediaPlayer)sender;
+            MediaProxy player = (MediaProxy)sender;
             player.Position = TimeSpan.Zero;
             player.Play();
         }

@@ -59,8 +59,8 @@ namespace BattleSweeperClient
             LoadTextures("../../Resources/Textures");
 
             // Load up some dank effects
-            //effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
-            effects.Add(new TitleAdditionsSpecialEffects(this));
+            effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
+            //effects.Add(new TitleAdditionsSpecialEffects(this));
 
             // Keep asking for game settings until you receive them, then draw game window
             timerTickAction = () => { SetupGame(); };
