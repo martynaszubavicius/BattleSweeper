@@ -39,7 +39,7 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             List<Command> commands = this.history
                 .GetRange(historyStartIndex, this.history.Count - historyStartIndex)
-                .Where(item => !(item.PlayerId != playerIdentifier && item.Info.CommandType == "mine"))
+                .Where(item => !((item.PlayerId != playerIdentifier && item.Info.CommandType == "mine") || item.Info.CommandType == "endTurn"))
                 .ToList();
 
             // clean up the player id's from enemy commands - in order to not ruin data, 
@@ -51,6 +51,19 @@ namespace BattleSweeperServer.DesignPatternClasses
             }
 
             return commands.Aggregate(new List<ChangePoint>(), (accum, cmd) => { return accum.Concat(cmd.Point).ToList(); });
+        }
+
+        public string GetTextOutput()
+        {
+            TextLogVisitor logVisitor = new TextLogVisitor();
+            string output = "";
+
+            foreach (Command command in this.history)
+            {
+               output += command.Accept(logVisitor);
+            }
+
+            return output;
         }
     }
 }

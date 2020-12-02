@@ -132,5 +132,10 @@ namespace BattleSweeperServer.Models
                 }
             }
         }
+
+        public string GetTextOutput()
+        {
+            return State.HistoryObserver.GetTextOutput();
+        }
     }
 }

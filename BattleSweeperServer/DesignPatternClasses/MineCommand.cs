@@ -25,5 +25,10 @@ namespace BattleSweeperServer.DesignPatternClasses
             this.Undone = true;
             Point = game.GetPlayerByIdentifier(PlayerId).Board.CycleMine(Info.PositionX, Info.PositionY, game.Settings, true);
         }
+
+        public override string Accept(LogVisitor v)
+        {
+            return v.VisitMine(this);
+        }
     }
 }

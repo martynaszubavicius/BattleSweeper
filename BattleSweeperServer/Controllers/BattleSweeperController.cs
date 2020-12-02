@@ -28,8 +28,7 @@ namespace BattleSweeperServer.Controllers
                 Id = gameSettings.Count,
                 Title = "Fast",
                 BoardSize = 10,
-                //TODO: FIX this shit to 3
-                ShotsPerTurn = 888,
+                ShotsPerTurn = 3,
                 SimpleMineCount = 15,
                 WideMineCount = 0,
                 FakeMineCount = 0
@@ -214,6 +213,21 @@ namespace BattleSweeperServer.Controllers
                 game.UndoLastPlayerCommand(Request.Headers["PlayerIdentifier"]);
 
             return StatusCode(200);
+        }
+
+        [HttpGet("Game/{key}/ExportLog/{format}")]
+        public ActionResult<string> ExportLog(string key, string format)
+        {
+            Game game = games.Find(game => game.Key == key);
+
+            ActionResult error = EnsureIntegrity(game);
+            if (error != null)
+                return error;
+
+            if (game.Player1 == null || game.Player2 == null)
+                return BadRequest("Game has not started yet");
+
+            return game.GetTextOutput();
         }
 
         [HttpPost("Game/{key}/ExecuteCommand")]

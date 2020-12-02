@@ -18,7 +18,7 @@ namespace BattleSweeperServer.DesignPatternClasses
         // This is a template method
         public override sealed void ExecuteCommand(Game game, Command command)
         {
-            if (CanExecuteCommand(game, command) && !(command is EndTurnCommand))
+            if (CanExecuteCommand(game, command) /*&& !(command is EndTurnCommand)*/)
             {
                 command.Execute(game);
                 this.HistoryObserver.Add(command);

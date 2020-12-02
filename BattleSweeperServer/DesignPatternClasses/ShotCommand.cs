@@ -42,5 +42,10 @@ namespace BattleSweeperServer.DesignPatternClasses
             foreach (ChangePoint pnt in Point)
                 board.Tiles[board.GetIndex(pnt.X, pnt.Y)].State = -1;  
         }
+
+        public override string Accept(LogVisitor v)
+        {
+            return v.VisitShot(this);
+        }
     }
 }

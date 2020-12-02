@@ -17,11 +17,13 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         protected override bool CanExecuteCommand(Game game, Command command)
         {
+            if (command is EndTurnCommand)
+                return true;
+            
             if (!(command is ShotCommand))
                 return false;
             if (player(game).Identifier != command.PlayerId)
                 return false;
-
             if (player(game).AmmoCount < (command as ShotCommand).shot.ammoCost)
                 return false;
             

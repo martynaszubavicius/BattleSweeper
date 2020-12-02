@@ -24,5 +24,9 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             Console.WriteLine("leaf " + X + " " + Y);
         }
+        public override string ToString()
+        {
+            return "X: " + this.X + ", Y: " + this.Y;
+        }
     }
 }

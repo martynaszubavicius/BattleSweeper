@@ -31,5 +31,12 @@ namespace BattleSweeperServer.DesignPatternClasses
         }
         public abstract void Execute(Game game);
         public abstract void Undo(Game game);
+        public abstract string Accept(LogVisitor v);
+
+        public string GetPlayerName()
+        {
+            int idLength = 17;
+            return this.PlayerId.Substring(idLength);
+        }
     }
 }

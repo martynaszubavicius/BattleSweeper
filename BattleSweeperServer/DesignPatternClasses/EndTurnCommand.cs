@@ -22,5 +22,10 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             throw new MethodAccessException("This command cannot and should not be undone");
         }
+
+        public override string Accept(LogVisitor v)
+        {
+            return v.VisitEndTurn(this);
+        }
     }
 }

@@ -80,7 +80,7 @@ namespace BattleSweeperClient
             gameUpdateTimer.Stop();
 
             this.gameSettings = await APIAccessorSingleton.Instance.GetObject<GameSettings>("BattleSweeper/Game/{0}/Settings", gameKey);
-
+            
             if (this.gameSettings != null)
             {                
                 CalculateBounds();
@@ -286,6 +286,24 @@ namespace BattleSweeperClient
                 effects.ForEach(i => i.ButtonClick(playerAmmoBounds));
                 CoordInfo coords = new CoordInfo() { PositionX = 0, PositionY = 0, Data = "switchingTurns", CommandType = "endTurn" };
                 await APIAccessorSingleton.Instance.PostObject<CoordInfo, CoordInfo>(string.Format("BattleSweeper/Game/{0}/ExecuteCommand", gameKey), coords);
+            }
+            else if (enemyAmmoBounds.Contains(e.Location))
+            {
+                string output = await APIAccessorSingleton.Instance.GetLogOutput(gameKey, "txt");
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.FileName = "*.txt";
+                saveFileDialog.DefaultExt = "txt";
+                saveFileDialog.Filter = "txt files (*.txt)|*.txt";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    Stream fileStream = saveFileDialog.OpenFile();
+                    StreamWriter sw = new StreamWriter(fileStream);
+
+                    sw.Write(output);
+                    sw.Close();
+                    fileStream.Close();
+                }
+
             }
         }
 

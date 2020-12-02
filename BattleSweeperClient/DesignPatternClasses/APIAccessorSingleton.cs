@@ -68,6 +68,12 @@ namespace BattleSweeperClient.DesignPatternClasses
             return await GetObject<Game>(route, gameKey);
         }
 
+        public async Task<string> GetLogOutput(string gameKey, string format = "txt")
+        {
+            string route = string.Format("BattleSweeper/Game/{{0}}/ExportLog/{0}", format);
+            return await GetObject<string>(route, gameKey);
+        }
+
         public async Task<Player> RegisterPlayerToGame(string gameKey, Player player, bool randomBoard, bool secondaryTestPlayer = false)
         {
             Player registeredPlayer = await PostObject<Player, Player>(string.Format("BattleSweeper/Game/{0}/RegisterPlayer" + (randomBoard ? "WithBoard" : ""), gameKey), player);
