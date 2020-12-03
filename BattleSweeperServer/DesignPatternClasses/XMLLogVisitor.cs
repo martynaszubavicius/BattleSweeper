@@ -9,17 +9,35 @@ namespace BattleSweeperServer.DesignPatternClasses
     {
         public override string VisitEndTurn(EndTurnCommand command)
         {
-            throw new NotImplementedException();
+            string xml = "<command>\n";
+            xml += "  <player>" + command.GetPlayerName() + "</player>\n";
+            xml += "  <type>End turn</type>\n";
+            xml += "</command>\n";
+            return xml;
         }
 
         public override string VisitMine(MineCommand command)
         {
-            throw new NotImplementedException();
+            string xml = "<command>\n";
+            xml += "  <player>" + command.GetPlayerName() + "</player>\n";
+            xml += "  <type>Set mine</type>\n";
+            xml += "  <x>" + command.Point.X + "</x>\n";
+            xml += "  <y>" + command.Point.Y + "</y>\n";
+            xml += "</command>\n";
+            return xml;
         }
 
         public override string VisitShot(ShotCommand command)
         {
-            throw new NotImplementedException();
+            string shotType = GetShotType(command.Info.Data);
+            string xml = "<command>\n";
+            xml += "  <player>" + command.GetPlayerName() + "</player>\n";
+            xml += "  <type>Shoot mine</type>\n";
+            xml += "  <shot>" + shotType + "</shot>\n";
+            xml += "  <x>" + command.Point.X + "</x>\n";
+            xml += "  <y>" + command.Point.Y + "</y>\n";
+            xml += "</command>\n";
+            return xml;
         }
     }
 }

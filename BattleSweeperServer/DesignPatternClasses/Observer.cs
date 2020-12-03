@@ -53,15 +53,30 @@ namespace BattleSweeperServer.DesignPatternClasses
             return commands.Aggregate(new List<ChangePoint>(), (accum, cmd) => { return accum.Concat(cmd.Point).ToList(); });
         }
 
-        public string GetTextOutput()
+        public string GetCommandsLog(string format)
         {
-            TextLogVisitor logVisitor = new TextLogVisitor();
             string output = "";
-
+            LogVisitor logVisitor = new TextLogVisitor();
+            if (format == "xml")
+            {
+                output += "<commands>\n";
+                logVisitor = new XMLLogVisitor();
+            }
+            else if (format == "json")
+            {
+                output += "{\n";
+                logVisitor = new JSONLogVisitor();
+            }
+            
             foreach (Command command in this.history)
             {
                output += command.Accept(logVisitor);
             }
+
+            if (format == "xml")
+                output += "</commands>\n";
+            else if (format == "json")
+                output += "}\n";
 
             return output;
         }

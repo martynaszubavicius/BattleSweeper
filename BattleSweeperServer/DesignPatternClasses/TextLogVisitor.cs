@@ -19,27 +19,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 
         public override string VisitShot(ShotCommand command)
         {
-            string shotType = "";
-            switch (command.Info.Data)
-            {
-                case "SSingleShot":
-                    shotType = "single shot";
-                    break;
-                case "SFourShot":
-                    shotType = "four shot";
-                    break;
-                case "SNineShot":
-                    shotType = "nine shot";
-                    break;
-                case "CLineShot":
-                    shotType = "line shot";
-                    break;
-                case "CScatterShot":
-                    shotType = "scatter shot";
-                    break;
-                default:
-                    break;
-            }
+            string shotType = GetShotType(command.Info.Data) + " shot";
             return "Player " + command.GetPlayerName() + " shot " + shotType + " at " + command.Point + ".\n";
         }
     }

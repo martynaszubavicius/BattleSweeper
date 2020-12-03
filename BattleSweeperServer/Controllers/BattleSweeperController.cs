@@ -227,7 +227,7 @@ namespace BattleSweeperServer.Controllers
             if (game.Player1 == null || game.Player2 == null)
                 return BadRequest("Game has not started yet");
 
-            return game.GetTextOutput();
+            return game.GetCommandsLog(format);
         }
 
         [HttpPost("Game/{key}/ExecuteCommand")]

@@ -59,7 +59,7 @@ namespace BattleSweeperClient
             LoadTextures("../../Resources/Textures");
 
             // Load up some dank effects
-            effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
+            //effects.Add(new SoundSpecialEffects("../../Resources/Sounds"));
             //effects.Add(new TitleAdditionsSpecialEffects(this));
 
             // Keep asking for game settings until you receive them, then draw game window
@@ -289,21 +289,11 @@ namespace BattleSweeperClient
             }
             else if (enemyAmmoBounds.Contains(e.Location))
             {
-                string output = await APIAccessorSingleton.Instance.GetLogOutput(gameKey, "txt");
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.FileName = "*.txt";
-                saveFileDialog.DefaultExt = "txt";
-                saveFileDialog.Filter = "txt files (*.txt)|*.txt";
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    Stream fileStream = saveFileDialog.OpenFile();
-                    StreamWriter sw = new StreamWriter(fileStream);
-
-                    sw.Write(output);
-                    sw.Close();
-                    fileStream.Close();
-                }
-
+                //string format = "txt";
+                //string format = "xml";
+                string format = "json";
+                string output = await APIAccessorSingleton.Instance.GetLogOutput(gameKey, format);
+                SaveFile(output, format);
             }
         }
 
@@ -357,6 +347,22 @@ namespace BattleSweeperClient
         private void BattleSweeperWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             effects.ForEach(i => i.StopBackgroundEffect());
+        }
+
+        private void SaveFile(string output, string format)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = "*."+ format;
+            saveFileDialog.DefaultExt = format;
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                Stream fileStream = saveFileDialog.OpenFile();
+                StreamWriter sw = new StreamWriter(fileStream);
+
+                sw.Write(output);
+                sw.Close();
+                fileStream.Close();
+            }
         }
     }
 }
