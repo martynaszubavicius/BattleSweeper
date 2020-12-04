@@ -71,7 +71,6 @@ namespace BattleSweeperClient.DesignPatternClasses
             this.sounds[name].Position = TimeSpan.Zero;
             this.sounds[name].Volume = volume;
             if (looping) this.sounds[name].MediaEnded += LoopingMediaCallback;
-            this.sounds[name].Stop();
             this.sounds[name].Play();
         }
 
