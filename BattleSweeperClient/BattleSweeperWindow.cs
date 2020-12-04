@@ -289,9 +289,9 @@ namespace BattleSweeperClient
             }
             else if (enemyAmmoBounds.Contains(e.Location))
             {
-                //string format = "txt";
+                string format = "txt";
                 //string format = "xml";
-                string format = "json";
+                //string format = "json";
                 string output = await APIAccessorSingleton.Instance.GetLogOutput(gameKey, format);
                 SaveFile(output, format);
             }
