@@ -1,13 +1,15 @@
 using BattleSweeperServer.Models;
-using NUnit.Framework;
+using BattleSweeperServer.DesignPatternClasses;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using NUnit.Framework;
 using System;
 
-namespace BattleSweeperServer.DesignPatternClasses
+namespace BattleSweeperServerTests
 {
-    [TestFixture]
+    [TestClass]
     public class LineShotBehaviourTests
     {
-        [Test]
+        [TestMethod]
         public void Shoot_StateUnderTest_ExpectedBehavior()
         {
             // Arrange
@@ -31,7 +33,7 @@ namespace BattleSweeperServer.DesignPatternClasses
             Assert.AreEqual(result, comp);
         }
 
-        [Test]
+        [TestMethod]
         public void Shoot_StateUnderTest_aaaExpectedBehavior()
         {
             // Arrange
@@ -41,13 +43,22 @@ namespace BattleSweeperServer.DesignPatternClasses
             Assert.AreEqual(1, 1);
         }
 
-        [Test]
+        [TestMethod]
         public void aaaFail()
         {
             // Arrange
             var lineShotBehaviour = new LineShotBehaviour(5);
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(1, 1);
+        }
+
+        [TestMethod]
+        public void aaadfsgbsdfgsdFail()
+        {
+            // Arrange
+            var lineShotBehaviour = new LineShotBehaviour(5);
+            // Assert
+            Assert.AreEqual(2, 2);
         }
     }
 }

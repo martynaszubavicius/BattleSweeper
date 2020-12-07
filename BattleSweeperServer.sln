@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BattleSweeperServer", "Batt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleSweeperClient", "BattleSweeperClient\BattleSweeperClient.csproj", "{15BE98D6-D118-4100-B587-9C46CB066E58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleSweeperTests", "BattleSweeperTests\BattleSweeperTests.csproj", "{77288691-DFDD-42A1-9445-EEBED4F34ADC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{15BE98D6-D118-4100-B587-9C46CB066E58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15BE98D6-D118-4100-B587-9C46CB066E58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15BE98D6-D118-4100-B587-9C46CB066E58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77288691-DFDD-42A1-9445-EEBED4F34ADC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77288691-DFDD-42A1-9445-EEBED4F34ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77288691-DFDD-42A1-9445-EEBED4F34ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77288691-DFDD-42A1-9445-EEBED4F34ADC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

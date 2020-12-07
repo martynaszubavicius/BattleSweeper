@@ -40,5 +40,19 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             return "X: " + this.X + ", Y: " + this.Y;
         }
+        public override bool Equals(object obj)
+        {
+            ChangePointComposite other = obj as ChangePointComposite;
+            if (other == null)
+            {
+                return false;
+            }
+            return (this.X == other.X) && (this.Y == other.Y);
+        }
+
+        public override int GetHashCode()
+        {
+            return 33 * X.GetHashCode() + Y.GetHashCode();
+        }
     }
 }
