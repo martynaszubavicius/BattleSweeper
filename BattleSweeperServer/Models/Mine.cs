@@ -26,5 +26,19 @@ namespace BattleSweeperServer.Models
             //points.Add(new ChangePoint(x, y));
             //return points;
         }
+        public override bool Equals(object obj)
+        {
+            SimpleMine other = obj as SimpleMine;
+            if (other == null)
+            {
+                return false;
+            }
+            return (this.ImageName == other.ImageName) && (this.mineReveal.Equals(other.mineReveal));
+        }
+
+        public override int GetHashCode()
+        {
+            return 33 * ImageName.GetHashCode() + mineReveal.GetHashCode();
+        }
     }
 }
