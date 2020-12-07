@@ -3,7 +3,7 @@ using BattleSweeperServer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace BattleSweeperServerTests
+namespace BattleSweeperServerTests.Models
 {
     [TestClass]
     public class PlayerTests
@@ -12,12 +12,11 @@ namespace BattleSweeperServerTests
         public void CreateIdentifier_TestForNull()
         {
             // Arrange
-            var player = new Player();
+            Player player = new Player();
             int seed = 0;
 
             // Act
-            var result = player.CreateIdentifier(
-                seed);
+            string result = player.CreateIdentifier(seed);
 
             // Assert
             Assert.IsNotNull(result);
@@ -27,24 +26,23 @@ namespace BattleSweeperServerTests
         public void CreateIdentifier_TestForIdentifier()
         {
             // Arrange
-            var player = new Player();
+            Player player = new Player();
             int seed = 0;
             player.Name = "test";
 
             // Act
-            var result = player.CreateIdentifier(
-                seed);
-            var expected = "ABCDABCDABCDABCD" + 0 + "test";
+            string result = player.CreateIdentifier(seed);
+            string expected = "ABCDABCDABCDABCD" + 0 + "test";
 
             // Assert
-            Assert.AreEqual(result, expected);
+            Assert.AreEqual(expected, result);
         }
 
         [TestMethod]
         public void CreateBoard_Test()
         {
             // Arrange
-            var player = new Player();
+            Player player = new Player();
             GameSettings settings = new GameSettings()
             {
                 Title = "Slow",
@@ -55,22 +53,21 @@ namespace BattleSweeperServerTests
                 FakeMineCount = 10
             };
 
-            var expBoardSize = 30;
+            int expBoardSize = 30;
 
             // Act
-            var result = player.CreateBoard(
-                settings);
+            Board result = player.CreateBoard(settings);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.Size, expBoardSize);
+            Assert.AreEqual(expBoardSize, result.Size);
         }
 
         [TestMethod]
         public void CreateRandomBoard_Test()
         {
             // Arrange
-            var player = new Player();
+            Player player = new Player();
             GameSettings settings = new GameSettings()
             {
                 Title = "Slow",
@@ -82,68 +79,66 @@ namespace BattleSweeperServerTests
             };
 
             // Act
-            var result = player.CreateRandomBoard(
-                settings);
-            var exp = 900;
+            Board result = player.CreateRandomBoard(settings);
+            int exp = 900;
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.Tiles.Count, exp);
+            Assert.AreEqual(exp, result.Tiles.Count);
         }
 
         [TestMethod]
         public void GetEnemyView_Test()
         {
             // Arrange
-            var player = new Player();
+            Player player = new Player();
             player.AmmoCount = 10;
             player.Name = "test";
             player.Board = new Board(10);
-            var exp = 10;
+            int exp = 10;
 
             // Act
-            var result = player.GetEnemyView();
+            Player result = player.GetEnemyView();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.AmmoCount, exp);
+            Assert.AreEqual(exp, result.AmmoCount);
         }
 
         [TestMethod]
-        public void CreateMemento_StateUnderTest_ExpectedBehavior()
+        public void CreateMemento_Test()
         {
             // Arrange
-            var player = new Player();
+            Player player = new Player();
             player.Name = "test";
             player.CreateIdentifier(0);
             player.AmmoCount = 10;
             player.Board = new Board(10);
-            var exp = 10;
+            int exp = 10;
 
             // Act
-            var result = player.CreateMemento();
+            Memento result = player.CreateMemento();
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(result.AmmoCountState(), exp);
+            Assert.AreEqual(exp, result.AmmoCountState());
         }
 
         [TestMethod]
-        public void SetMemento_StateUnderTest_ExpectedBehavior()
+        public void SetMemento_Test()
         {
             // Arrange
-            var player = new Player();
+            Player player = new Player();
             Memento memento = new Memento("ABCDABCDABCDABCD0test", 10, "test", new Board(10));
 
-            var exp = new Memento("ABCDABCDABCDABCD0test", 10, "test", new Board(10));
+            Memento exp = new Memento("ABCDABCDABCDABCD0test", 10, "test", new Board(10));
 
             // Act
-            player.SetMemento(
-                memento);
+            player.SetMemento(memento);
 
             // Assert
             Assert.IsNotNull(player);
-            Assert.AreEqual(player.Identifier, exp.IdentifierState());
+            Assert.AreEqual(exp.IdentifierState(), player.Identifier);
         }
     }
 }
