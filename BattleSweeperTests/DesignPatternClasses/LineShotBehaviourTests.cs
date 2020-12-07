@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using NUnit.Framework;
 using System;
 
-namespace BattleSweeperServerTests
+namespace BattleSweeperTests.DesignPatternClasses
 {
     [TestClass]
     public class LineShotBehaviourTests
