@@ -28,5 +28,20 @@ namespace BattleSweeperServer.DesignPatternClasses
 
             return point;
         }
+
+        public override bool Equals(object obj)
+        {
+            SquareShotBehaviour other = obj as SquareShotBehaviour;
+            if (other == null)
+            {
+                return false;
+            }
+            return (this.width == other.width);
+        }
+
+        public override int GetHashCode()
+        {
+            return 33 * width.GetHashCode();
+        }
     }
 }
