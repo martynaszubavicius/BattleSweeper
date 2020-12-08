@@ -1,4 +1,6 @@
-﻿namespace BattleSweeperClient
+﻿using System.Windows.Forms;
+
+namespace BattleSweeperClient
 {
     partial class GameCreator
     {
@@ -28,6 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.newGameButton = new System.Windows.Forms.Button();
             this.joinGameButton = new System.Windows.Forms.Button();
             this.gameIdTextBox = new System.Windows.Forms.TextBox();
@@ -41,6 +44,9 @@
             this.debugMode = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.randomBoard = new System.Windows.Forms.CheckBox();
+            this.chatBox = new System.Windows.Forms.RichTextBox();
+            this.messageBox = new System.Windows.Forms.RichTextBox();
+            this.chatUpdateTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // newGameButton
@@ -163,11 +169,43 @@
             this.randomBoard.TabIndex = 13;
             this.randomBoard.UseVisualStyleBackColor = true;
             // 
+            // chatBox
+            // 
+            this.chatBox.BackColor = System.Drawing.SystemColors.Window;
+            this.chatBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.chatBox.Location = new System.Drawing.Point(325, 10);
+            this.chatBox.Name = "chatBox";
+            this.chatBox.ReadOnly = true;
+            this.chatBox.Size = new System.Drawing.Size(515, 271);
+            this.chatBox.TabIndex = 14;
+            this.chatBox.Text = "";
+            // 
+            // messageBox
+            // 
+            this.messageBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.messageBox.Location = new System.Drawing.Point(325, 287);
+            this.messageBox.MaxLength = 100;
+            this.messageBox.Multiline = false;
+            this.messageBox.Name = "messageBox";
+            this.messageBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.messageBox.Size = new System.Drawing.Size(515, 20);
+            this.messageBox.TabIndex = 15;
+            this.messageBox.Text = "";
+            this.messageBox.WordWrap = false;
+            this.messageBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.messageBox_KeyUp);
+            // 
+            // chatUpdateTimer
+            // 
+            this.chatUpdateTimer.Enabled = true;
+            this.chatUpdateTimer.Tick += new System.EventHandler(this.chatUpdateTimer_Tick);
+            // 
             // GameCreator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(265, 319);
+            this.ClientSize = new System.Drawing.Size(852, 319);
+            this.Controls.Add(this.messageBox);
+            this.Controls.Add(this.chatBox);
             this.Controls.Add(this.randomBoard);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.debugMode);
@@ -203,5 +241,8 @@
         private System.Windows.Forms.CheckBox debugMode;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox randomBoard;
+        private System.Windows.Forms.RichTextBox chatBox;
+        private System.Windows.Forms.RichTextBox messageBox;
+        private System.Windows.Forms.Timer chatUpdateTimer;
     }
 }

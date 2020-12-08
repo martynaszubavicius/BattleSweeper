@@ -102,6 +102,7 @@
     <Compile Include="Models\CoordInfo.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\GameSettings.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Mine.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\Tile.cs" />

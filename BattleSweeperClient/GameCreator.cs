@@ -11,15 +11,19 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Message = BattleSweeperClient.Models.Message;
 
 namespace BattleSweeperClient
 {
     public partial class GameCreator : Form
     {
+        private int chatMessageCount = 0;
+
         public GameCreator()
         {
             InitializeComponent();
             FinishInitialization();
+            InitializeChatMessages();
         }
 
         private async void FinishInitialization()
@@ -93,6 +97,63 @@ namespace BattleSweeperClient
                 joinGameButton.Enabled = true;
             else
                 joinGameButton.Enabled = false;
+        }
+
+        private async void InitializeChatMessages()
+        {
+            var messages = await APIAccessorSingleton.Instance.GetObjects<Message>("BattleSweeper/GetMessages");
+
+            foreach (Message message in messages)
+            { 
+                chatBox.Text += message.ToString(); 
+                chatMessageCount++;
+            }
+        }
+
+        private void chatUpdateTimer_Tick(object sender, EventArgs e)
+        {
+            UpdateMessages();
+        }
+
+        private async void UpdateMessages()
+        {
+            var messages = await APIAccessorSingleton.Instance.GetObjects<Message>("BattleSweeper/GetMessages");
+
+            if (chatMessageCount < messages.Count())
+            {
+                for (int i = chatMessageCount; i < messages.Count(); i++)
+                {
+                    chatBox.Text += messages.ElementAt(i).ToString();
+                    chatMessageCount++;
+                }
+            }
+        }
+
+        private void messageBox_KeyUp(Object o, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Return)
+            {
+                SendMessage();
+            }
+        }
+
+        private async void SendMessage()
+        {
+            if (nameTextBox.Text == "")
+            {
+                messageBox.Text = "";
+                errorLabel.Text = "Enter your name";
+                return;
+            }
+            if (messageBox.Text == "")
+            {
+                errorLabel.Text = "Enter a message";
+                return;
+            }
+            Message message = new Message(nameTextBox.Text, messageBox.Text);
+            await APIAccessorSingleton.Instance.PostObject<object, Message>("BattleSweeper/CreateMessage", message);
+            messageBox.Text = "";
+            errorLabel.Text = "";
         }
     }
 }

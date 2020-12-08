@@ -16,6 +16,7 @@ namespace BattleSweeperServer.Controllers
         private static List<Game> games = new List<Game>();
         private static List<GameSettings> gameSettings = new List<GameSettings>();
         private static List<GameBuilder> gameBuilders = new List<GameBuilder>();
+        private static List<Message> messages = new List<Message>();
         private static FlyweightFactory flyweightFactory = new FlyweightFactory();
 
         public BattleSweeperController()
@@ -228,6 +229,20 @@ namespace BattleSweeperServer.Controllers
                 return BadRequest("Game has not started yet");
 
             return game.GetCommandsLog(format);
+        }
+
+        [HttpPost("CreateMessage")]
+        public ActionResult SaveMessage(Message message)
+        {
+            messages.Add(message);
+
+            return StatusCode(200);
+        }
+
+        [HttpGet("GetMessages")]
+        public ActionResult<List<Message>> GetMessages()
+        {
+            return messages;
         }
 
         [HttpPost("Game/{key}/ExecuteCommand")]
