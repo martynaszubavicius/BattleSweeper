@@ -35,20 +35,5 @@ namespace BattleSweeperServer.Models
         {
             return string.Format("State: {0}, Mine: {1}", State, Mine == null ? 0 : 1);
         }
-
-        public override bool Equals(object obj)
-        {
-            Tile other = obj as Tile;
-            if (other == null)
-            {
-                return false;
-            }
-            return (this.State == other.State) && (this.Mine.Equals(other.Mine));
-        }
-
-        public override int GetHashCode()
-        {
-            return 33 * State.GetHashCode() + Mine.GetHashCode();
-        }
     }
 }
