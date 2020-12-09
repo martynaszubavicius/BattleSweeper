@@ -3,7 +3,7 @@ using BattleSweeperServer.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace BattleSweeperServerTests.Models
+namespace BattleSweeperTests.Models
 {
     [TestClass]
     public class PlayerTests
