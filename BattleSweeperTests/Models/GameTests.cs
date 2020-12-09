@@ -25,12 +25,16 @@ namespace BattleSweeperTests.Models
 
             Player p1 = new Player() { Name = "a" };
             Player p2 = new Player() { Name = "b" };
+            Player p3 = new Player() { Name = "c" };
 
             // Act
             GameBuilder b = new GameBuilder(0);
             b.SetSettings(settings);
             b.RegisterPlayer(p1);
             b.RegisterPlayer(p2);
+            b.RegisterPlayer(p3, true);
+
+            Assert.IsTrue(b.LastOpSuccessful == false);
             b.SetDebugMode();
             Game game = b.Finalize(0);
 
