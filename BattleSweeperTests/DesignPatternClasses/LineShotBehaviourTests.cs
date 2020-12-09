@@ -32,33 +32,5 @@ namespace BattleSweeperTests.DesignPatternClasses
             // Assert
             Assert.AreEqual(result, comp);
         }
-
-        [TestMethod]
-        public void Shoot_StateUnderTest_aaaExpectedBehavior()
-        {
-            // Arrange
-            var lineShotBehaviour = new LineShotBehaviour(5);
-
-            // Assert
-            Assert.AreEqual(1, 1);
-        }
-
-        [TestMethod]
-        public void aaaFail()
-        {
-            // Arrange
-            var lineShotBehaviour = new LineShotBehaviour(5);
-            // Assert
-            Assert.AreEqual(1, 1);
-        }
-
-        [TestMethod]
-        public void aaadfsgbsdfgsdFail()
-        {
-            // Arrange
-            var lineShotBehaviour = new LineShotBehaviour(5);
-            // Assert
-            Assert.AreEqual(2, 2);
-        }
     }
 }
