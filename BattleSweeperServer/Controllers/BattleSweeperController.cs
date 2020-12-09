@@ -242,6 +242,21 @@ namespace BattleSweeperServer.Controllers
                     Interpreter interpreter = new Interpreter();
                     Game game = games.Where(game => game.Player1.Name == message.Author || game.Player2.Name == message.Author).First();
                     interpreter.ParseMessage(message, game);
+
+                    string[] messageParts = message.Content.Split(' ');
+                    int x = int.Parse(messageParts[2]);
+                    int y = int.Parse(messageParts[3]);
+
+                    ChangePoint changePoint = new ChangePointLeaf(x, y);
+
+                    CoordInfo info = new CoordInfo();
+                    info.CommandType = "fakeCommand";
+                    info.PositionX = x;
+                    info.PositionY = y;
+                    
+                    FakeCommand fakeCommand = new FakeCommand(info, changePoint);
+
+                    game.State.HistoryObserver.Add(fakeCommand);
                 }
                 catch
                 {
@@ -262,12 +277,18 @@ namespace BattleSweeperServer.Controllers
         {
             Game game = games.Find(game => game.Key == key);
 
-            ActionResult error = EnsureIntegrity(game);
-            if (error != null)
-                return error;
+            var gameNullHandler = new GameNullHandler();
+            var registeredPlayerHandler = new RegisteredPlayerHandler();
 
-            if (game.Player1 == null || game.Player2 == null)
-                return BadRequest("Both players haven't registered yet");
+            registeredPlayerHandler.SetNext(gameNullHandler);
+
+            if (!Request.Headers.ContainsKey("PlayerIdentifier"))
+                return StatusCode(403);
+            if (!game.HasPlayerWithIdentifier(Request.Headers["PlayerIdentifier"]))
+                return StatusCode(403);
+
+            if (registeredPlayerHandler.Handle(game) == null)
+                BadRequest();
 
             Command cmd = null;
 
@@ -292,10 +313,46 @@ namespace BattleSweeperServer.Controllers
             return StatusCode(200);
         }
 
+        //[HttpPost("Game/{key}/ExecuteCommand")]
+        //public ActionResult ExecuteCommand(string key, CoordInfo info)
+        //{
+        //    Game game = games.Find(game => game.Key == key);
+
+        //    ActionResult error = EnsureIntegrity(game);
+        //    if (error != null)
+        //        return error;
+
+        //    if (game.Player1 == null || game.Player2 == null)
+        //        return BadRequest("Both players haven't registered yet");
+
+        //    Command cmd = null;
+
+        //    switch (info.CommandType)
+        //    {
+        //        case "mine":
+        //            cmd = new MineCommand(info, Request.Headers["PlayerIdentifier"]);
+        //            break;
+        //        case "shot":
+        //            cmd = new ShotCommand(info, Request.Headers["PlayerIdentifier"]);
+        //            break;
+        //        case "endTurn":
+        //            cmd = new EndTurnCommand(info, Request.Headers["PlayerIdentifier"]);
+        //            break;
+        //        default:
+        //            return NotFound();
+        //    }
+
+        //    lock (games)
+        //        game.AddExecuteCommand(cmd);
+
+        //    return StatusCode(200);
+        //}
+
         private ActionResult EnsureIntegrity(Game game)
         {
             if (game == null)
                 return NotFound();
+
             if (!Request.Headers.ContainsKey("PlayerIdentifier"))
                 return StatusCode(403);
             if (!game.HasPlayerWithIdentifier(Request.Headers["PlayerIdentifier"]))
