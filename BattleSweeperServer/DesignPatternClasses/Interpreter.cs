@@ -22,7 +22,6 @@ namespace BattleSweeperServer.DesignPatternClasses
 
             if (playerNumber == "player1")
             {
-                
                 if (cmd == "/putMine")
                 {
                     MineFactory mineFactory = new MineFactory();
