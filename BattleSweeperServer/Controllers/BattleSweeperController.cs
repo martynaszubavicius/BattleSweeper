@@ -234,7 +234,19 @@ namespace BattleSweeperServer.Controllers
         [HttpPost("CreateMessage")]
         public ActionResult SaveMessage(Message message)
         {
-            messages.Add(message);
+            if (message.Content[0] != '/')
+                messages.Add(message);
+            else
+                try
+                {
+                    Interpreter interpreter = new Interpreter();
+                    Game game = games.Where(game => game.Player1.Name == message.Author || game.Player2.Name == message.Author).First();
+                    interpreter.ParseMessage(message, game);
+                }
+                catch
+                {
+                    return BadRequest("Player hasnt started any game");
+                }
 
             return StatusCode(200);
         }
