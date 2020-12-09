@@ -274,12 +274,5 @@ namespace BattleSweeperTests.Models
 
             Assert.IsTrue(game.State is GameStateFinished);
         }
-
-
-
-
-
-
-
     }
 }
