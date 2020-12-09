@@ -172,50 +172,114 @@ namespace BattleSweeperTests.Models
             Assert.IsTrue(p2_view.RedrawPoints.Count == 0);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [TestMethod]
-        public void AddExecuteCommand_StateUnderTest_ExpectedBehavior()
+        public void CompleteGame_TestExpectedBehaviour()
         {
             // Arrange
-            var game = new Game();
-            Command command = null;
+            GameSettings settings = new GameSettings()
+            {
+                Id = 0,
+                Title = "Fast",
+                BoardSize = 3,
+                ShotsPerTurn = 999,
+                SimpleMineCount = 2,
+                WideMineCount = 1,
+                FakeMineCount = 0
+            };
 
-            // Act
-            game.AddExecuteCommand(
-                command);
+            Player p1 = new Player() { Name = "a" };
+            Player p2 = new Player() { Name = "b" };
 
-            // Assert
-            Assert.IsTrue(true);
+            GameBuilder b = new GameBuilder(0);
+            b.SetSettings(settings);
+            b.RegisterPlayer(p1);
+            b.RegisterPlayer(p2);
+
+            Game game = b.Finalize(0);
+
+
+            // p1 mines
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 0, PositionY = 0 }, 
+                p1.Identifier
+                ));
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 0, PositionY = 0 },
+                p1.Identifier
+                ));
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 2, PositionY = 2 },
+                p1.Identifier
+                ));
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 1, PositionY = 1 },
+                p1.Identifier
+                ));
+            
+            Assert.IsTrue(game.Player1.Board.CountAllMines(true, true) == 3);
+
+
+            // p2 mines
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 2, PositionY = 0 },
+                p2.Identifier
+                ));
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 2, PositionY = 0 },
+                p2.Identifier
+                ));
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 1, PositionY = 2 },
+                p2.Identifier
+                ));
+            game.AddExecuteCommand(new MineCommand(
+                new CoordInfo() { CommandType = "mine", Data = "", PositionX = 0, PositionY = 1 },
+                p2.Identifier
+                ));
+
+            Assert.IsTrue(game.Player2.Board.CountAllMines(true, true) == 3);
+
+
+            // end placing
+            game.AddExecuteCommand(new EndTurnCommand(
+                new CoordInfo() { CommandType = "endTurn", Data = "", PositionX = 0, PositionY = 0 },
+                p1.Identifier
+                ));
+            game.AddExecuteCommand(new EndTurnCommand(
+                new CoordInfo() { CommandType = "endTurn", Data = "", PositionX = 0, PositionY = 0 },
+                p2.Identifier
+                ));
+
+            Assert.IsTrue(game.State is GameStatePlayerTurn);
+
+            // p1 shoots once
+
+            game.AddExecuteCommand(new ShotCommand(
+                new CoordInfo() { CommandType = "shot", Data = "SSingleShot", PositionX = 0, PositionY = 0 },
+                p1.Identifier
+                ));
+
+            game.AddExecuteCommand(new EndTurnCommand(
+                new CoordInfo() { CommandType = "endTurn", Data = "", PositionX = 0, PositionY = 0 },
+                p1.Identifier
+                ));
+  
+
+            // p2 shoots and wins
+
+            game.AddExecuteCommand(new ShotCommand(
+                new CoordInfo() { CommandType = "shot", Data = "SNineShot", PositionX = 0, PositionY = 0 },
+                p2.Identifier
+                ));
+
+            Assert.IsTrue(game.State is GameStateFinished);
         }
 
-        [TestMethod]
-        public void UndoLastPlayerCommand_StateUnderTest_ExpectedBehavior()
-        {
-            // Arrange
-            var game = new Game();
-            string playerIdentifier = null;
 
-            // Act
-            game.UndoLastPlayerCommand(
-                playerIdentifier);
 
-            // Assert
-            Assert.IsTrue(true);
-        }
+
+
+
+
     }
 }
