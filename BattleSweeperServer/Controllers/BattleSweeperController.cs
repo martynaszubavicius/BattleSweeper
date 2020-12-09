@@ -19,11 +19,8 @@ namespace BattleSweeperServer.Controllers
         private static List<Message> messages = new List<Message>();
         private static FlyweightFactory flyweightFactory = new FlyweightFactory();
 
-        public BattleSweeperController()
+        static BattleSweeperController()
         {
-            if (gameSettings.Count > 0)
-                return;
-
             gameSettings.Add(new GameSettings()
             {
                 Id = gameSettings.Count,
@@ -54,6 +51,11 @@ namespace BattleSweeperServer.Controllers
                 WideMineCount = 20,
                 FakeMineCount = 10
             });
+        }
+
+        public BattleSweeperController()
+        {
+
         }
 
         // https://localhost:44337/BattleSweeper
