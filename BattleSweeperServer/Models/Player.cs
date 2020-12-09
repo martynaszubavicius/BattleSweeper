@@ -21,6 +21,9 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Board")]
         public Board Board { get; set; }
 
+        [JsonProperty("ChatRoom")]
+        public Mediator ChatRoom { get; set; }
+
         public bool InGame = false;
 
         public Player()
