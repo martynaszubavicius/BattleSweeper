@@ -47,11 +47,12 @@ namespace BattleSweeperClient
             this.chatBox = new System.Windows.Forms.RichTextBox();
             this.messageBox = new System.Windows.Forms.RichTextBox();
             this.chatUpdateTimer = new System.Windows.Forms.Timer(this.components);
+            this.createPlayerButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // newGameButton
             // 
-            this.newGameButton.Location = new System.Drawing.Point(100, 196);
+            this.newGameButton.Location = new System.Drawing.Point(100, 212);
             this.newGameButton.Name = "newGameButton";
             this.newGameButton.Size = new System.Drawing.Size(151, 23);
             this.newGameButton.TabIndex = 0;
@@ -83,7 +84,7 @@ namespace BattleSweeperClient
             this.nameTextBox.Name = "nameTextBox";
             this.nameTextBox.Size = new System.Drawing.Size(121, 20);
             this.nameTextBox.TabIndex = 3;
-            this.nameTextBox.TextChanged += new System.EventHandler(this.joinGameButton_Validate);
+            this.nameTextBox.TextChanged += new System.EventHandler(this.createPlayerButton_Validate);
             // 
             // gameSettingscomboBox
             // 
@@ -199,11 +200,24 @@ namespace BattleSweeperClient
             this.chatUpdateTimer.Enabled = true;
             this.chatUpdateTimer.Tick += new System.EventHandler(this.chatUpdateTimer_Tick);
             // 
+            // createPlayerButton
+            // 
+            this.createPlayerButton.Enabled = false;
+            this.createPlayerButton.Location = new System.Drawing.Point(100, 183);
+            this.createPlayerButton.Name = "createPlayerButton";
+            this.createPlayerButton.Size = new System.Drawing.Size(151, 23);
+            this.createPlayerButton.TabIndex = 16;
+            this.createPlayerButton.Text = "Create player";
+            this.createPlayerButton.UseVisualStyleBackColor = true;
+            this.createPlayerButton.Click += new System.EventHandler(this.createPlayerButton_Click);
+            this.createPlayerButton.Click += new System.EventHandler(this.joinGameButton_Validate);
+            // 
             // GameCreator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(852, 319);
+            this.Controls.Add(this.createPlayerButton);
             this.Controls.Add(this.messageBox);
             this.Controls.Add(this.chatBox);
             this.Controls.Add(this.randomBoard);
@@ -244,5 +258,6 @@ namespace BattleSweeperClient
         private System.Windows.Forms.RichTextBox chatBox;
         private System.Windows.Forms.RichTextBox messageBox;
         private System.Windows.Forms.Timer chatUpdateTimer;
+        private Button createPlayerButton;
     }
 }

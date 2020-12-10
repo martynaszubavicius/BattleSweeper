@@ -50,7 +50,7 @@ namespace BattleSweeperClient.DesignPatternClasses
         {
             httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            
+
             if (use_heroku_server)
                 httpClient.BaseAddress = new Uri("https://battle-sweeper.herokuapp.com/");
             else
@@ -88,6 +88,8 @@ namespace BattleSweeperClient.DesignPatternClasses
             return registeredPlayer;
         }
 
+
+
         public async Task<IEnumerable<T>> GetObjects<T>(string route)
         {
             HttpResponseMessage response;
@@ -118,7 +120,7 @@ namespace BattleSweeperClient.DesignPatternClasses
             HttpResponseMessage response;
             try
             {
-               
+
                 response = await this.httpClient.GetAsync(string.Format(route, id));
             }
             catch (Exception e)
@@ -161,13 +163,13 @@ namespace BattleSweeperClient.DesignPatternClasses
                 string test = await response.Content.ReadAsAsync<string>();
                 throw new APIAccessException(test);
             }
-                
+
 
             return await response.Content.ReadAsAsync<Tout>();
         }
     }
 
-    public class APIAccessException : Exception 
+    public class APIAccessException : Exception
     {
         public APIAccessException(string message) : base(message) { }
     }

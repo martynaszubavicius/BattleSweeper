@@ -7,12 +7,12 @@ namespace BattleSweeperClient.Models
     class Message
     {
         [JsonProperty("Author")]
-        public string Author { get; set; }
+        public Player Author { get; set; }
 
         [JsonProperty("Content")]
         public string Content { get; set; }
 
-        public Message(string player, string content)
+        public Message(Player player, string content)
         {
             Author = player;
             Content = content;
@@ -20,7 +20,7 @@ namespace BattleSweeperClient.Models
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}\n", Author, Content);
+            return string.Format("{0}: {1}\n", Author.Name, Content);
         }
     }
 }

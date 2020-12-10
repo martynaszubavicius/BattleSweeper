@@ -18,6 +18,7 @@ namespace BattleSweeperClient
     public partial class GameCreator : Form
     {
         private int chatMessageCount = 0;
+        private Player player = null;
 
         public GameCreator()
         {
@@ -49,7 +50,7 @@ namespace BattleSweeperClient
                 errorLabel.Text = "Invalid settings selected";
                 return;
             }
-                
+
             //Game game = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings);
             string gameKey = await APIAccessorSingleton.Instance.GetNewGameFromSettings(settings, debugMode.Checked);
 
@@ -67,11 +68,11 @@ namespace BattleSweeperClient
         private async void joinGameButton_Click(object sender, EventArgs e)
         {
             string gameKey = gameIdTextBox.Text;
-            string playerName = nameTextBox.Text;
+            string playerName = player.Name;
 
             try
             {
-                Player player = await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = playerName }, randomBoard.Checked);
+                Player p = await APIAccessorSingleton.Instance.RegisterPlayerToGame(gameKey, new Player() { Name = playerName }, randomBoard.Checked);
 
                 if (secondPlayerForTesting.Checked)
                 {
@@ -93,10 +94,26 @@ namespace BattleSweeperClient
 
         private void joinGameButton_Validate(object sender, EventArgs e)
         {
-            if (gameIdTextBox.Text.Length > 0 && nameTextBox.Text.Length > 0)
+            if (gameIdTextBox.Text.Length > 0 && player != null)
                 joinGameButton.Enabled = true;
             else
                 joinGameButton.Enabled = false;
+        }
+
+        private void createPlayerButton_Click(object sender, EventArgs e)
+        {
+            string playerName = nameTextBox.Text;
+
+            player = new Player();
+            player.Name = playerName;
+        }
+
+        private void createPlayerButton_Validate(object sender, EventArgs e)
+        {
+            if (nameTextBox.Text.Length > 0)
+                createPlayerButton.Enabled = true;
+            else
+                createPlayerButton.Enabled = false;
         }
 
         private async void InitializeChatMessages()
@@ -104,8 +121,8 @@ namespace BattleSweeperClient
             var messages = await APIAccessorSingleton.Instance.GetObjects<Message>("BattleSweeper/GetMessages");
 
             foreach (Message message in messages)
-            { 
-                chatBox.Text += message.ToString(); 
+            {
+                chatBox.Text += message.ToString();
                 chatMessageCount++;
             }
         }
@@ -119,18 +136,27 @@ namespace BattleSweeperClient
         {
             var messages = await APIAccessorSingleton.Instance.GetObjects<Message>("BattleSweeper/GetMessages");
 
-            if (chatMessageCount < messages.Count())
+            if (chatMessageCount >= messages.Count())
             {
-                for (int i = chatMessageCount; i < messages.Count(); i++)
-                {
-                    chatBox.Text += messages.ElementAt(i).ToString();
-                    chatMessageCount++;
-                }
+                return;
+            }
+
+            for (int i = chatMessageCount; i < messages.Count(); i++)
+            {
+                chatBox.Text += messages.ElementAt(i).ToString();
+                chatMessageCount++;
             }
         }
 
         private void messageBox_KeyUp(Object o, KeyPressEventArgs e)
         {
+            if (player == null)
+            {
+                messageBox.Text = "";
+                errorLabel.Text = "Create a player to chat";
+                return;
+            }
+
             if (e.KeyChar == (char)Keys.Return)
             {
                 SendMessage();
@@ -139,18 +165,12 @@ namespace BattleSweeperClient
 
         private async void SendMessage()
         {
-            if (nameTextBox.Text == "")
-            {
-                messageBox.Text = "";
-                errorLabel.Text = "Enter your name";
-                return;
-            }
             if (messageBox.Text == "")
             {
                 errorLabel.Text = "Enter a message";
                 return;
             }
-            Message message = new Message(nameTextBox.Text, messageBox.Text);
+            Message message = new Message(player, messageBox.Text);
             await APIAccessorSingleton.Instance.PostObject<object, Message>("BattleSweeper/CreateMessage", message);
             messageBox.Text = "";
             errorLabel.Text = "";
