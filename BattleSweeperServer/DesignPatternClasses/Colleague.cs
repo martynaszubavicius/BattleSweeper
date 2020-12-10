@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Xsl;
 using BattleSweeperServer.Models;
-using SQLitePCL;
 
 namespace BattleSweeperServer.DesignPatternClasses
 {
-    public abstract class Mediator
+    public interface Colleague
     {
-        public abstract void Send(Message message, Colleague from);
+        public Mediator Chat { get; set; }
+
+        public void Send(Message message);
     }
 }

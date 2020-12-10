@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace BattleSweeperServer.Models
 {
-    public class Player
+    public class Player : Colleague
     {
         [JsonProperty("Name")]
         public string Name { get; set; }
@@ -21,8 +21,8 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Board")]
         public Board Board { get; set; }
 
-        [JsonProperty("ChatRoom")]
-        public Mediator ChatRoom { get; set; }
+        [JsonProperty("Chat")]
+        public Mediator Chat { get; set; }
 
         public bool InGame = false;
 
@@ -34,7 +34,7 @@ namespace BattleSweeperServer.Models
         public string CreateIdentifier(int seed)
         {
             // TODO: implement better random identifier,  for now same for everyone, which is stupid. I am stupid
-            this.Identifier = string.Format("{0}{1}{2}","ABCDABCDABCDABCD" , seed, Name);
+            this.Identifier = string.Format("{0}{1}{2}", "ABCDABCDABCDABCD", seed, Name);
             return this.Identifier;
         }
 
@@ -67,19 +67,19 @@ namespace BattleSweeperServer.Models
             for (int i = 0; i < settings.SimpleMineCount; i++)
             {
                 int choicesIndex = rnd.Next(0, choices.Count);
-                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine0.Clone(); 
+                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine0.Clone();
                 choices.RemoveAt(choicesIndex);
             }
             for (int i = 0; i < settings.WideMineCount; i++)
             {
                 int choicesIndex = rnd.Next(0, choices.Count);
-                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine1.Clone(); 
+                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine1.Clone();
                 choices.RemoveAt(choicesIndex);
             }
             for (int i = 0; i < settings.FakeMineCount; i++)
             {
                 int choicesIndex = rnd.Next(0, choices.Count);
-                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine2.Clone(); 
+                this.Board.Tiles[choices[choicesIndex]] = (Tile)tileWithMine2.Clone();
                 choices.RemoveAt(choicesIndex);
             }
 
@@ -113,5 +113,9 @@ namespace BattleSweeperServer.Models
             this.Board = memento.BoardState();
         }
 
+        public void Send(Message message)
+        {
+            this.Chat.Send(message, this);
+        }
     }
 }

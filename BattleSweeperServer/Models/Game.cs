@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace BattleSweeperServer.Models
 {
-    public class Game
+    public class Game //: Colleague
     {
         [JsonProperty("Id")]
         public int Id { get; set; }
@@ -22,6 +22,9 @@ namespace BattleSweeperServer.Models
         [JsonProperty("Player2")]
         public Player Player2 { get; set; }
 
+        //[JsonProperty("Chat")]
+        //public Mediator Chat { get; set; }
+
         //------------------------------------------------------------------------------
         //TODO: My part 
         private List<Memento> MementoStateList = new List<Memento>();
@@ -33,7 +36,7 @@ namespace BattleSweeperServer.Models
 
         [JsonIgnore]
         public Observer HistoryObserver { get; set; }
-        
+
         // only for use by the client and json serialising. Server should not use this anywhere else
         [JsonProperty("RedrawPoints")]
         public List<ClientChangePoint> RedrawPoints { get; set; } // TODO: THIS IS DIRTY AND UGLY, FIX IT PLS
@@ -54,12 +57,12 @@ namespace BattleSweeperServer.Models
             if (!HasPlayerWithIdentifier(playerIdentifier))
                 return null; // not your game, scrub
 
-            Game playerView = new Game 
-            { 
+            Game playerView = new Game
+            {
                 Id = this.Id,
                 Settings = this.Settings
             };
-            
+
             playerView.Player1 = Player1.Identifier == playerIdentifier ? Player1 : Player2;
             if (Player2 != null)
                 playerView.Player2 = Player1.Identifier == playerIdentifier ? Player2.GetEnemyView() : Player1.GetEnemyView();
@@ -77,7 +80,7 @@ namespace BattleSweeperServer.Models
 
         public bool HasPlayerWithIdentifier(string playerIdentifier)
         {
-            return ( Player1 != null && Player1.Identifier == playerIdentifier) || (Player2 != null && Player2.Identifier == playerIdentifier);
+            return (Player1 != null && Player1.Identifier == playerIdentifier) || (Player2 != null && Player2.Identifier == playerIdentifier);
         }
 
         public Player GetPlayerByIdentifier(string playerIdentifier)
@@ -108,7 +111,7 @@ namespace BattleSweeperServer.Models
         {
             State.HistoryObserver.Undo(this, playerIdentifier);
         }
-        
+
         public void AddMemento(Memento memento)
         {
             MementoStateList.Add(memento);
@@ -116,7 +119,7 @@ namespace BattleSweeperServer.Models
 
         public void RebuildGame(Player player)
         {
-            foreach(Memento m in MementoStateList)
+            foreach (Memento m in MementoStateList)
             {
                 //check if there is such identifier between participated people
                 if (m.NameState() == player.Name)
@@ -137,5 +140,10 @@ namespace BattleSweeperServer.Models
         {
             return State.HistoryObserver.GetCommandsLog(format);
         }
+
+        //public void Send(Message message)
+        //{
+        //    this.Chat.Send(message, this);
+        //}
     }
 }

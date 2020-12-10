@@ -16,8 +16,8 @@ namespace BattleSweeperServer.Controllers
         private static List<Game> games = new List<Game>();
         private static List<GameSettings> gameSettings = new List<GameSettings>();
         private static List<GameBuilder> gameBuilders = new List<GameBuilder>();
-        private static List<Message> messages = new List<Message>();
         private static FlyweightFactory flyweightFactory = new FlyweightFactory();
+        private static ChatMediator chat = new ChatMediator();
 
         static BattleSweeperController()
         {
@@ -108,16 +108,16 @@ namespace BattleSweeperServer.Controllers
         public ActionResult<Player> RegisterPlayer(string key, Player player1, bool randomBoard = false)
         {
             //TODO: Fix replace player with just playername 
-            Player player = flyweightFactory.GetPlayer(player1.Name, 
+            Player player = flyweightFactory.GetPlayer(player1.Name,
                 Request.Headers.ContainsKey("PlayerIdentifier") ? Request.Headers["PlayerIdentifier"].ToString() : "");
-            
+
             if (player == null)
                 return BadRequest("Name is taken. Go away thief");
 
             //Check
             Game OldGame = games.Find(game => game.Key == key);
 
-            if(OldGame != null)
+            if (OldGame != null)
             {
                 if (!Request.Headers.ContainsKey("PlayerIdentifier"))
                     return StatusCode(403);
@@ -129,7 +129,7 @@ namespace BattleSweeperServer.Controllers
 
             }
             //--------------------------------------------------------------
-            
+
             GameBuilder builder = gameBuilders.Find(b => b.Key == key);
 
             if (builder == null)
@@ -142,7 +142,7 @@ namespace BattleSweeperServer.Controllers
                 {
                     return BadRequest("game full");
                 }
-                    
+
                 lock (games)
                 {
                     Game game = builder.Finalize(games.Count);
@@ -237,12 +237,19 @@ namespace BattleSweeperServer.Controllers
         public ActionResult SaveMessage(Message message)
         {
             if (message.Content[0] != '/')
-                messages.Add(message);
+            {
+                if (message.Author.Chat == null)
+                {
+                    message.Author.Chat = chat;
+                }
+
+                message.Author.Send(message);
+            }
             else
                 try
                 {
                     Interpreter interpreter = new Interpreter();
-                    Game game = games.Where(game => game.Player1.Name == message.Author || game.Player2.Name == message.Author).First();
+                    Game game = games.Where(game => game.Player1.Name == message.Author.Name || game.Player2.Name == message.Author.Name).First();
                     interpreter.ParseMessage(message, game);
 
                     string[] messageParts = message.Content.Split(' ');
@@ -255,7 +262,7 @@ namespace BattleSweeperServer.Controllers
                     info.CommandType = "fakeCommand";
                     info.PositionX = x;
                     info.PositionY = y;
-                    
+
                     FakeCommand fakeCommand = new FakeCommand(info, changePoint);
 
                     game.State.HistoryObserver.Add(fakeCommand);
@@ -271,7 +278,7 @@ namespace BattleSweeperServer.Controllers
         [HttpGet("GetMessages")]
         public ActionResult<List<Message>> GetMessages()
         {
-            return messages;
+            return chat.Messages;
         }
 
         [HttpPost("Game/{key}/ExecuteCommand")]
@@ -361,5 +368,5 @@ namespace BattleSweeperServer.Controllers
                 return StatusCode(403);
             return null;
         }
-    } 
+    }
 }

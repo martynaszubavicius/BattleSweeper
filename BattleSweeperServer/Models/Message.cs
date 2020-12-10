@@ -9,19 +9,15 @@ namespace BattleSweeperServer.Models
     public class Message
     {
         [JsonProperty("Author")]
-        public string Author { get; set; }
+        public Player Author { get; set; }
 
         [JsonProperty("Content")]
         public string Content { get; set; }
-
-        //[JsonProperty("Identifier")]
-        //public string Identifier { get; set; }
-
-        public Message(string player, string content, string identifier)
+        
+        public Message(Player player, string content)
         {
             Author = player;
             Content = content;
-            //Identifier = identifier;
         }
     }
 }

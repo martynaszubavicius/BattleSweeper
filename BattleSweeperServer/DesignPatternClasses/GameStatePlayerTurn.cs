@@ -43,6 +43,9 @@ namespace BattleSweeperServer.DesignPatternClasses
                 game.AddMemento(player(game).CreateMemento());
                 game.AddMemento(enemy(game).CreateMemento());
 
+                //Message message = new Message(new Player(), "Game "  + game.Key + " was won by " + player(game).Name);
+                //game.Send(message);
+
                 game.State = new GameStateFinished(HistoryObserver);
             }
             
