@@ -288,8 +288,9 @@ namespace BattleSweeperServer.Controllers
 
             var gameNullHandler = new GameNullHandler();
             var registeredPlayerHandler = new RegisteredPlayerHandler();
+            var finalHandler = new FinalHandler();
 
-            registeredPlayerHandler.SetNext(gameNullHandler);
+            registeredPlayerHandler.SetNext(gameNullHandler.SetNext(finalHandler));
 
             if (!Request.Headers.ContainsKey("PlayerIdentifier"))
                 return StatusCode(403);

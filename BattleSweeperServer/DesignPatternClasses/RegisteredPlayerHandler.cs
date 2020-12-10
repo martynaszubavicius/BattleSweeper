@@ -16,7 +16,7 @@ namespace BattleSweeperServer.DesignPatternClasses
             }
             else
             {
-                return true;
+                return base.Handle(request);
             }
         }
     }

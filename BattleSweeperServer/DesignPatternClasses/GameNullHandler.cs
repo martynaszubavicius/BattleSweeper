@@ -12,7 +12,7 @@ namespace BattleSweeperServer.DesignPatternClasses
         {
             if ((request as Game) != null)
             {
-                return true;
+                return base.Handle(request);
             }
             else
             {
