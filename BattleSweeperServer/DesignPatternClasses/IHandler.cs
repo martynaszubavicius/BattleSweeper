@@ -8,6 +8,6 @@ namespace BattleSweeperServer.DesignPatternClasses
     public interface IHandler 
     {
         IHandler SetNext(IHandler handler);
-        object Handle(object request);
+        object Handle(object request, string text);
     }
 }

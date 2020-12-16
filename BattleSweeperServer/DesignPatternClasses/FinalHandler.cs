@@ -7,8 +7,9 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public class FinalHandler : AbstractHandler
     {
-        public override object Handle(object request)
+        public override object Handle(object request, string text)
         {
+            text += " Final";
             return true;
         }
     }

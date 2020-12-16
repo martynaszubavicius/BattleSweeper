@@ -15,11 +15,11 @@ namespace BattleSweeperServer.DesignPatternClasses
             return handler;
         }
 
-        public virtual object Handle(object request)
+        public virtual object Handle(object request, string text)
         {
             if (this._nextHandler != null)
             {
-                return this._nextHandler.Handle(request);
+                return this._nextHandler.Handle(request, text);
             }
             else
             {

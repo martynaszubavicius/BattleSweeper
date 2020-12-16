@@ -8,11 +8,12 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public class GameNullHandler : AbstractHandler
     {
-        public override object Handle(object request)
+        public override object Handle(object request, string text)
         {
             if ((request as Game) != null)
             {
-                return base.Handle(request);
+                text += " GameNull";
+                return base.Handle(request, text);
             }
             else
             {

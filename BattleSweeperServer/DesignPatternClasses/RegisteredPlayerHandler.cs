@@ -8,7 +8,7 @@ namespace BattleSweeperServer.DesignPatternClasses
 {
     public class RegisteredPlayerHandler : AbstractHandler
     {
-        public override object Handle(object request)
+        public override object Handle(object request, string text)
         {
             if ((request as Game).Player1 == null || (request as Game).Player2 == null)
             {
@@ -16,7 +16,8 @@ namespace BattleSweeperServer.DesignPatternClasses
             }
             else
             {
-                return base.Handle(request);
+                text += " RegisteredPlayer";
+                return base.Handle(request, text);
             }
         }
     }

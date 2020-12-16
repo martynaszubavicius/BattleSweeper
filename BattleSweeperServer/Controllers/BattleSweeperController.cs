@@ -297,7 +297,9 @@ namespace BattleSweeperServer.Controllers
             if (!game.HasPlayerWithIdentifier(Request.Headers["PlayerIdentifier"]))
                 return StatusCode(403);
 
-            if (registeredPlayerHandler.Handle(game) == null)
+            string text = "";
+
+            if (registeredPlayerHandler.Handle(game, text) == null)
                 BadRequest();
 
             Command cmd = null;
