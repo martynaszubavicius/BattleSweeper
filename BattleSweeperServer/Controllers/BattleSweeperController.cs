@@ -290,7 +290,7 @@ namespace BattleSweeperServer.Controllers
             var registeredPlayerHandler = new RegisteredPlayerHandler();
             var finalHandler = new FinalHandler();
 
-            registeredPlayerHandler.SetNext(gameNullHandler.SetNext(finalHandler));
+            registeredPlayerHandler.SetNext(gameNullHandler).SetNext(finalHandler);
 
             if (!Request.Headers.ContainsKey("PlayerIdentifier"))
                 return StatusCode(403);
@@ -300,7 +300,7 @@ namespace BattleSweeperServer.Controllers
             string text = "";
 
             if (registeredPlayerHandler.Handle(game, text) == null)
-                BadRequest();
+                return StatusCode(403);
 
             Command cmd = null;
 
